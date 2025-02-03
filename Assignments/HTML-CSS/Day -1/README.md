@@ -1,2 +1,2 @@
-# QA-Software-Engineering
+# QR Code App
 ![App screenshot](./images/app-screenshot.png)
