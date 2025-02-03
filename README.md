@@ -1,2 +1,2 @@
 # QA-Software-Engineering
-App screenshot [Screenshot](./images/app-screenshot.png)
+![App screenshot](./images/app-screenshot.png)
