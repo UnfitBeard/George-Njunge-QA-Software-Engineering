@@ -1,2 +1,2 @@
-# QA-Software-Engineering
-![App screenshot](./images/app-screenshot.png)
+# QA-Software-Engineering Assignments
+screenshot inside assignments folder
