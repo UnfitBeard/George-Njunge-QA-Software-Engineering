@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="navbar-essentials">
+                <div class="logo">
+                    <img src="./images/logo-react-svgrepo-com.svg" alt="logo" />
+                </div>
+                <div class="nav-pages">
+                    <li>Home</li>
+                    <li>Shop</li>
+                    <li>Contact</li>
+                    <li>Help</li>
+                </div>
+            </div>
+            <div class="account-info">
+                <a href="#">Account</a>
+                <a href="#">3 items</a>
+                <img src="./images/lucas-gouvea-aoEwuEH7YAs-unsplash.jpg" style="width: 40px; height: 40px;" alt="profile" />
+            </div>
+        </div>
+        <div class="main">
+
+            <div class="accounts-div">
+                <div class="accounts">
+                    <div class="progress-icons">
+                        <div id="progress" style="font-size: small;">
+                            <p style="color: #2D8CFF;">Account</p> 
+                            <img src="./images/line-svgrepo-com.svg" alt="line" >
+                            <img src="./images/checkmark-complete-correct-svgrepo-com.svg" alt="line">
+                            <img src="./images/line-svgrepo-com.svg" alt="line">
+                             <p>Shipping </p>
+                             <img src="./images/line-svgrepo-com.svg" alt="line" >
+                            <img src="./images/checkmark-complete-correct-svgrepo-com.svg" alt="line">
+                            <img src="./images/line-svgrepo-com.svg" alt="line">
+                             <p>Payment</p>
+                            </div>
+                    </div>
+                    <form class="account-details">
+
+                        <h2 style="font-size: medium;">Account Details</h2>
+                        <div class="account-details-inputs">
+                            <label for="email" style="color: grey; font-size: small;">Email Address</label>
+                            <input type="email" id="email" />
+                            <label for="pass" style="color: grey; font-size: small;">Password</label>
+                            <input type="password" id="pass" />
+                        </div>
+                        <div class="input-buttons">
+                            <button id="register">Register for account</button>
+                            <button id="login" style="background-color: #2D8CFF; color: antiquewhite; width: 100px;">login</button>
+                        </div>
+                    </form>
+
+                    <div class="shipping-buttons">
+                        <button id="cancel-order">Cancel Order</button>
+                        <button id="shipping-details" style="background-color: #2D8CFF; color: antiquewhite;">Shipping details</button>
+                    </div>
+
+                </div>
+            </div>
+            <div class="order-summary-div">
+                <div class="order-summary">
+                    <h2>Order Summary</h2>
+                    <div class="item-img-div">
+                        <img src="./images/c-d-x-PDX_a_82obo-unsplash.jpg" alt="product" />
+                    </div>
+                    <div class="product-name-price">
+                        <div class="product-name">
+                            <p style="font-weight: bold;">Sony wireless headphones</p>
+                            <p style="font-weight: bolder;">$320.45</p>
+                        </div>
+                        <div class="add-items">
+                            <img src="./images/minus-circle-svgrepo-com.svg" alt="minus"/>
+                            <p> 1 </p>
+                            <img src="./images/plus-circle-svgrepo-com.svg" alt="plus"/>
+                        </div>
+                    </div>
+                    <div class="discount-code">
+                        <div class="label-for-discount-code">
+                            <label for="discount-code-input" style="color: grey; font-size: small;">Gift Card/Discount code</label>
+                        </div>
+                        <div class="discount-code-and-button">
+                            <input id="discount-code-input" type="text">
+                            <button id="apply" style="width: 90px;">Apply</button>
+                        </div>
+                    </div>
+                    <div class="subtotal-div">
+                        <p id="sub-total">Sub total</p>
+                        <p id="subtotal-price">$316.55</p>
+                    </div>
+                    <div class="tax-div">
+                        <p id="tax">Tax</p>
+                        <p id="tax-price">$316.55</p>
+                    </div>
+                    <div class="shipping-div">
+                        <p>Sub total</p>
+                        <p id="shipping-price" style="color: #2D8CFF;">Free</p>
+                    </div>
+                    <div class="total-div">
+                        <p>Total</p>
+                        <p id="total-price">$320.45</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

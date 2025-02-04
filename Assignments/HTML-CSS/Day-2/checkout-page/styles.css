@@ -1,0 +1,248 @@
+body,
+html {
+    font-family: "Open Sans", serif;
+    max-height: 100vh;
+    max-width: 100vw;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.main {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    gap: 20px;
+    justify-content: center;
+}
+
+.logo {
+    display: flex;
+    align-items: flex-start;
+}
+
+.logo img {
+    width: 20px;
+    height: 20px;
+}
+
+.navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.main::before{
+    content: "";
+    display: block;
+    align-items: center;
+    width: 100%;
+    height: 1px;
+    background-color: lightgray;
+    position:absolute;
+    top: -10px;
+    left: 0;
+}
+
+.nav-pages {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    list-style-type: none;
+}
+
+.nav-pages li {
+    padding: 15px;
+
+}
+
+.navbar-essentials {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 100px;
+
+}
+
+.account-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.account-info a,
+img {
+    padding: 15px;
+}
+
+.account-info img {
+    border-radius: 50px;
+    width: 40px;
+}
+
+.accounts {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+.accounts-div {
+    background-color: aliceblue;
+    width: 500px;
+    border-radius: 5px;
+    position: relative;
+
+}
+
+.progress-icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.account-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.account-details-inputs {
+    display: flex;
+    flex-direction: column;
+   }
+
+.input-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.shipping-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 30px;
+}
+.shipping-buttons button:hover {
+    color: #2D8CFF;
+}
+
+.discount-code {
+    display: flex;
+    flex-direction: column;
+}
+
+.discount-code-and-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.product-name-price {
+    display: flex;
+    flex-direction: row;
+}
+
+.subtotal-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.tax-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.shipping-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.total-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.order-summary {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    font-size: medium;
+}
+
+.order-summary-div {
+    background-color: aliceblue;
+    border-radius: 5px;
+}
+
+.item-img-div img {
+    width: 200px;
+    height: 120px;
+    padding: 0%;
+}
+#progress {
+    display: flex;
+    flex-direction: row;
+}
+#progress img{
+    width: 10px;
+    padding: 5px;
+}
+input {
+    border-radius: 5px;
+    border: 0px;
+    height: 40px;
+    background-color: rgb(218, 207, 207);
+}
+button {
+    border-radius: 5px;
+    border:0;
+    margin-left: 20px;
+    height: 40px;
+}
+
+.add-items {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.add-items img {
+    width: 20px;
+}
+.accounts-div button:focus {
+    background-color: rgb(37, 149, 197);
+}
+
+.account-details-inputs input {
+    padding-right: 30px;
+    background: url('./images/checkmark-complete-correct-svgrepo-com.svg') no-repeat right 10px center;
+    background-size: 10px;
+    background-color: darkgrey;
+}
+
+#apply {
+    color:#2D8CFF;
+    border-color: #2D8CFF;
+    border: 1px solid;
+}
+
+.shipping-buttons::before {
+    content: "";
+    display: block;
+    align-items: center;
+    width: 100%;
+    height: 1px;
+    background-color: lightgray;
+    position:absolute;
+    top: -10px;
+    left: 0;
+}
