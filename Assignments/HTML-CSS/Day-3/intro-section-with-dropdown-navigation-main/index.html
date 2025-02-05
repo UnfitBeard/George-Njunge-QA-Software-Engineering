@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+
+  <title>Frontend Mentor | Intro section with dropdown navigation</title>
+
+  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+  <style>
+    body,
+    html {
+      margin: 0;
+      font-family: "Epilogue", serif;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      min-height: 90vh;
+    }
+
+
+    .navbar {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .navbar-left {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .nav-menus {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .nav-menus li {
+      list-style: none;
+      padding-left: 30px;
+    }
+
+    .navbar-right {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .logo {
+      justify-content: center;
+    }
+
+    .logo p {
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 50px;
+      flex-grow: 1;
+      height: 100%;
+      margin: 40px auto;
+      max-width: 80%;
+    }
+
+    .svg-icons {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding-top: 60px;
+    }
+
+    button {
+      height: 40px;
+      border-radius: 10px;
+      width: 140px;
+    }
+
+    .login-div button {
+      background-color: transparent;
+    }
+
+    #btn-login {
+      border: 0px;
+    }
+
+    .about-container {
+      width: 45vw;
+      max-width: 500px;
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
+    .images {
+      width: 40vw;
+      max-height: 100vh;
+      max-width: 400px;
+      height: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .images img {
+      width: 100%;
+      height: auto;
+      max-height: 100%;
+    }
+
+    .nav-menus img {
+      padding-left: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main">
+    <div class="navbar">
+      <div class="navbar-left">
+        <div class="logo">
+          <p>Snap</p>
+        </div>
+        <div class="nav-menus">
+          <li>Features<img src="./images/icon-arrow-down.svg" alt="dropdown" /></li>
+          <li>Company<img src="./images/icon-arrow-down.svg" alt="dropdown" /></li>
+          <li>Careers</li>
+          <li>About</li>
+        </div>
+      </div>
+      <div class="navbar-right">
+        <div class="login-div">
+          <button id="btn-login">Login</button>
+          <button id="btn-register">Register</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="about-container">
+        <div class="header"></div>
+        <h2 style="font-size: 60px;">Make <br>remote work</h2>
+        <p style="font-size: large;">Get your team in sync, no matter your location. Streamline processes,
+          create team rituals, and watch productivity soar.</p>
+        <button id="learn-more" style="height: 40px; border-radius: 10px; background-color: black; color: white;">Learn
+          More</button>
+        <div class="svg-icons">
+          <img src="./images/client-databiz.svg" alt="client-databiz" />
+          <img src="./images/client-audiophile.svg" alt="client-audiophile" />
+          <img src="./images/client-meet.svg" alt="client-meet" />
+          <img src="./images/client-maker.svg" alt="client-maker" />
+        </div>
+      </div>
+      <div class="images">
+        <img src="./images/image-hero-desktop.png" alt="image" />
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
