@@ -66,6 +66,13 @@ console.log(chalk.bgBlue(sent.trimStart()))
 console.log(chalk.bgRed(sent.trimEnd()))
 console.log(sent.trimStart())
 
+//.slice() --- method used to cut a part of an array
+//format array.slice(startingIndex, endingIndex(not Inclusive))
+
+//Exercise 
+const myNameIs = "George Njunge Njuguna"
+
+console.log(myNameIs.split("").map(e => e).reverse())
 
 
 
