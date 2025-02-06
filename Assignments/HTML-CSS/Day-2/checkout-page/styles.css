@@ -69,17 +69,21 @@ html {
 .account-info {
     display: flex;
     flex-direction: row;
+    justify-content: center;
     align-items: center;
 }
+.account-info li {
+    padding: 5px;
 
-.account-info a,
-img {
-    padding: 15px;
 }
 
 .account-info img {
     border-radius: 50px;
     width: 40px;
+    justify-content: center;
+}
+.account-info li img {
+    
 }
 
 .accounts {
@@ -245,4 +249,7 @@ button {
     position:absolute;
     top: -10px;
     left: 0;
+}
+li {
+    list-style: none;
 }
