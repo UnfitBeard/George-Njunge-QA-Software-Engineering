@@ -76,7 +76,7 @@ const swapcase =(input) => {
             return e = e.toUpperCase()
         }
     })
-    .join()
+    .join("")
 
 }
             
@@ -114,7 +114,30 @@ const insert = (existingString,input, index) => {
 console.log(insert('We are doing some exercises.', 'JavaScript ', 18));
 
 //Question 15
-const humanize_format = (input) => {
-    
+const humanize_format = (num) => {
+    switch (num % 10) {
+        case 1:
+            return num + "st"
+            break;
+        case 2:
+            return num + "nd"
+            break;
+        case 3:
+            return num + "rd"
+            break;
+        default:
+            return num + "th"
+    }
 }
 console.log(humanize_format(301)); 
+
+//Question 16
+const text_truncate = (input,charLength, character) => {
+
+    const length = character.length;
+    const truncPosition = charLength - length;
+    return `${input.substr(0,truncPosition)}${character}"`
+}
+console.log(text_truncate('We are doing JS string exercises.', 15, '!!'));
+
+//Question 17
