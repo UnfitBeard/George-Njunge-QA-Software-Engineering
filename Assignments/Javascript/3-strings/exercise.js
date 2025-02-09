@@ -1,45 +1,45 @@
 //Question 1
 //Check whether an input is a string or not
-const string = "my name is george";
 const is_string = (input) => {
-    if (typeof input == String) {
-        console.log(`${input} is a ${typeof input}`);
+    if (typeof(input) === 'string') {
+        return true;
     } else {
-        console.log(`${input} is a ${typeof input}`);
+        return false;
     }
 };
-is_string("w3resource");
+console.log(is_string('w3resource')); // true
+console.log(is_string([1, 2, 4, 0])); // false
 
 //Question 2
 const is_Blank = (input) => {
-    input.length == 0 ? console.log(true) : console.log(false);
+    return input.length == 0 ? true : false;
 };
-is_Blank("");
+console.log(is_Blank('')); // true
 
 //Question3
 const string_to_array = (input) => {
-    console.log(input.split(" "));
+    return input.split(" ");
 };
-string_to_array("Robin Singh");
+console.log(string_to_array("Robin Singh")); // ["Robin", "Singh"]
 
 //Question 4
 const truncate_string = (input, startingIndex) => {
-    console.log(input.substr(input, startingIndex));
+    return input.substr(input, startingIndex);
 };
-truncate_string("Robin Singh", 4);
+console.log(truncate_string("Robin Singh", 4)); // "Robi"
 
 //Question 5
 const abbrev_name = (input) => {
     const newArr = input.split(" ");
-    console.log(newArr[0], newArr[1].charAt(0));
+    return `${newArr[0]} ${newArr[1].charAt(0)}`;
 };
-abbrev_name("Robin Singh");
+console.log(abbrev_name("Robin Singh")); // "Robin S."
 
 //Question 6
 const protect_email = (input) => {
-    const regex = /\-/g;
-    return;
+    return input.replace( /^(.{4}).+(@.+)$/, '$1...$2')
 };
+console.log(protect_email("robin_singh@example.com")); // "robin...@example.com"
 
 //Question 7
 const string_parametrize = (input) => {
@@ -174,12 +174,23 @@ console.log(count("The quick brown fox jumps over the lazy dog", "the"));
 
 
 //Question 19
+const reverse_binary = (input) => {
+    const inputBinary = input.toString(2).split("");
+    const inputBinaryLength = inputBinary.length;
+    return parseInt(inputBinary.reverse().join(""),2);
+}
+console.log(reverse_binary(100)); // 19
+
+
 //Question 20
 const formatted_string = (input, nums, part) => {
-    //return  part === 'l'? input.substring(0, 1)
-    //: input.substr(0, substrPosition)
     const string = nums.toString();
     const splitString = string.split("")
-    return part =='l'? input.slice(3) + "," +  splitString : splitString + input.reverse 
+    const splitStringLength = splitString.length
+
+    const right = splitString.join("") +  input.slice(0, input.length - splitString.length)
+    const left = input.slice(0, input.length - splitString.length) + splitString.join("")
+
+    return part =='r'? right : left
 }
-console.log(formatted_string('0000', 123, 'r')); // "0123"
+console.log(formatted_string('0000', 123, '')); // "0123"
