@@ -1,11 +1,9 @@
 import bcrypt from 'bcrypt'
 
+//const inputPassword = 'Qweioplidn'
+
 function verifyPassword(inputPassword, storedHashedPassword){
-    if (bcrypt.compare(inputPassword, storedHashedPassword) == true) {
-        return true;
-    } else {
-        return false;
-    }
+    return bcrypt.compare(inputPassword, storedHashedPassword);
 }
 
 function verifyMFA(inputMFACode, correctMFACode) {
@@ -20,7 +18,7 @@ function checkBalance(balance, withdrawalAmount) {
     if (balance >= withdrawalAmount) {
         return true;
     } else {
-        return true;
+        return false;
     }
 }
 
@@ -50,6 +48,18 @@ function processWithdrawal(user, inputPassword, inputMFACode, withdrawalAmount) 
         return `Transaction Successful! New Balance: "+ ${user.balance}`
     }
 }
+
+//Begginning of Tests
+const user = {
+    hashedPassword: '$2b$10$dwLTnFXd3tojpOtF5e9mfe.vOGQJ/qPcratfloG0yWCATyYQUNz0i',
+    correctMFACode: "123456",
+    balance: 1000,
+    dailyLimit: 500
+}
+
+console.log("\nActual Code Result\n")
+console.log(processWithdrawal(user, 'Qweioplidn', "123456", 500));
+
 
 
 

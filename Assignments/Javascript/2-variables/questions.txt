@@ -1,1 +1,0 @@
-why is array of type object;

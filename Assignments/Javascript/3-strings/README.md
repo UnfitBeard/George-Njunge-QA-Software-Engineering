@@ -1,1 +1,0 @@
-# Assignment inside exercise.js
