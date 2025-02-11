@@ -1,0 +1,18 @@
+{
+  "name": "5.MathOperators",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon mathOperators.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^3.1.9",
+    "uuid": "^11.0.5"
+  },
+  "type": "module"
+}
