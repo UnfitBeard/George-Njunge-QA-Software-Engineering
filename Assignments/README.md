@@ -1,1 +1,1 @@
-# Assignment inside exercise.js
+# Assignment inside exercise.js in each folder

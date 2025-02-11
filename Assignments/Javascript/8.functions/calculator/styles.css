@@ -1,0 +1,131 @@
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 320px;
+        text-align: center;
+    }
+    .nav-pane {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    /* Input box styling */
+    .input-box {
+        margin-bottom: 20px;
+    }
+
+    .input-box input {
+        width: 100%;
+        padding: 15px;
+        font-size: 2em;
+        text-align: right;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        color: #333;
+    }
+
+    .input-box input:focus {
+        outline: none;
+        border-color: #007BFF;
+    }
+
+    /* Button grid */
+    .button-box {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+
+    /* Button styling */
+    .btn {
+        padding: 20px;
+        font-size: 1.5em;
+        cursor: pointer;
+        border: none;
+        background-color: #f0f0f0;
+        border-radius: 12px;
+        transition: background-color 0.2s, transform 0.2s;
+    }
+
+    /* Hover effects for buttons */
+    .btn:hover {
+        background-color: #d3d3d3;
+        transform: scale(1.05);
+    }
+
+    .btn:active {
+        background-color: #ccc;
+        transform: scale(0.95);
+    }
+
+    /* Operator button styles */
+    .btn.operator {
+        background-color: #f9a825;
+        color: white;
+    }
+
+    .btn.operator:hover {
+        background-color: #f57f17;
+    }
+
+    .btn.operator:active {
+        background-color: #f57c00;
+    }
+
+    /* Equal button styling */
+    .btn.equal {
+        background-color: #2196F3;
+        grid-column: span 2;
+        color: white;
+    }
+
+    .btn.equal:hover {
+        background-color: #1976D2;
+    }
+
+    .btn.equal:active {
+        background-color: #1565C0;
+    }
+
+    /* Responsive design for smaller screens */
+    @media screen and (max-width: 480px) {
+        .container {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .button-box {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .input-box input {
+            font-size: 1.5em;
+        }
+
+        .btn {
+            font-size: 1.2em;
+            padding: 15px;
+        }
+    }

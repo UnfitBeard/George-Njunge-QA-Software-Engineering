@@ -1,0 +1,43 @@
+[
+    {
+      "product_id": "P001",
+      "product_name": "Laptop",
+      "quantity_sold": 15,
+      "price_per_unit": 899.99,
+      "total_sales": 13499.85,
+      "date": "2025-02-01"
+    },
+    {
+      "product_id": "P002",
+      "product_name": "Smartphone",
+      "quantity_sold": 30,
+      "price_per_unit": 499.99,
+      "total_sales": 14999.70,
+      "date": "2025-02-02"
+    },
+    {
+      "product_id": "P003",
+      "product_name": "Headphones",
+      "quantity_sold": 50,
+      "price_per_unit": 99.99,
+      "total_sales": 4999.50,
+      "date": "2025-02-03"
+    },
+    {
+      "product_id": "P004",
+      "product_name": "Tablet",
+      "quantity_sold": 25,
+      "price_per_unit": 299.99,
+      "total_sales": 7499.75,
+      "date": "2025-02-04"
+    },
+    {
+      "product_id": "P005",
+      "product_name": "Smartwatch",
+      "quantity_sold": 40,
+      "price_per_unit": 199.99,
+      "total_sales": 7999.60,
+      "date": "2025-02-05"
+    }
+  ]
+  
