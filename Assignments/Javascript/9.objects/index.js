@@ -132,6 +132,3 @@ const products = [
 //we can use json.stringify() that converts a js object into a string
 console.log(`this is data as json strings ${JSON.stringify(products)}`)
 
-
-
-

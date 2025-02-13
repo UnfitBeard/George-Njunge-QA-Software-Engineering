@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        #response-data {
+            width: 60%;
+            max-width: 600px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #response-data p {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body onload="getData()">
+    <header>User data</header>
+    <div id="response-data">
+
+    </div>
+    <script>
+       const getData = async () => {
+    try {
+        const response = await fetch("http://localhost:3000/users");
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const users = await response.json();
+        
+        document.getElementById("response-data").innerHTML = users.map(user => 
+            `<div class="user-card">
+                <h3 id="name">${user.name}</h3>
+                <p id="id"><strong>ID:</strong> ${user.id}</p>
+                <p id="email"><strong>Email:</strong> ${user.email}</p>
+                <p id="number"><strong>Number:</strong> ${user.number || "N/A"}</p>
+            </div>`
+        ).join("");
+
+    } catch (error) {
+        console.error("Fetch error:", error.message);
+    }
+};
+
+
+    </script>
+</body>
+
+</html>
