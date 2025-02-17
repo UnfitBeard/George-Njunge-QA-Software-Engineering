@@ -52,78 +52,29 @@
     }
   ];
 
-  //1 filter active users who have posted atleast once
-// const usersWhoHavePostedOnce = users.filter((user)=>user.posts.length >= 1)
-// console.log(usersWhoHavePostedOnce)
+  const oneWeekAgo = new Date("2024-05-09").getTime(); // Adjust to match your date
 
-// const extractPopularPosts = usersWhoHavePostedOnce.filter(user=> user.posts.length >=1 )
-// console.log(extractPopularPosts)
-// function deepFlattenToObject(obj, prefix = '') {
-//   return Object.keys(obj).reduce((acc, k) => {
-//     const pre = prefix.length ? prefix + '_' : '';
-//     if (typeof obj[k] === 'object' && obj[k] !== null) {
-//       if (Array.isArray(obj[k])) {
-//         obj[k].forEach((item, index) => {
-//           Object.assign(acc, deepFlattenToObject(item, `${pre}${k}_${index}`));
-//         });
-//       } else {
-//         Object.assign(acc, deepFlattenToObject(obj[k], pre + k));
-//       }
-//     } else {
-//       acc[pre + k] = obj[k];
-//     }
-//     return acc;
-//   }, {});
-// }
+console.log("One Week Ago Timestamp:", oneWeekAgo);
 
+// Step 1: Filter users who have posted at least once in the past week
+const activeUsers = users.filter(user => {
+    return user.posts.some(post => {
+        const postTime = new Date(post.timestamp).getTime();
+        console.log(`User ${user.name} - Post Time: ${postTime} (${post.timestamp})`);
+        return postTime >= oneWeekAgo;
+    });
+});
 
-// console.log(deepFlattenToObject(extractPopularPosts))
+console.log("Active Users:", activeUsers);
 
-const alsoDeepFlattenObjects = () => {
+// Step 2: Extract posts with at least 10 likes
+const popularPosts = activeUsers.map(user => ({
+    id: user.id,
+    name: user.name,
+    posts: user.posts.filter(post => {
+        const postTime = new Date(post.timestamp).getTime();
+        return postTime >= oneWeekAgo && post.likes >= 10;
+    })
+})).filter(user => user.posts.length > 0);
 
-}
-// Declare an object
-let ob = {
-	Company: "GeeksforGeeks",
-	Address: "Noida",
-	contact: +91-999999999,
-	mentor: {
-		HTML: "GFG",
-		CSS: "GFG",
-		JavaScript: "GFG"
-	}
-};
-
-// Declare a flatten function that takes 
-// object as parameter and returns the 
-// flatten object
-const flattenObj = (ob) => {
-
-	// The object which contains the
-	// final result
-	let result = {};
-
-	// loop through the object "ob"
-	for (const i in ob) {
-
-		// We check the type of the i using
-		// typeof() function and recursively
-		// call the function again
-		if ((typeof ob[i]) === 'object' && !Array.isArray(ob[i])) {
-			const temp = flattenObj(ob[i]);
-			for (const j in temp) {
-
-				// Store temp in result
-				result[i + '.' + j] = temp[j];
-			}
-		}
-
-		// Else store ob[i] in result directly
-		else {
-			result[i] = ob[i];
-		}
-	}
-	return result;
-};
-
-console.log(flattenObj(users));
+console.log("Popular Posts:", popularPosts);

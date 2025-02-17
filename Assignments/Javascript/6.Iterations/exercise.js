@@ -45,8 +45,7 @@ function longestPalindromicSubstring(str) {
   return ans;
 }
 
-console.log(longestPalindromicSubstring("babad"));
-console.log(longestPalindromicSubstring("cbbd"));
+console.log(longestPalindromicSubstring("ababa"));
 
 //Question 4
 //Check if two strings are anagrams
