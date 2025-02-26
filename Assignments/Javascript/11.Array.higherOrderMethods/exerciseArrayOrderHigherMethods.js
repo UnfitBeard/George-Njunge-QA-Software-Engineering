@@ -52,29 +52,33 @@
     }
   ];
 
-  const oneWeekAgo = new Date("2024-05-09").getTime(); // Adjust to match your date
+//   const oneWeekAgo = new Date("2024-05-09").getTime(); // Adjust to match your date
 
-console.log("One Week Ago Timestamp:", oneWeekAgo);
+// console.log("One Week Ago Timestamp:", oneWeekAgo);
 
-// Step 1: Filter users who have posted at least once in the past week
-const activeUsers = users.filter(user => {
-    return user.posts.some(post => {
-        const postTime = new Date(post.timestamp).getTime();
-        console.log(`User ${user.name} - Post Time: ${postTime} (${post.timestamp})`);
-        return postTime >= oneWeekAgo;
-    });
-});
+// // Step 1: Filter users who have posted at least once in the past week
+// const activeUsers = users.filter(user => {
+//     return user.posts.some(post => {
+//         const postTime = new Date(post.timestamp).getTime();
+//         console.log(`User ${user.name} - Post Time: ${postTime} (${post.timestamp})`);
+//         return postTime >= oneWeekAgo;
+//     });
+// });
 
-console.log("Active Users:", activeUsers);
+// console.log("Active Users:", activeUsers);
 
-// Step 2: Extract posts with at least 10 likes
-const popularPosts = activeUsers.map(user => ({
-    id: user.id,
-    name: user.name,
-    posts: user.posts.filter(post => {
-        const postTime = new Date(post.timestamp).getTime();
-        return postTime >= oneWeekAgo && post.likes >= 10;
-    })
-})).filter(user => user.posts.length > 0);
+// // Step 2: Extract posts with at least 10 likes
+// const popularPosts = activeUsers.map(user => ({
+//     id: user.id,
+//     name: user.name,
+//     posts: user.posts.filter(post => {
+//         const postTime = new Date(post.timestamp).getTime();
+//         return postTime >= oneWeekAgo && post.likes >= 10;
+//     })
+// })).filter(user => user.posts.length > 0);
 
-console.log("Popular Posts:", popularPosts);
+// console.log("Popular Posts:", popularPosts);
+
+const activeUsers = users.filter(user=> {
+  
+})

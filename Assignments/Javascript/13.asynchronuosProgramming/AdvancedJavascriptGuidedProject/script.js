@@ -1,5 +1,4 @@
-let cart = []; 
-
+// let cart = []; 
 const fetchData = async () => {
   try {
     const response = await fetch("http://localhost:3000/books");
@@ -174,3 +173,5 @@ if (!document.getElementById("cart-modal")) {
   modalDiv.innerHTML = cartModalHTML;
   document.body.appendChild(modalDiv);
 }
+
+
