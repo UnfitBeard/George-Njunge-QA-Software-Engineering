@@ -1,0 +1,22 @@
+😬what a tough week its been. 
+This week was all about Typescript and Testing. 
+Its only week four but we keep grinding as we have unresolved promises😃.
+We delved in to the following topics that have helped me grasp most if 
+not all there is to know about typescript
+   1. Type Annotations – Explicitly specify the type of variables, function parameters, or return values to catch errors at compile time.
+   2. Union Literals and Narrowing – Allow variables to hold multiple specific values, with TypeScript refining types based on conditions.
+   3. Objects (Interfaces, Extending, Intersections) – Define structured objects, extend existing types, or merge multiple types for flexibility.
+   4. Mutability – Determines whether a variable or object property can be modified, with readonly preventing changes.
+   5. Classes – Provide object-oriented programming features like encapsulation, inheritance, and polymorphism.
+   6. Generics – Create reusable, type-safe functions, classes, or interfaces by using type placeholders.
+
+I also learnt how to do unit testing using jest. 
+That was one of my few Ws this week.
+I had to redo the books Library App using typescript.
+It was very challenging as at first.
+I had pasted the whole JS code to a TS file not knowing that
+the amount of errors generated would almost bully my confidence.
+I started coding from scratch again so that I could deal with the errors 
+one by one. I came to understand why they were appearing
+ and that really helped 
+me understand the various types of errors and how to solve them.

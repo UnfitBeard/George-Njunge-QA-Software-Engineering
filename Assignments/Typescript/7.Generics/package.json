@@ -1,0 +1,27 @@
+{
+  "name": "0.installing-ts-guide",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsc --watch",
+    "dev-start": "nodemon --exec ts-node ./src/generics.ts",
+    "test": "jest",
+    "test:types": "tsd"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "tsd": "^0.31.2",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "ts-jest": "^29.2.6"
+  }
+}
