@@ -1,0 +1,30 @@
+Another week down, we keep grinding👷.
+This week was intense and the workload was hefty but I mananged to come out with my chin up.
+💪
+It was all about the backend- diving deep intoNode.js, Express.js, and PostgreSQL.
+🚀 What I Learned:
+    ✅ Creating a server using Express.js and Node.js
+    ✅ Middleware & Routes for handling requests efficiently
+    ✅ PostgreSQL basics for managing data
+    ✅ Using the  .POST method to add data to the database
+                  .GET method to fetch the data,
+                  .PUT method to Update entire records, 
+                  .PATCH method to Update fields, 
+                  .DELETE method to delete an entire record
+    ✅ Entity Relationships (my last one was toxic… jk lol 😆)
+
+🛠 Hands-on Work:
+➡️We used this knowledge to serve our data by creating an API that fetched data from the frontend.
+➡️Initially, the server was using the readFileSync() command to read the data from the JSON file.
+➡️Then we learnt how to implement the sorting logic from the backend using Query Parameters.
+➡️Next was setting up a PostgreSQL database where we stored our data.
+➡️We proceeded to learn some few postgreSQL Queries for basic CRUD operations i.e Create, Read, Update, Delete.
+
+🔥How I implemeted the newly acquired skills
+This enabled me to implement the following on the books app:
+ ✔ Connect my server to the database using pg-pool(method for connecting to postgreSQL)
+ ✔ Implement CRUD operations for the data.
+ ✔ Using Postman to test my APIs,including best methods like creating collections and environments
+ ✔ Implement the sorting and filtering algorithms from the server side.
+All in all it was a week packed with learning and building.Here's to next week🚀
+
