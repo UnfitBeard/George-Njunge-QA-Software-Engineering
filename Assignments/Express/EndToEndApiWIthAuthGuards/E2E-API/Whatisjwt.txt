@@ -1,0 +1,15 @@
+1.self-contained way of sending information...securely transmiiting info a s a JSON object
+2.Signed tokens.....public and private key pairs
+3.Using JSON web tokens
+SSO--Single Sign On....uses JWT
+Used for info exchange....refer to 2
+
+...header......{
+    type:",
+    signInAlgorithm:"
+}
+
+...payload....{
+    claims: users and additional data....types(registered......predefined not mandatory but recommnded)
+    signature:;
+}
