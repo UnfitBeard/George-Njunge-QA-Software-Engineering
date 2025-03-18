@@ -3,14 +3,20 @@ import express from "express"
 import { loginUser, logoutUser, registerUser } from "../controllers/authController";
 import { createBook, deleteBookController, getBookById, getBooks, updateBookController } from "../controllers/bookControllers";
 import { protect } from "../middlewares/auth/protect";
-import { adminGuard, librarianGuard } from "../middlewares/auth/roleMiddleWare";
+import { adminGuard, borrowerGuard, librarianGuard } from "../middlewares/auth/roleMiddleWare";
+import { borrowController, returnController } from "@app/controllers/borrowerControllers";
 
 const router = express.Router()
 
-//creating events protected routes
+//creating books protected routes
 router.post("/",protect,librarianGuard, createBook);
-router.put("/:id",protect, librarianGuard, updateBookController);
+router.put("/:id",protect,librarianGuard, updateBookController);
 router.delete("/:id", protect, librarianGuard, deleteBookController)
+
+//Admin//librarian/borrower can borrow a book
+router.post("/borrow/:title", protect, borrowController)
+router.post("/return/:title", protect, returnController)
+
 
 //public Routes
 router.get("/", getBooks)

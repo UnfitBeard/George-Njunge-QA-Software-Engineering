@@ -4,6 +4,7 @@ import { loginUser, logoutUser, registerUser } from "../controllers/authControll
 import { protect } from "../middlewares/auth/protect";
 import { adminGuard, librarianGuard } from "../middlewares/auth/roleMiddleWare";
 import { deleteUsers, getUsers, getUsersById } from "../controllers/usersController";
+import { borrowController } from "@app/controllers/borrowerControllers";
 
 const router = express.Router()
 

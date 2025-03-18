@@ -25,10 +25,8 @@ export const registerUser = asyncHandler(async (req: Request, res: Response, nex
         [name, email, hashedPassword, role_id]
     );
 
-
     //generate JWT token for user access 
     generateToken(res, newUser.rows[0].id, newUser.rows[0].role_id)
-     
 
     res.status(201).json({
         message: "User registered successfully",

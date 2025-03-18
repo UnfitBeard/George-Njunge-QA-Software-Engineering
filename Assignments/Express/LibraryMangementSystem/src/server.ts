@@ -5,11 +5,14 @@
 //create all routes 
 //load more middleware - eg error handlers
 //start the server 
+const { setupAliases } = require('import-aliases');
+setupAliases();
+
 import express from 'express'
 import dotenv from 'dotenv'
 import cookieParser from "cookie-parser"
 import cors from "cors"
-import authRoutes from "./routes/authRoutes"
+import authRoutes from "@routes/authRoutes"
 import bookROutes from "./routes/bookRoutes"
 import userRoutes from "./routes/usersRoute"
 
@@ -47,7 +50,7 @@ app.use("/api/v1/users", userRoutes)
 
 
 //6: start the serve 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
     console.log(`🚀🚀 server is running on port - ${PORT}`)
 })

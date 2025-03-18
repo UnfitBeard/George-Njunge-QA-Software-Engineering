@@ -1,0 +1,7 @@
+Directives
+Adding behaviour to a DOM
+Types: -Component
+       -Structural Directives --- removing an element from the DOM
+      -Attribute --- changing the appearance and behaviour of an element
+
+1. Structural

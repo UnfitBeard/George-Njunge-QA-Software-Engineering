@@ -18,4 +18,4 @@ export const roleGuard = (allowedRoles: string[])=>asyncHandler<void, RoleReques
 
 export const adminGuard = roleGuard(["Admin"]);  
 export const librarianGuard = roleGuard(["Librarian"]);
-export const borrowerGuard = roleGuard(["Borrower"]);
+export const borrowerGuard = roleGuard(["Borrower","Admin","Librarian"]);

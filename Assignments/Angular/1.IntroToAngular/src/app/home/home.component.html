@@ -1,0 +1,27 @@
+<p>home works!</p>
+<p>{{value}}</p>
+<!-- <button [disabled]="isDisabled" (click)="onSave()">Click Me!!</button>//property[disabled] and event(click) binding -->
+<!-- <input [(ngModel)]="value" /> Two way binding -->
+
+<!--a directive that removes a component-->
+<!--*ngIF-->
+<!--star means remove or add element-->
+<!-- <p *ngIF="showP", else = "elseBlock">{{myName}}</p> -->
+<button (click)="onSave()">Click Me!!</button>
+
+<ng-template #elseBlock>
+  <p>Please add a Name</p>
+</ng-template>
+
+<div *ngIf="list.length; else elseBlock">
+  <ul *ngFor="let name of list; let i=index">
+    <li [ngClass]="[i % 2 == 0? 'red':'blue']">{{name}}</li>
+  </ul>
+</div>
+<!--Switch Case-->
+<div [ngSwitch]="day">
+  <p *ngSwitchCase="1">Its Monday</p>
+  <p *ngSwitchCase="2">Its Tuesday</p>
+  <p *ngSwitchCase="3">Its Wednesday</p>
+  <p *ngSwitchDefault>No match</p>
+</div>
