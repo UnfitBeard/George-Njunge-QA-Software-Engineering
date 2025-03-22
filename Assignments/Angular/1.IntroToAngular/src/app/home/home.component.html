@@ -1,12 +1,12 @@
 <p>home works!</p>
 <p>{{value}}</p>
-<!-- <button [disabled]="isDisabled" (click)="onSave()">Click Me!!</button>//property[disabled] and event(click) binding -->
-<!-- <input [(ngModel)]="value" /> Two way binding -->
+<button [disabled]="isDisabled" (click)="onSave()">Click Me!!</button>//property[disabled] and event(click) binding
+<input [(ngModel)]="value" /> Two way binding
 
 <!--a directive that removes a component-->
 <!--*ngIF-->
 <!--star means remove or add element-->
-<!-- <p *ngIF="showP", else = "elseBlock">{{myName}}</p> -->
+<p *ngIF="showP", else = "elseBlock">{{myName}}</p>
 <button (click)="onSave()">Click Me!!</button>
 
 <ng-template #elseBlock>
@@ -25,3 +25,22 @@
   <p *ngSwitchCase="3">Its Wednesday</p>
   <p *ngSwitchDefault>No match</p>
 </div>
+
+@if (isServerRunning) {
+  <p>Yeah the server is running</p>
+}
+@else {
+  <p>Naah the server isn't running</p>
+}
+
+@if (homes.length > 0) {
+  <h2>Available Homes</h2>
+  <ul>
+    <li *ngFor="let item of homes">{{item}}</li>
+    <!--OR  @for (item of home) {<p>item</p>}-->
+  </ul>
+} @else {
+  <p>No Homes Available at the moment</p>
+}
+
+<p>{{myName | titlecase}}</p>

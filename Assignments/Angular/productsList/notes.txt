@@ -1,0 +1,42 @@
+🚀 Week 7 Progress at TEACH2GIVE: Diving into Angular & TypeORM!
+This week has been really exciting as we started learning Angular! On Monday, we explored a brief introduction to Angular, focusing on its features, advantages, Shadow DOM, and scalability.
+
+📚 Learning Highlights
+✅ 1️⃣ Data Binding – A way of communication between components and HTML.
+🔹 Types of data binding:
+    String Interpolation
+    Property Binding
+    Two-Way Binding
+✅ 2️⃣ Directives – Used to manipulate the DOM, such as adding/removing elements, styling, or modifying behavior.
+🔹 Examples: ng-if, ng-for, ng-switch, ng-style, and ng-class.
+🔹 We also learned about ng-template, which conditionally displays content.
+
+✅ 3️⃣ Component Communication & Pipes
+🔹 Passing Data: Child-to-Parent communication in Angular.
+🔹 Event Emitters: Used to transmit data between components.
+🔹 Pipes & Data Transformations: Formatting data for display.
+
+✅ 4️⃣ Services & Dependency Injection
+🔹 Dependency Injection: Managing class instances efficiently.
+🔹 Lifecycle of a Component: Understanding Angular’s component lifecycle.
+🔹 State Management: Basics of using services for managing state.
+
+✅ 5️⃣ ORMs
+🔹 TypeORM: Learning how to interact with databases using TypeORM.
+
+👷 Building & Implementation
+💻 Library Management System:
+✅ Implemented the registration and login controller (function) using TypeORM.
+
+📝 To-Do App in Angular:
+✅ Built a To-Do app and successfully used TypeORM to add data to a database.
+
+This week has been packed with learning and hands-on practice! 💪
+Huge thanks to @Alamin Juma and my team for their continuous support.
+The journey keeps getting tougher, but so do I! 😃
+
+What are you working on this week? Let’s connect and grow together! 🚀
+
+👉 Drop a 👍 if you're also on a learning journey!
+
+

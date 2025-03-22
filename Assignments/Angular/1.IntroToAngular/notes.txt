@@ -5,3 +5,9 @@ Types: -Component
       -Attribute --- changing the appearance and behaviour of an element
 
 1. Structural
+
+
+
+//Pipes and communication
+From child component to parent - event binding
+from parent to child - property binding
