@@ -3,6 +3,12 @@ import pool from "../config/db.config";
 import { BookRequest } from "@app/utils/types/bookTypes";
 import { UserRequest } from "@app/utils/types/userTypes";
 import { NextFunction } from "express";
+import { AppDataSource } from "@app/config/data-source";
+import { Book } from "@app/models/Books";
+import { Bookcopies } from "@app/models/BookCopies";
+
+const booksRepository = AppDataSource.getRepository(Book)
+const bookCopiesRepo = AppDataSource.getRepository(Bookcopies)
 
 export const borrowController = asyncHandler(async (req: UserRequest, res, next) => {
     try {
@@ -17,19 +23,19 @@ export const borrowController = asyncHandler(async (req: UserRequest, res, next)
         const user_id = req.user.id;
 
         //Ensuring only Organizer or admin and borrower can borrow books
-        if (req.user?.role_name !== "Librarian" && req.user?.role_name !== "Admin" && req.user?.role_name !== "Borrower") {
+        if (req.user?.role_id !== 12 && req.user?.role_id !== 11 && req.user?.role_id !== 13) {
             res.status(403).json({ message: "Access denied: Only registered users can create borrow books" })
             return;
         }
 
-        const result = await pool.query("SELECT * FROM books WHERE title=$1", [title]);
+        const result = await booksRepository.findOne({where: {title}})
 
-        if (result.rows.length === 0) {
+        if (!result) {
             res.status(404).json({ message: "Book not found" });
             return;
         }
 
-        const book_id = result.rows[0].id
+        const book_id = result.id
         const borrowedBook = await pool.query("INSERT INTO borrowers (user_id, book_id, librarian_id, due_date, status) values ($1, $2, $3, $4, $5)", [user_id, book_id, librarian_id, due_date, status]);
 
         res.status(200).json({message: `Book was borrowed to be returned on day one`});

@@ -1,7 +1,9 @@
+import { DataServiceService } from './../data-service.service';
 import { CommonModule, NgClass, NgComponentOutlet, NgFor, NgIf, NgStyle, NgSwitch } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component, NgModule } from '@angular/core';
+import { Component, Input, NgModule, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms'
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-home',
@@ -19,15 +21,27 @@ export class HomeComponent {
   isServerRunning = true
   homes: string[] = ["The HQ Kenya", "Apartment in Lagos", "Beach in Morocco"]
 
+  //Variables connect to parent
+  @Input() inputData!: string;
+
+  //How about we send data to parent
+  @Output() dataEmitter = new EventEmitter<string>()
+
+
+  sendData() {
+    this.dataEmitter.emit('Data from child')
+  }
+
   //API Data
   books:any[] = []
   loading = true;//loading state
   error = ''//store error messages
+  data!: string
 
-  constructor(private http: HttpClient) {} //Inject HTTP Client
+  constructor(private dataService: DataServiceService) {}
   ngOnInit() {
     //runs before the component renders
-    this.fetchBooks()
+    this.dataService.currentData.subscribe(data=>this.data=data)
   }
 
   onSave = () => {
@@ -37,15 +51,6 @@ export class HomeComponent {
     console.log(this.day)
   }
 
-  fetchBooks() {
-    this.http.get<any[]>("http://localhost:3000/api/v1/books")
-    .subscribe({
-      next: (data) => {
-        this.books = data;
-        this.loading = false;
-      }
-    })
-  }
 }
 
 

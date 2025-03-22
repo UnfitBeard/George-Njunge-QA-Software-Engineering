@@ -3,6 +3,10 @@ import asyncHandler from "../asyncHandler";
 import jwt from "jsonwebtoken"
 import pool from "../../config/db.config";
 import { UserRequest } from "../../utils/types/userTypes";
+import { AppDataSource } from "@app/config/data-source";
+import { Users } from "@app/models/User";
+
+const userRepository = AppDataSource.getRepository(Users)
 export const protect = asyncHandler(async(req: UserRequest, res:Response, next: NextFunction)=>{
     let token;
 
@@ -25,20 +29,19 @@ export const protect = asyncHandler(async(req: UserRequest, res:Response, next: 
         }
 
         //verify token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET) as {userId: string, roleId: number};
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) as {userId: number, roleId: number};
 
         //get the user from the database
-        const userQuery = await pool.query(
-            "SELECT users.id, users.username, users.email, users.role_id, user_roles.role_name FROM users JOIN user_roles ON users.role_id = user_roles.id WHERE users.id = $1",
-            [decoded.userId]
-        )
+        const userQuery = await userRepository.findOneBy({id: decoded.userId})
+        
 
-        if (userQuery.rows.length === 0) {
+        if (!userQuery) {
             res.status(401).json({ message: "User not found" });
             return;
         }
+        console.log(userQuery)
 
-        req.user = userQuery.rows[0]
+        req.user = userQuery
 
         //attach the user to the request
         next() //proceed to the next thing

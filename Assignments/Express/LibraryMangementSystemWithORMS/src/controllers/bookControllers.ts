@@ -4,57 +4,66 @@ import { UserRequest } from "../utils/types/userTypes";
 import asyncHandler from "../middlewares/asyncHandler";
 import { BookRequest } from "../utils/types/bookTypes";
 import { RoleRequest } from "../utils/types/userRoles";
-import { updateQuantity } from "@app/utils/helpers/bookUpdateQuantity.";
+import { AppDataSource } from "@app/config/data-source";
+import { Book } from "@app/models/Books";
+import { Bookcopies } from "@app/models/BookCopies";
 /**
  * @desc Create an event
  * @route POST /api/v1/events
  * @access Organizer Only
  */
 
-export const createBook = asyncHandler(async (req: UserRequest, res: Response) => {
+const bookRepository = AppDataSource.getRepository(Book)
+const bookCopiesRepo = AppDataSource.getRepository(Bookcopies)
+
+export const createBook = asyncHandler(async (req: BookRequest, res: Response) => {
     if (!req.user) return res.status(401).json({ message: "Not Authorized" });
 
     const { title, author, genre, year, pages, publisher, description, image, price, location } = req.body;
-    const { id: user_id, role_name } = req.user;
+    const { id: user_id, role_name, role_id } = req.user;
 
-    if (role_name !== "Librarian" && role_name !== "Admin") {
+    if (role_id !== 12 && role_id !== 13) {
         return res.status(403).json({ message: "Access denied: Only Librarians or Admins can create books" });
     }
 
     try {
-        await pool.query("BEGIN"); // Start transaction
+        let book = await bookRepository.findOne({where: {title, author}});
 
-        const bookExists = await pool.query("SELECT id FROM books WHERE title=$1 AND author=$2", [title, author]);
-
-        let bookID;
-
-        if (bookExists.rows.length > 0) {
-            bookID = bookExists.rows[0].id;
-            await pool.query("UPDATE books SET bookquantity = bookquantity + 1 WHERE id=$1", [bookID]);
-        } else {
-            const bookResult = await pool.query(
-                `INSERT INTO books (title, author, genre, year, pages, publisher, description, image, price, created_by, bookquantity) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 1) 
-                 RETURNING id`,
-                [title, author, genre, year, pages, publisher, description, image, price, user_id]
+        if (book) {
+            await bookRepository.update(
+                {id: book.id},
+                {quantity: book.quantity + 1}
             );
-            bookID = bookResult.rows[0].id;
+        } else {
+            book = bookRepository.create({
+                title,
+                author,
+                genre,
+                publisher,
+                pages,
+                publication_year: year,
+                description,
+                image_url: image,
+                createdBy: req.user, 
+            });
+
+            await bookRepository.save(book);
         }
 
         // Ensure bookID is defined before inserting into bookcopies
-        if (bookID) {
-            const inventoryNumber = `${bookID}-${Date.now()}`;
-            await pool.query(
-                "INSERT INTO bookcopies(book_id, inventory_number, condition, status, location) VALUES ($1, $2, 'New', 'Returned', $3)",
-                [bookID, inventoryNumber, location]
-            );
+        if (book) {
+            const inventoryNumber = `${book.id}-${Date.now()}`;
+            const addToCopies =  bookCopiesRepo.create({
+                inventory_number: inventoryNumber,
+                location,
+                book: book
+            });
+            await bookCopiesRepo.save(addToCopies)
         }
 
-        await pool.query("COMMIT"); // Commit transaction
         res.status(201).json({ message: "Book added successfully" });
 
     } catch (error) {
-        await pool.query("ROLLBACK"); // Rollback transaction on error
         console.error("Error creating book:", error);
         res.status(500).json({ message: "Internal server error" });
     }
@@ -63,8 +72,8 @@ export const createBook = asyncHandler(async (req: UserRequest, res: Response) =
 
 //get All Books everybody
 export const getBooks = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const result = await pool.query("SELECT * FROM books ORDER BY created_at ASC");
-    res.status(200).json(result.rows);
+    const result = await bookRepository.find()
+    res.status(200).json(result);
 })
 
 //get single book ...Everybody

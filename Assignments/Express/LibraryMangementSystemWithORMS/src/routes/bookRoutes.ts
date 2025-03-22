@@ -10,7 +10,7 @@ import { ad } from "@faker-js/faker/dist/airline-CBNP41sR";
 const router = express.Router()
 
 //creating books protected routes
-router.post("/",protect,adminGuard, createBook);
+router.post("/",protect, createBook);
 router.put("/:id",protect,librarianGuard, updateBookController);
 router.delete("/:id", protect, librarianGuard, deleteBookController)
 
