@@ -11,7 +11,7 @@ const router = express.Router()
 
 //creating books protected routes
 router.post("/",protect, createBook);
-router.put("/:id",protect,librarianGuard, updateBookController);
+router.put("/:id",protect,updateBookController);
 router.delete("/:id", protect, librarianGuard, deleteBookController)
 
 //Admin//librarian/borrower can borrow a book

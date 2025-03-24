@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+<link rel="stylesheet" href="login.component.css"></head>
+<body>
+  <div class="login">
+  <form (ngSubmit) = "onSubmit()" #loginForm = "ngForm">
+    <div>
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" required email value="" placeholder="johndoe@gmail.com" [(ngModel)]="loginData.email">
+    </div>
+    <div>
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" required  value="" [(ngModel)]="loginData.password">
+    </div>
+    <button type="submit" [disabled]="loginForm.invalid">Login</button>
+  </form>
+</div>
+</body>
+</html>

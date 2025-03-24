@@ -5,15 +5,18 @@ import { UserRequest } from "@app/utils/types/userTypes";
 import { NextFunction } from "express";
 import { AppDataSource } from "@app/config/data-source";
 import { Book } from "@app/models/Books";
-import { Bookcopies } from "@app/models/BookCopies";
+import { Bookcopies, BookStatus } from "@app/models/BookCopies";
+import { BorrowedBooks } from "@app/models/BorrowedBooks";
+import { ILike } from "typeorm";
 
 const booksRepository = AppDataSource.getRepository(Book)
 const bookCopiesRepo = AppDataSource.getRepository(Bookcopies)
+const borrowersRepo = AppDataSource.getRepository(BorrowedBooks)
 
 export const borrowController = asyncHandler(async (req: UserRequest, res, next) => {
     try {
         const { title } = req.params
-        const {librarian_id, due_date, status } = req.body
+        const { due_date } = req.body
 
         if (!req.user) {
             res.status(201).json({ message: "Not Authorized" });
@@ -23,22 +26,62 @@ export const borrowController = asyncHandler(async (req: UserRequest, res, next)
         const user_id = req.user.id;
 
         //Ensuring only Organizer or admin and borrower can borrow books
-        if (req.user?.role_id !== 12 && req.user?.role_id !== 11 && req.user?.role_id !== 13) {
-            res.status(403).json({ message: "Access denied: Only registered users can create borrow books" })
-            return;
+        if (![12, 11, 13].includes(req.user?.role_id)) {
+            res.status(403).json({ message: "Access denied: Only registered users can borrow books" });
+            return 
         }
 
-        const result = await booksRepository.findOne({where: {title}})
-
-        if (!result) {
+        const bookExists = await booksRepository.findOne({
+            where: { title: ILike(`%${title}%`) } 
+        });
+        
+        if (!bookExists) {
             res.status(404).json({ message: "Book not found" });
             return;
         }
 
-        const book_id = result.id
-        const borrowedBook = await pool.query("INSERT INTO borrowers (user_id, book_id, librarian_id, due_date, status) values ($1, $2, $3, $4, $5)", [user_id, book_id, librarian_id, due_date, status]);
+        if (bookExists.quantity <= 0) {
+            res.status(404).json({ message:'No copies of the book currently exist'});
+            return;
+        }
 
-        res.status(200).json({message: `Book was borrowed to be returned on day one`});
+        const copyExists = await bookCopiesRepo.findOne({
+            where: { book: { id: bookExists.id } }, 
+            relations: ['book']  
+        });
+        
+
+        if (!copyExists) {
+            res.status(404).json({ message: "No available copies exists at this time" });
+            return;
+        }
+
+        if (!due_date) {
+            res.status(404).json({ message: "Due_date Required" });
+            return;
+        }
+        
+
+        const borrowedBook = await borrowersRepo.create({
+            user: { id: user_id },  
+            book: { id: bookExists.id },  
+            copy: { copy_id: copyExists?.copy_id }, 
+            due_date: new Date("2025-04-01") 
+        });
+
+        await borrowersRepo.save(borrowedBook);
+
+        await booksRepository.update(
+            {id: bookExists.id},
+            {quantity: bookExists.quantity - 1}
+        )
+
+        await bookCopiesRepo.update(
+            {copy_id: copyExists?.copy_id},
+            {status: BookStatus.Borrowed}
+        )
+
+        res.status(200).json({ message: `Book was borrowed to be returned on ${due_date}` });
 
     } catch (error) {
         console.error("Error updating book:", error)
@@ -49,7 +92,7 @@ export const borrowController = asyncHandler(async (req: UserRequest, res, next)
 export const returnController = asyncHandler(async (req: UserRequest, res, next) => {
     try {
         const { title } = req.params
-        const {librarian_id} = req.body
+        const { librarian_id } = req.body
 
         if (!req.user) {
             res.status(201).json({ message: "Not Authorized" });
@@ -75,8 +118,8 @@ export const returnController = asyncHandler(async (req: UserRequest, res, next)
         const dueDate = new Date(result.rows[0].due_date)
         const status = "returned"
 
-        if (new Date()>dueDate) {
-            res.status(201).json({message: "You have delayed the due date, you might get fined"})
+        if (new Date() > dueDate) {
+            res.status(201).json({ message: "You have delayed the due date, you might get fined" })
         }
 
         const borrowedBook = await pool.query(

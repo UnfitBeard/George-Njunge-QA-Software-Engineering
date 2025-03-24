@@ -110,7 +110,7 @@ export const updateBookController = asyncHandler(async (req: BookRequest, res: R
 
 
         // Convert req.user.id to a number before comparison
-        if (bookQuery.rows[0].created_by !== req.user.id && req.user.role_name !== "Admin") {
+        if (req.user.role_id !== 13) {
             res.status(403).json({ message: "Not authorized to update this book" });
             return;
         }
