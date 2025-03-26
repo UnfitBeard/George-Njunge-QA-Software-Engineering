@@ -10,9 +10,9 @@ import { ad } from "@faker-js/faker/dist/airline-CBNP41sR";
 const router = express.Router()
 
 //creating books protected routes
-router.post("/",protect, createBook);
+router.post("/", protect,createBook);
 router.put("/:id",protect,updateBookController);
-router.delete("/:id", protect, librarianGuard, deleteBookController)
+router.delete("/:id", protect, deleteBookController)
 
 //Admin//librarian/borrower can borrow a book
 router.post("/borrow/:title", protect, borrowController)

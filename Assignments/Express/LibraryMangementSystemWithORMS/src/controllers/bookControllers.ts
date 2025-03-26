@@ -7,6 +7,7 @@ import { RoleRequest } from "../utils/types/userRoles";
 import { AppDataSource } from "@app/config/data-source";
 import { Book } from "@app/models/Books";
 import { Bookcopies } from "@app/models/BookCopies";
+import { parse } from "path";
 /**
  * @desc Create an event
  * @route POST /api/v1/events
@@ -27,33 +28,34 @@ export const createBook = asyncHandler(async (req: BookRequest, res: Response) =
     }
 
     try {
-        let book = await bookRepository.findOne({where: {title, author}});
+        let book = await bookRepository.findOne({ where: { title, author } });
 
         if (book) {
             await bookRepository.update(
-                {id: book.id},
-                {quantity: book.quantity + 1}
+                { id: book.id },
+                { quantity: book.quantity + 1 }
             );
         } else {
-            book = bookRepository.create({
-                title,
-                author,
-                genre,
-                publisher,
-                pages,
-                publication_year: year,
-                description,
-                image_url: image,
-                createdBy: req.user, 
+            book = await bookRepository.create({
+                title: req.body.title,
+                author: req.body.author,
+                genre: req.body.genre,
+                publisher: req.body.publisher,
+                publication_year: req.body.publication_year,  
+                pages: req.body.pages,
+                image_url: req.body.image_url,
+                description: req.body.description,
+                quantity: req.body.quantity,
+                createdBy: req.user.id  
             });
-
-            await bookRepository.save(book);
+            
+            const savedBook = await bookRepository.save(book); 
         }
 
         // Ensure bookID is defined before inserting into bookcopies
         if (book) {
             const inventoryNumber = `${book.id}-${Date.now()}`;
-            const addToCopies =  bookCopiesRepo.create({
+            const addToCopies = bookCopiesRepo.create({
                 inventory_number: inventoryNumber,
                 location,
                 book: book
@@ -79,55 +81,58 @@ export const getBooks = asyncHandler(async (req: Request, res: Response, next: N
 //get single book ...Everybody
 export const getBookById = asyncHandler(async (req: BookRequest, res: Response) => {
     const { id } = req.params;
+    const intID = parseInt(id)
 
-    const result = await pool.query("SELECT * FROM books WHERE id=$1", [id]);
+    const result = await bookRepository.findOne({ where: { id: intID } })
 
-    if (result.rows.length === 0) {
+    if (!result) {
         res.status(404).json({ message: "Book not found" });
         return;
     }
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(result);
 });
 
 //update books only by librarian or Admin
 export const updateBookController = asyncHandler(async (req: BookRequest, res: Response) => {
     try {
         const { id } = req.params
-        const { title, author, genre, publishedYear, pages, publisher, description, image, price, quantity } = req.body;
+        const { title, author, genre, publishedYear, pages, publisher, description, image, quantity } = req.body;
 
         if (!req.user) {
             res.status(401).json({ message: "Not Authorized" });
             return;
         }
 
-        const bookQuery = await pool.query("SELECT created_by FROM books WHERE id = $1", [id]);
+            let book = await bookRepository.findOne({ where: { id: parseInt(id) } });
+
+            if (book) {
+                await bookRepository.update(
+                    { id: book.id },
+                    {
+                        title: title,
+                        author: author,
+                        genre: genre,
+                        publisher: publisher,
+                        pages: pages,
+                        publication_year: publishedYear,
+                        description: description,
+                        quantity: quantity,
+                        image_url: image,
+                        createdBy: req.user,
+                    }
+                );
+            }
 
 
-        if (bookQuery.rows.length === 0) {
-            res.status(404).json({ message: "Book not found" });
-            return;
+            res.status(201).json({
+                message: "Book successfully updated",
+                book
+            })
+        } catch (error) {
+            console.error("Error updating book:", error)
+            res.status(500).json({ message: "Internal Server Error" })
         }
-
-
-        // Convert req.user.id to a number before comparison
-        if (req.user.role_id !== 13) {
-            res.status(403).json({ message: "Not authorized to update this book" });
-            return;
-        }
-
-        const updateBook = await pool.query(`UPDATE books set title=$2, author=$3, genre=$4, year=$5, pages=$6, publisher=$7, description=$8, price=$9 quantity = $10 WHERE id=$1
-        RETURNING *`,
-            [id, title, author, genre, publishedYear, pages, publisher, description, price, quantity])
-
-        res.status(201).json({
-            message: "Book successfully updated",
-            updateBook: updateBook.rows[0]
-        })
-    } catch (error) {
-        console.error("Error updating book:", error)
-        res.status(500).json({ message: "Internal Server Error" })
-    }
-})
+    })
 
 export const deleteBookController = asyncHandler(async (req: BookRequest, res, next) => {
 
@@ -141,23 +146,27 @@ export const deleteBookController = asyncHandler(async (req: BookRequest, res, n
             return;
         }
 
-        const bookQuery = await pool.query("SELECT created_by FROM books WHERE id=$1", [id]);
+        const bookQuery = await bookRepository.findOne({where: {id: parseInt(id)}})
 
-        if (bookQuery.rows.length === 0) {
+        if (!bookQuery) {
             res.status(404).json({ message: "Book does not exist" });
             return;
         }
 
-        if (bookQuery.rows[0].created_by !== req.user.id && req.user.role_name !== "Admin") {
+        if (req.user.role_id !== 12 && req.user.role_id !== 13) {
             res.status(403).json({ message: "Not authorized to delete the book" });
-            return
-        }
+            return;
+        }        
+        const deleteBook = await bookRepository.delete({id: bookQuery.id})
 
-        const deleteBook = await pool.query("DELETE FROM books WHERE id=$1", [id]);
+        if (deleteBook.affected === 0) {
+            res.status(201).json({message:"Failed to delete book"});
+            return;
+        }
 
         res.status(201).json({
             message: "Book successfully deleted",
-            updateBook: deleteBook.rows[0]
+            deleteBook
         })
     } catch (error) {
         console.error("Error updating book:", error)

@@ -12,11 +12,11 @@ export class BooksService {
 
   fetchBooks():Observable<Book[]> {
     const booksUrl = "http://localhost:3000/api/v1/books";
-    return this.http.get<Book[]>(booksUrl, {withCredentials:true})
+    return this.http.get<Book[]>(booksUrl, {withCredentials: true})
   }
 
-  postBooks(bookData:Book): Observable<Book> {
+  postBooks(bookData:Book): Observable<Book[]> {
     const booksUrl = "http://localhost:3000/api/v1/books";
-    return this.http.post<Book>(booksUrl, bookData, {withCredentials:true})
+    return this.http.post<Book[]>(booksUrl, bookData, {withCredentials:true})
   }
 }

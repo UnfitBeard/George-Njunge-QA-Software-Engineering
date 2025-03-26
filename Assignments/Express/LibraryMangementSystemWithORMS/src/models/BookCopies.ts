@@ -15,7 +15,7 @@ export class Bookcopies {
     @PrimaryGeneratedColumn()
     copy_id!: number
 
-    @ManyToOne(() => Book, (book) => book.copies, { nullable: false }) 
+    @ManyToOne(() => Book, (book) => book.copies, { onDelete:"CASCADE",nullable: false }) 
     @JoinColumn({ name: "book_id" }) 
     book!: Book; 
 
