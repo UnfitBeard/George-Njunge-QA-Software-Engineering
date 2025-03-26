@@ -1,0 +1,50 @@
+<!-- Navigation Bar -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <img ngSrc="assets/logo-search-grid-1x.png" alt="Library Logo" priority width="80px">
+    <h1>Books Library</h1>
+  </div>
+
+  <div class="navbar-services">
+    <select>
+      <option value="">Select a Service</option>
+    </select>
+    <a routerLink="login" (click)="loginRedirect()" class="action-btn">Member Login</a>
+  </div>
+</nav>
+
+<!-- Featured Books Section -->
+<section class="featured-books" *ngIf="books.length > 0">
+  <h2>Featured Books</h2>
+  <div class="book-grid">
+    <div class="book-card" *ngFor="let book of books | slice:0:4">
+      <img [src]="book.image_url" [alt]="book.title">
+      <h3>{{ book.title }}</h3>
+      <p>{{ book.author }}</p>
+
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section class="contact">
+  <div class="contact-content">
+    <div class="contact-info">
+      <h2>Contact Us</h2>
+      <p>Library Address: 123 Book Street, Reading City</p>
+      <p>Phone: (555) 123-4567</p>
+      <!-- <p>Email: info@bookslibrary.com</p> -->
+      <p>Hours: Mon-Fri 9am-8pm, Sat 10am-6pm</p>
+    </div>
+
+    <div class="contact-form">
+      <h2>Send us a Message</h2>
+      <form (ngSubmit)="onSubmitContactForm()">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <textarea placeholder="Your Message" rows="5" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>

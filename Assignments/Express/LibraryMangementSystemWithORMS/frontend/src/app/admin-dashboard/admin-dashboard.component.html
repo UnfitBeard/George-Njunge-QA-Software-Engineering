@@ -1,0 +1,18 @@
+<div class = "container">
+<div *ngFor="let item of books" class="books-container">
+  <div class="image">
+    <img [src]="item.image_url" alt="" style="width: auto;">
+  </div>
+  <div class="content">
+    <p>{{item.title}}</p>
+    <p>{{item.author}}</p>
+    <p>{{item.quantity}}</p>
+  </div>
+  <div class="controls">
+    <button>Delete</button>
+    <button>Update</button>
+  </div>
+</div>
+</div>
+
+<button (click)="onAddNewBook()">Add new book</button>

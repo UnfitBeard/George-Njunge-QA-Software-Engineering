@@ -1,0 +1,105 @@
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --light-bg: #91d9ec;
+  --text-color: #333;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(170, 205, 250);
+  padding: 15px;
+  color: rgb(5, 5, 5);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-brand img {
+  width: 50px;
+  margin-right: 15px;
+}
+
+.navbar-services {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-services select {
+  margin-right: 15px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.action-btn {
+  padding: 8px 15px;
+  background-color: rgb(116, 116, 232);
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.featured-books {
+  padding: 30px;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.book-card {
+  text-align: center;
+  border: 1px solid #ddd;
+  padding: 15px;
+}
+
+.book-card img {
+  max-width: 100%;
+  height: 250px;
+  object-fit: fill;
+}
+
+.contact {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 30px;
+}
+
+.contact-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+}
+
+.contact-form button {
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navbar, .contact-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .contact-content {
+    grid-template-columns: 1fr;
+  }
+}
