@@ -1,3 +1,4 @@
+import { error } from 'console';
 import { Message } from './../../../node_modules/esbuild-wasm/esm/browser.d';
 import { Component } from '@angular/core';
 import { Book } from '../../interfaces/booksResponse';
@@ -20,6 +21,21 @@ export class AdminDashboardComponent {
 
   onAddNewBook() {
     this.router.navigate(['addBook']);
+  }
+
+  onDelete(bookId: number) {
+    this.booksservice.deleteBooks(bookId).subscribe(
+      ()=>{
+        this.books.filter(book=>book.id !== bookId)
+      },
+      (error) => {
+        console.log("Error:" + error.message)
+      }
+    );
+  }
+
+  onUpdate(bookId: number) {
+
   }
 
   ngOnInit():void {

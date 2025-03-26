@@ -26,7 +26,7 @@ export class AddbookComponent {
     image_url: new FormControl(''),
     description: new FormControl(''),
     quantity: new FormControl(''),
-    location: new FormControl()
+    location: new FormControl('')
   });
 
   ngOnInit() {

@@ -9,8 +9,8 @@
     <p>{{item.quantity}}</p>
   </div>
   <div class="controls">
-    <button>Delete</button>
-    <button>Update</button>
+    <button (click)="onDelete(item.id)">Delete</button>
+    <button (click)="onUpdate(item.id)">Update</button>
   </div>
 </div>
 </div>

@@ -12,4 +12,5 @@ export interface Book {
     quantity: number;
     createdBy?: number; // Optional since it's nullable
     created_at: Date;
+    location:string;
 }

@@ -12,12 +12,12 @@ export class BorrowedBooks {
     @JoinColumn({ name: "user_id" })
     user!: Users;
 
-    @ManyToOne(() => Book, (book) => book.id, { nullable: false })
-    @JoinColumn({name: "book_id"})
+    @ManyToOne(() => Book, (book) => book.id, { nullable: false, onDelete: "CASCADE" })
+    @JoinColumn({ name: "book_id" })
     book!: Book
 
-    @ManyToOne(()=>Bookcopies, (copy)=> copy.copy_id, {nullable: false})
-    @JoinColumn({name: "copy_id"})
+    @ManyToOne(() => Bookcopies, (copy) => copy.copy_id, { nullable: false })
+    @JoinColumn({ name: "copy_id" })
     copy!: Bookcopies
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })

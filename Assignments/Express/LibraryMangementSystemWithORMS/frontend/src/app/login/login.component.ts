@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import {FormsModule} from "@angular/forms"
+import { FormsModule } from "@angular/forms"
 import { AuthService } from '../auth.service';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
+
 
 @Component({
   selector: 'app-login',
@@ -15,19 +16,25 @@ export class LoginComponent {
     email: '',
     password: ''
   }
-form: any;
+  form: any;
 
-constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   onSubmit() {
     if (this.loginData.email && this.loginData.password) {
       this.authService.login(this.loginData.email, this.loginData.password).subscribe(
-        response=>{
+        response => {
           console.log("Login sucessful")
-          this.router.navigate(['admin-dashboard'])
+          if (response.user.role_id === 13) {
+            this.router.navigate(['admin-dashboard'])
+          } else if (response.user.role_id === 11) {
+            this.router.navigate(['borrower-dashboard']);
+          } else {
+            this.router.navigate(['home'])
+          }
         },
-        error=>{
-          console.log("Login failed")
+        error => {
+          console.log("Login failed: ", error)
         }
       )
     } else {

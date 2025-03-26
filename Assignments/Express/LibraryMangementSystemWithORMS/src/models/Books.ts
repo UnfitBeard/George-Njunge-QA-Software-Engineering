@@ -21,10 +21,10 @@ export class Book {
     @Column()
     publisher!: string;
 
-    @Column({ type: "int", nullable: true })
+    @Column({  nullable: true })
     publication_year!: number;
 
-    @Column({ type: "int" })
+    @Column()
     pages!: number;
 
     @Column()

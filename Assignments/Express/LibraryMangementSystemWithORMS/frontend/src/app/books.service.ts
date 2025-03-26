@@ -7,16 +7,26 @@ import { Book } from '../interfaces/booksResponse';
   providedIn: 'root'
 })
 export class BooksService {
-
+  booksUrl = "http://localhost:3000/api/v1/books";
   constructor(private http: HttpClient) { }
 
   fetchBooks():Observable<Book[]> {
-    const booksUrl = "http://localhost:3000/api/v1/books";
-    return this.http.get<Book[]>(booksUrl, {withCredentials: true})
+    return this.http.get<Book[]>(this.booksUrl, {withCredentials: true})
   }
 
   postBooks(bookData:Book): Observable<Book[]> {
-    const booksUrl = "http://localhost:3000/api/v1/books";
-    return this.http.post<Book[]>(booksUrl, bookData, {withCredentials:true})
+    return this.http.post<Book[]>(this.booksUrl, bookData, {withCredentials:true})
   }
-}
+
+  updateBooks(bookId:number): Observable<Book[]> {
+    return this.http.put<Book[]>(this.booksUrl, bookId, {withCredentials: true})
+  }
+
+  deleteBooks(bookId: number): Observable<Book[]> {
+    return this.http.delete<Book[]>(`${this.booksUrl}/${bookId}`,{withCredentials: true})
+  }
+
+  borrowBooks(bookData:Book): Observable<Book[]> {
+    return this.http.post<Book[]>(this.booksUrl, bookData, {withCredentials:true})
+  }
+ }
