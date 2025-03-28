@@ -1,0 +1,32 @@
+<form [formGroup]="usersForm">
+
+  <select name="users" [formControl]="usersForm.controls.selectedUser">
+    <option *ngFor="let item of users" [value]="item.id">{{ item.name }}</option>
+  </select>
+
+
+  <div *ngIf="selectedUser">
+    <p>Email: {{ selectedUser.email }}</p>
+    <p>Username: {{ selectedUser.username }}</p>
+    <p>Website: {{ selectedUser.website }}</p>
+    <p>Company: {{ selectedUser.company?.catchPhrase }}</p>
+  </div>
+
+  <h2>Posts</h2>
+  <select name="posts" [formControl]="usersForm.controls.selectedPost">
+    <option *ngFor="let item of posts" [value]="item.id">
+      {{ item.title }}
+    </option>
+  </select>
+
+  <h2>Selected Post</h2>
+  <div *ngIf="selectedPost">
+    <h3>{{ selectedPost.title }}</h3>
+    <p>{{ selectedPost.body }}</p>
+  </div>
+
+  <h2>Comments</h2>
+  <div *ngFor="let item of comments">
+    <p><strong>{{ item.email }}</strong>: {{ item.body }}</p>
+  </div>
+</form>

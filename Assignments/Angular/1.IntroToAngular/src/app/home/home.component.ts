@@ -4,16 +4,18 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, Input, NgModule, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms'
 import { EventEmitter } from '@angular/core';
+import { ExponentialStrengthPipe } from "../exponential-strength.pipe";
 
 @Component({
   selector: 'app-home',
-  imports: [FormsModule, CommonModule, HttpClientModule],
+  imports: [FormsModule, CommonModule, HttpClientModule, ExponentialStrengthPipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 
 export class HomeComponent {
   myName = "the gitu"
+  theNumber = 25
   isDisabled = false
   value = "Dummy Value"
   list: string[] = ["The G", "Atrocities"]

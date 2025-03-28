@@ -1,0 +1,24 @@
+<div class="ngForm">
+  <form [formGroup]="developerForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="skill">Select Skills</label>
+      <select name="skill" id="skill" formArrayName="skillsList">
+        <option value="Frontend">Frontend</option>
+        <option value="Backend">Backend</option>
+        <option value="FullStack">FullStack</option>
+      </select>
+    </div>
+
+    <div formArrayName="skills">
+      <div *ngFor="let skill of ; let i = index">
+        <label for="skillName">Skill Name:</label>
+        <input id="skillName" formControlName="skill" required>
+
+        <label for="experience">Experience (years):</label>
+        <input id="experience" type="number" formControlName="experience" required min="1">
+
+        <button type="button" (click)="removeSkill(i)">Remove Skill</button>
+      </div>
+    </div>
+  </form>
+</div>
