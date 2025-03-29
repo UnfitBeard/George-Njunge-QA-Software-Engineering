@@ -1,4 +1,4 @@
-import { Component, NgModule } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -6,7 +6,8 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  imports: [CommonModule,FormsModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
@@ -28,8 +29,9 @@ export class AppComponent {
       (response) => {
         this.users = response;
         if (this.users.length) {
-          this.usersForm.patchValue({ selectedUser: this.users[0].id });
-          this.updateSelectedUser(this.users[0].id);
+          const firstUserId = this.users[0].id;
+          this.usersForm.patchValue({ selectedUser: firstUserId });
+          this.updateSelectedUser(firstUserId);
         }
       },
       (error) => console.error('Error fetching users:', error)
@@ -41,8 +43,11 @@ export class AppComponent {
       (response) => {
         this.posts = response;
         if (this.posts.length) {
-          this.usersForm.patchValue({ selectedPost: this.posts[0].id });
-          this.updateSelectedPost(this.posts[0].id);
+          const firstPostId = this.posts[0].id;
+          this.usersForm.patchValue({ selectedPost: firstPostId });
+
+          // Ensure selectedPost is updated after posts are set
+          setTimeout(() => this.updateSelectedPost(firstPostId), 0);
         }
       },
       (error) => console.error('Error fetching posts:', error)
@@ -51,7 +56,9 @@ export class AppComponent {
 
   fetchComments(postID: number) {
     this.http.get<any[]>(`https://jsonplaceholder.typicode.com/comments?postId=${postID}`).subscribe(
-      (response) => (this.comments = response),
+      (response) => {
+        this.comments = response;
+      },
       (error) => console.error('Error fetching comments:', error)
     );
   }
@@ -63,7 +70,9 @@ export class AppComponent {
 
   updateSelectedPost(postId: number) {
     this.selectedPost = this.posts.find((post) => post.id === postId);
-    this.fetchComments(postId);
+    if (this.selectedPost) {
+      this.fetchComments(postId);
+    }
   }
 
   ngOnInit() {

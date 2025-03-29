@@ -1,24 +1,22 @@
-<div class="ngForm">
-  <form [formGroup]="developerForm" (ngSubmit)="onSubmit()">
-    <div>
-      <label for="skill">Select Skills</label>
-      <select name="skill" id="skill" formArrayName="skillsList">
-        <option value="Frontend">Frontend</option>
-        <option value="Backend">Backend</option>
-        <option value="FullStack">FullStack</option>
+<nav class="navbar">
+  <div class="navbar-title">Job Application</div>
+</nav>
+<form [formGroup]="developerForm" (ngSubmit)="onSubmit()">
+  <select formControlName="skill" id="skills">
+    <option value="Frontend">Frontend</option>
+    <option value="Backend">Backend</option>
+    <option value="Fullstack">Fullstack</option>
+  </select>
+
+  <div formArrayName="skills">
+    <div *ngFor="let skillGroup of getSkills().controls; let i = index" [formGroupName]="i">
+      <select formControlName="skill">
+        <option *ngFor="let skill of skillsList" [value]="skill">{{ skill }}</option>
       </select>
+      <input type="text" formControlName="experience" placeholder="Experience (years)" />
     </div>
+  </div>
 
-    <div formArrayName="skills">
-      <div *ngFor="let skill of ; let i = index">
-        <label for="skillName">Skill Name:</label>
-        <input id="skillName" formControlName="skill" required>
-
-        <label for="experience">Experience (years):</label>
-        <input id="experience" type="number" formControlName="experience" required min="1">
-
-        <button type="button" (click)="removeSkill(i)">Remove Skill</button>
-      </div>
-    </div>
-  </form>
-</div>
+  <button type="button" (click)="addSkills()">Add Skill</button>
+  <button type="submit">Submit</button>
+</form>

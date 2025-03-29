@@ -1,0 +1,147 @@
+/* Navigation Bar Styling */
+.navbar {
+  background-color: #007BFF;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.navbar-title {
+  margin: 0;
+}
+
+/* Offset the content below the navbar */
+form {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 80px auto; /* Adjust margin to account for fixed navbar */
+}
+
+/* Styling for select elements */
+select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #fff;
+  transition: border-color 0.3s ease-in-out;
+}
+
+/* Styling for select focus state */
+select:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+/* Styling for input elements */
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #fff;
+  transition: border-color 0.3s ease-in-out;
+}
+
+/* Styling for input focus state */
+input[type="text"]:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+/* Button styling */
+button {
+  padding: 10px 15px;
+  margin: 10px 5px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007BFF;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* Button hover effect */
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Button for 'Add Skill' */
+button[type="button"] {
+  background-color: #28a745;
+}
+
+button[type="button"]:hover {
+  background-color: #218838;
+}
+
+/* Styling for form array section (skills list) */
+div[formArrayName="skills"] {
+  margin-bottom: 20px;
+}
+
+div[formArrayName="skills"] div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+div[formArrayName="skills"] div select,
+div[formArrayName="skills"] div input {
+  width: 48%;
+}
+
+/* Add Skill button spacing */
+button[type="button"] {
+  display: inline-block;
+  width: 48%;
+}
+
+/* Submit button styling */
+button[type="submit"] {
+  width: 100%;
+  background-color: #007BFF;
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+  form {
+    padding: 15px;
+  }
+
+  select, input[type="text"], button {
+    font-size: 14px;
+  }
+
+  div[formArrayName="skills"] div {
+    flex-direction: column;
+  }
+
+  div[formArrayName="skills"] div select,
+  div[formArrayName="skills"] div input {
+    width: 100%;
+  }
+
+  button[type="button"], button[type="submit"] {
+    width: 100%;
+  }
+}
