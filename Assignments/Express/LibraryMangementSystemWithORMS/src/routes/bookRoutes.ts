@@ -1,11 +1,7 @@
-import { Router } from "express";
 import express from "express"
-import { loginUser, logoutUser, registerUser } from "../controllers/authController";
 import { createBook, deleteBookController, getBookById, getBooks, updateBookController } from "../controllers/bookControllers";
 import { protect } from "../middlewares/auth/protect";
-import { adminGuard, borrowerGuard, librarianGuard } from "../middlewares/auth/roleMiddleWare";
-import { borrowController, returnController } from "@app/controllers/borrowerControllers";
-import { ad } from "@faker-js/faker/dist/airline-CBNP41sR";
+import { borrowController, displayBorrowedBooks, returnController } from "./../controllers/borrowerControllers";
 
 const router = express.Router()
 
@@ -17,6 +13,8 @@ router.delete("/:id", protect, deleteBookController)
 //Admin//librarian/borrower can borrow a book
 router.post("/borrow/:title", protect, borrowController)
 router.post("/return/:title", protect, returnController)
+router.get("/borrowedBooks", protect, displayBorrowedBooks)
+router.get("/:id", getBookById)
 
 
 //public Routes

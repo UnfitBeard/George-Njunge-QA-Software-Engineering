@@ -4,9 +4,9 @@ import { UserRequest } from "../utils/types/userTypes";
 import asyncHandler from "../middlewares/asyncHandler";
 import { BookRequest } from "../utils/types/bookTypes";
 import { RoleRequest } from "../utils/types/userRoles";
-import { AppDataSource } from "@app/config/data-source";
-import { Book } from "@app/models/Books";
-import { Bookcopies } from "@app/models/BookCopies";
+import { AppDataSource } from "../config/data-source";
+import { Book } from "../models/Books";
+import { Bookcopies } from "../models/BookCopies";
 import { parse } from "path";
 /**
  * @desc Create an event
@@ -18,13 +18,17 @@ const bookRepository = AppDataSource.getRepository(Book)
 const bookCopiesRepo = AppDataSource.getRepository(Bookcopies)
 
 export const createBook = asyncHandler(async (req: BookRequest, res: Response) => {
-    if (!req.user) return res.status(401).json({ message: "Not Authorized" });
+    if (!req.user) { 
+        res.status(401).json({ message: "Not Authorized" });
+    return
+ }
 
     const { title, author, genre, year, pages, publisher, description, image, price, location } = req.body;
     const { id: user_id, role_name, role_id } = req.user;
 
     if (role_id !== 12 && role_id !== 13) {
-        return res.status(403).json({ message: "Access denied: Only Librarians or Admins can create books" });
+        res.status(403).json({ message: "Access denied: Only Librarians or Admins can create books" });
+        return
     }
 
     try {
@@ -41,15 +45,15 @@ export const createBook = asyncHandler(async (req: BookRequest, res: Response) =
                 author: req.body.author,
                 genre: req.body.genre,
                 publisher: req.body.publisher,
-                publication_year: req.body.publication_year,  
+                publication_year: req.body.publication_year,
                 pages: req.body.pages,
                 image_url: req.body.image_url,
                 description: req.body.description,
                 quantity: req.body.quantity,
-                createdBy: req.user.id  
+                createdBy: req.user.id
             });
-            
-            const savedBook = await bookRepository.save(book); 
+
+            const savedBook = await bookRepository.save(book);
         }
 
         // Ensure bookID is defined before inserting into bookcopies
@@ -103,36 +107,36 @@ export const updateBookController = asyncHandler(async (req: BookRequest, res: R
             return;
         }
 
-            let book = await bookRepository.findOne({ where: { id: parseInt(id) } });
+        let book = await bookRepository.findOne({ where: { id: parseInt(id) } });
 
-            if (book) {
-                await bookRepository.update(
-                    { id: book.id },
-                    {
-                        title: title,
-                        author: author,
-                        genre: genre,
-                        publisher: publisher,
-                        pages: pages,
-                        publication_year: publishedYear,
-                        description: description,
-                        quantity: quantity,
-                        image_url: image,
-                        createdBy: req.user,
-                    }
-                );
-            }
-
-
-            res.status(201).json({
-                message: "Book successfully updated",
-                book
-            })
-        } catch (error) {
-            console.error("Error updating book:", error)
-            res.status(500).json({ message: "Internal Server Error" })
+        if (book) {
+            await bookRepository.update(
+                { id: book.id },
+                {
+                    title: title,
+                    author: author,
+                    genre: genre,
+                    publisher: publisher,
+                    pages: pages,
+                    publication_year: publishedYear,
+                    description: description,
+                    quantity: quantity,
+                    image_url: image,
+                    createdBy: req.user,
+                }
+            );
         }
-    })
+
+
+        res.status(201).json({
+            message: "Book successfully updated",
+            book
+        })
+    } catch (error) {
+        console.error("Error updating book:", error)
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+})
 
 export const deleteBookController = asyncHandler(async (req: BookRequest, res, next) => {
 
@@ -146,7 +150,7 @@ export const deleteBookController = asyncHandler(async (req: BookRequest, res, n
             return;
         }
 
-        const bookQuery = await bookRepository.findOne({where: {id: parseInt(id)}})
+        const bookQuery = await bookRepository.findOne({ where: { id: parseInt(id) } })
 
         if (!bookQuery) {
             res.status(404).json({ message: "Book does not exist" });
@@ -156,11 +160,11 @@ export const deleteBookController = asyncHandler(async (req: BookRequest, res, n
         if (req.user.role_id !== 12 && req.user.role_id !== 13) {
             res.status(403).json({ message: "Not authorized to delete the book" });
             return;
-        }        
-        const deleteBook = await bookRepository.delete({id: bookQuery.id})
+        }
+        const deleteBook = await bookRepository.delete({ id: bookQuery.id })
 
         if (deleteBook.affected === 0) {
-            res.status(201).json({message:"Failed to delete book"});
+            res.status(201).json({ message: "Failed to delete book" });
             return;
         }
 

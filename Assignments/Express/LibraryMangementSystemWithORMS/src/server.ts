@@ -5,14 +5,12 @@
 //create all routes 
 //load more middleware - eg error handlers
 //start the server 
-const { setupAliases } = require('import-aliases');
-setupAliases();
 
 import express from 'express'
 import dotenv from 'dotenv'
 import cookieParser from "cookie-parser"
 import cors from "cors"
-import authRoutes from "@routes/authRoutes"
+import authRoutes from "./routes/authRoutes"
 import bookROutes from "./routes/bookRoutes"
 import userRoutes from "./routes/usersRoute"
 import 'reflect-metadata'

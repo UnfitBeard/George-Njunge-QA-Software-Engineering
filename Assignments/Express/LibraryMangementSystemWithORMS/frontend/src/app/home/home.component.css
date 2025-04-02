@@ -37,6 +37,7 @@
 
 .action-btn {
   padding: 8px 15px;
+  margin: auto;
   background-color: rgb(116, 116, 232);
   color: white;
   text-decoration: none;

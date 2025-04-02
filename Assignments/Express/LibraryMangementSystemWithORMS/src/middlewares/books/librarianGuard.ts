@@ -1,7 +1,6 @@
 import { BookRequest } from "../../utils/types/bookTypes";
 import asyncHandler from "../asyncHandler";
 import pool from "../../config/db.config";
-import { NextFunction } from "express";
 
 export const librarianGuard = asyncHandler<void, BookRequest>(async(req, res, next)=>{
     const {id: bookId} = req.params;

@@ -1,4 +1,4 @@
-import { name } from './../node_modules/ci-info/index.d';
+import { name } from 'ci-info';
 import express from "express"
 import { AppDataSource } from "../db/db.config.js"
 import { Task } from "../db/Entities/Task.js"

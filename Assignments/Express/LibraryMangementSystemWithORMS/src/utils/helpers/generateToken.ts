@@ -5,12 +5,12 @@ import jwt from 'jsonwebtoken'
 dotenv.config()
 
 //Debugging  - check if env var are loaded correctly  
-console.log("JWT_SECRET: ", process.env.JWT_SECRET)
-console.log("REFRESH_TOKEN_SECRET: ", process.env.REFRESH_TOKEN_SECRET)
+console.log("JWT_SECRET: ", process.env['JWT_SECRET'])
+console.log("REFRESH_TOKEN_SECRET: ", process.env['REFRESH_TOKEN_SECRET'])
 
 export const generateToken = (res: Response, userId: string, roleId: number) => {
-    const jwtSecret = process.env.JWT_SECRET;
-    const refreshSecret = process.env.REFRESH_TOKEN_SECRET;
+    const jwtSecret = process.env['JWT_SECRET'];
+    const refreshSecret = process.env['REFRESH_TOKEN_SECRET'];
 
     if (!jwtSecret || !refreshSecret) {
         throw new Error("JWT_SECRET or REFRESH_TOKEN_SECRET is not defined in environment variables");
@@ -24,20 +24,22 @@ export const generateToken = (res: Response, userId: string, roleId: number) => 
         const refreshToken = jwt.sign({ userId }, refreshSecret, { expiresIn: "30d" })
 
         //set Access token as HTTP-Only secure cookie 
+        // Set Access Token as HTTP-Only Secure Cookie
         res.cookie("access_token", accessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", 
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            secure: process.env['NODE_ENV'] === "production",
+            sameSite: process.env['NODE_ENV'] === "production" ? "none" : "lax",
             maxAge: 15 * 60 * 1000, // 15 minutes
         });
 
         // Set Refresh Token as HTTP-Only Secure Cookie
         res.cookie("refresh_token", refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", 
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            secure: process.env['NODE_ENV'] === "production",
+            sameSite: process.env['NODE_ENV'] === "production" ? "none" : "lax",
             maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
         });
+
 
 
         return { accessToken, refreshToken }

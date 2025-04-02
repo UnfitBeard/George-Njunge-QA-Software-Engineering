@@ -1,24 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { Book } from '../../interfaces/booksResponse';
 import { BooksService } from '../books.service';
-import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink} from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-admin-dashboard',
-  imports: [HttpClientModule, CommonModule,RouterLink],
-  templateUrl: './admin-dashboard.component.html',
-  styleUrl: './admin-dashboard.component.css'
+  selector: 'app-librarian',
+  imports: [CommonModule, FormsModule],
+  templateUrl: './librarian.component.html',
+  styleUrl: './librarian.component.css'
 })
-export class AdminDashboardComponent {
+export class LibrarianComponent {
   books:Book[] = [];
   errorMessage:string = ''
 
-  constructor(private booksservice: BooksService, private router: Router) {}
+  router = Inject(Router)
+  constructor(private booksservice: BooksService, private route: Router) {}
 
   onAddNewBook() {
-    this.router.navigate(['addBook']);
+    this.route.navigate(['addBook']);
   }
 
   onDelete(bookId: number) {
@@ -34,7 +35,7 @@ export class AdminDashboardComponent {
   }
 
   onUpdate(bookId: number) {
-
+    this.route.navigate(['addBook'])
   }
 
   getBooks() {

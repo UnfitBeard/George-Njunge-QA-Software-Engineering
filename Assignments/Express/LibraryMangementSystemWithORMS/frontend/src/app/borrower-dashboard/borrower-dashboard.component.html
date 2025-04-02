@@ -9,9 +9,30 @@
       <p>{{item.quantity}}</p>
     </div>
     <div class="controls">
-      <button (click)="onBorrow()">Borrow</button>
+      <button (click)="onBorrow(item.title)">Borrow</button>
     </div>
   </div>
 </div>
 
-<button (click)="onReturnBook()">Add new book</button>
+<div class="borrowedBooks" *ngFor="let item of borrowedBooks">
+  <table>
+    <thead>
+      <tr>
+        <th>Book Title</th>
+        <th>Author</th>
+        <th>Copy Status</th>
+        <th>Borrowed At</th>
+        <th>Due Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ item.book.title }}</td>
+        <td>{{ item.book.author }}</td>
+        <td>{{ item.copy.status }}</td>
+        <td>{{ item.borrowed_at | date: 'short' }}</td>
+        <td>{{ item.due_date | date: 'short' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

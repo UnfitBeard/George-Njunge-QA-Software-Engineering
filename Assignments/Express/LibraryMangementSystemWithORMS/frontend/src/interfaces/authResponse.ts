@@ -3,7 +3,7 @@ export interface AuthResponse {
   user: {
       id: number;
       email: string;
-      name: string;
+      username: string;
       role_id:number
   };
 }

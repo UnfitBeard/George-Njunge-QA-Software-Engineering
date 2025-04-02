@@ -2,9 +2,9 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { Users } from "../models/User"
 import { UserRoles } from "../models/UserRoles"
-import { Book } from "@app/models/Books"
-import { Bookcopies } from "@app/models/BookCopies"
-import { BorrowedBooks } from "@app/models/BorrowedBooks"
+import { Book } from "../models/Books"
+import { Bookcopies } from "../models/BookCopies"
+import { BorrowedBooks } from "../models/BorrowedBooks"
 
 export const AppDataSource = new DataSource({
     type: "postgres",

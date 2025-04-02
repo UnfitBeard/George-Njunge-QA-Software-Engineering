@@ -1,4 +1,5 @@
-<div class="container">
+
+<div class = "container">
   <div *ngFor="let item of books" class="books-container">
     <div class="image">
       <img [src]="item.image_url" alt="" style="width: auto;">
@@ -10,8 +11,9 @@
     </div>
     <div class="controls">
       <button (click)="onDelete(item.id)">Delete</button>
-      <button [routerLink]="['/editbook', item.id]">Edit Book</button> <!-- Fixed route path -->    </div>
+      <button (click)="onUpdate(item.id)">Update</button>
+    </div>
   </div>
-</div>
+  </div>
 
-<button (click)="onAddNewBook()">Add new book</button>
+  <button (click)="onAddNewBook()">Add new book</button>

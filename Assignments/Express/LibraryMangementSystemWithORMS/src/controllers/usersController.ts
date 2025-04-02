@@ -8,9 +8,8 @@ import { Request, Response } from "express";
 
 import pool from "../config/db.config";
 import asyncHandler from "../middlewares/asyncHandler";
-import { AppDataSource } from "@app/config/data-source";
-import { Users } from "@app/models/User";
-import { UserRoles } from "@app/models/UserRoles";
+import { AppDataSource } from "../config/data-source";
+import { Users } from "../models/User";
 
 //Only admins should get all users
 export const getUsers = asyncHandler(async (req: Request, res: Response) => {

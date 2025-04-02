@@ -1,0 +1,151 @@
+1. User Flows
+
+1.1 Job Seeker Flow
+
+Sign-up/Login Page
+
+Email & Password input fields
+
+Social Login (Google, LinkedIn)
+
+Role selection: Job Seeker
+
+Profile Setup Form
+
+Personal Details: Name, Location, Contact
+
+Skills: Multi-select from predefined list or add custom skills
+
+Experience: Dropdown (Beginner, Intermediate, Expert)
+
+Certifications & Courses: Upload option
+
+Portfolio & Resume Upload
+
+Upload CV (PDF, DOC)
+
+Add projects with descriptions, links, and images
+
+Work Experience input fields
+
+Dashboard
+
+Job recommendations based on AI analysis
+
+Application tracking (Pending, Interview, Rejected, Hired)
+
+Notifications for interview invites
+
+Job Application Page
+
+Autofill from profile
+
+Cover letter input (optional)
+
+Answer additional employer questions (if any)
+
+Submit application
+
+Career Guidance Interface
+
+AI-based skill gap analysis
+
+Suggested courses & learning paths
+
+Job market trends insights
+
+1.2 Employer/Recruiter Flow
+
+Sign-up/Login Page
+
+Email & Password input fields
+
+Social Login (Google, LinkedIn)
+
+Role selection: Employer/Recruiter
+
+Company Profile Setup
+
+Company Name, Logo, Description
+
+Industry selection
+
+Contact details
+
+Job Posting Form
+
+Job Title, Description, Salary Range
+
+Required Skills (multi-select)
+
+Work experience level requirement
+
+Application deadline & interview process
+
+Candidate Search & Filtering UI
+
+Search bar: Keywords, skills, experience, location
+
+AI-recommended candidates based on job post
+
+Shortlist & contact candidates
+
+Interview Management Dashboard
+
+Schedule interview slots
+
+Track candidate responses
+
+Automated email notifications
+
+1.3 Admin Flow
+
+Admin Login
+
+Secure login with 2FA
+
+User Management
+
+Approve/reject accounts
+
+Assign user roles
+
+Platform Analytics Dashboard
+
+Job seeker engagement metrics
+
+Employer hiring success rate
+
+AI match accuracy stats
+
+2. UI Components & Forms
+
+Buttons: Primary (Apply, Submit, Upload), Secondary (Cancel, Edit)
+
+Input Fields: Text, Dropdowns, Multi-select
+
+Cards: Job listings, Candidate profiles
+
+Modals: Interview confirmation, Resume preview
+
+Navigation: Sidebar for dashboard, top bar for notifications
+
+3. Prototypes & Interactions
+
+User Onboarding (Sign-up to dashboard navigation)
+
+Job Application Process (Applying, tracking progress)
+
+Employer Job Posting & Candidate Search
+
+Interview Scheduling & Notifications
+
+AI Career Guidance Flow
+
+4. Design Notes
+
+Color Scheme: Professional & modern (Blue, White, Gray)
+
+Typography: Clean and readable fonts
+
+Spacing & Layout: Well-structured forms and dashboards

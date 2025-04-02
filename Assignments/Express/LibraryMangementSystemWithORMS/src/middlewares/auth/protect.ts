@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import asyncHandler from "../asyncHandler";
 import jwt from "jsonwebtoken";
 import { UserRequest } from "../../utils/types/userTypes";
-import { AppDataSource } from "@app/config/data-source";
-import { Users } from "@app/models/User";
+import { AppDataSource } from "./../../config/data-source";
+import { Users } from "./../../models/User";
 
 const userRepository = AppDataSource.getRepository(Users);
 
@@ -18,7 +18,8 @@ export const protect = asyncHandler(async (req: UserRequest, res: Response, next
     }
 
     if (!token) {
-        return res.status(401).json({ message: "Not Authorized, no token" });
+        res.status(401).json({ message: "Not Authorized, no token" });
+        return 
     }
 
     try {

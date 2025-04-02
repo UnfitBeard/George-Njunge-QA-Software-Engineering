@@ -1,12 +1,9 @@
 import { Request, Response, NextFunction } from "express"
-import pool from "../config/db.config";
 import bcrypt from 'bcryptjs'
 import { generateToken } from "../utils/helpers/generateToken";
 import asyncHandler from "../middlewares/asyncHandler";
-import { AppDataSource } from "@app/config/data-source";
-import { Users } from "@app/models/User";
-import { getRepository } from "typeorm";
-import { UserRoles } from "@app/models/UserRoles";
+import { AppDataSource } from "../config/data-source";
+import { Users } from "../models/User";
 
 export const registerUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { name, email, password, role_id, created_at } = req.body
@@ -91,7 +88,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response, next: 
 export const logoutUser = asyncHandler(async(req: Request, res: Response, next: NextFunction)=>{
     res.cookie("access_token", "", {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== "development", // Secure in production
+        secure: process.env['NODE_ENV'] !== "development", // Secure in production
         sameSite: "strict",
         expires: new Date(0) // 15 minutes
     });
@@ -100,7 +97,7 @@ export const logoutUser = asyncHandler(async(req: Request, res: Response, next: 
      // Set Refresh Token as HTTP-Only Secure Cookie
      res.cookie("refresh_token", "", {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== "development",
+        secure: process.env['NODE_ENV'] !== "development",
         sameSite: "strict",
         expires: new Date(0) // 30 days
     });

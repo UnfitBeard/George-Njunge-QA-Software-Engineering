@@ -1,8 +1,6 @@
-import { error } from 'console';
 import { Book } from '../../interfaces/booksResponse';
 import { BooksService } from './../books.service';
 import { Component } from '@angular/core';
-import { CommonEngine } from '@angular/ssr/node';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -41,5 +39,8 @@ export class HomeComponent {
 
   loginRedirect() {
     this.router.navigate(['login'])
+  }
+  registerRedirect() {
+    this.router.navigate(['registration'])
   }
 }

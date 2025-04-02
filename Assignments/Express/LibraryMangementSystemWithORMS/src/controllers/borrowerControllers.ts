@@ -1,13 +1,12 @@
 import asyncHandler from "../middlewares/asyncHandler";
 import pool from "../config/db.config";
-import { BookRequest } from "@app/utils/types/bookTypes";
-import { UserRequest } from "@app/utils/types/userTypes";
-import { NextFunction } from "express";
-import { AppDataSource } from "@app/config/data-source";
-import { Book } from "@app/models/Books";
-import { Bookcopies, BookStatus } from "@app/models/BookCopies";
-import { BorrowedBooks } from "@app/models/BorrowedBooks";
+import { UserRequest } from "../utils/types/userTypes";
+import { AppDataSource } from "../config/data-source";
+import { Book } from "../models/Books";
+import { Bookcopies, BookStatus } from "../models/BookCopies";
+import { BorrowedBooks } from "../models/BorrowedBooks";
 import { ILike } from "typeorm";
+import { BookRequest } from "../utils/types/bookTypes";
 
 const booksRepository = AppDataSource.getRepository(Book)
 const bookCopiesRepo = AppDataSource.getRepository(Bookcopies)
@@ -28,28 +27,28 @@ export const borrowController = asyncHandler(async (req: UserRequest, res, next)
         //Ensuring only Organizer or admin and borrower can borrow books
         if (![12, 11, 13].includes(req.user?.role_id)) {
             res.status(403).json({ message: "Access denied: Only registered users can borrow books" });
-            return 
+            return
         }
 
         const bookExists = await booksRepository.findOne({
-            where: { title: ILike(`%${title}%`) } 
+            where: { title: ILike(`%${title}%`) }
         });
-        
+
         if (!bookExists) {
             res.status(404).json({ message: "Book not found" });
             return;
         }
 
         if (bookExists.quantity <= 0) {
-            res.status(404).json({ message:'No copies of the book currently exist'});
+            res.status(404).json({ message: 'No copies of the book currently exist' });
             return;
         }
 
         const copyExists = await bookCopiesRepo.findOne({
-            where: { book: { id: bookExists.id } }, 
-            relations: ['book']  
+            where: { book: { id: bookExists.id } },
+            relations: ['book']
         });
-        
+
 
         if (!copyExists) {
             res.status(404).json({ message: "No available copies exists at this time" });
@@ -60,25 +59,25 @@ export const borrowController = asyncHandler(async (req: UserRequest, res, next)
             res.status(404).json({ message: "Due_date Required" });
             return;
         }
-        
+
 
         const borrowedBook = await borrowersRepo.create({
-            user: { id: user_id },  
-            book: { id: bookExists.id },  
-            copy: { copy_id: copyExists?.copy_id }, 
-            due_date: new Date("2025-04-01") 
+            user: { id: user_id },
+            book: { id: bookExists.id },
+            copy: { copy_id: copyExists?.copy_id },
+            due_date: new Date("2025-04-01")
         });
 
         await borrowersRepo.save(borrowedBook);
 
         await booksRepository.update(
-            {id: bookExists.id},
-            {quantity: bookExists.quantity - 1}
+            { id: bookExists.id },
+            { quantity: bookExists.quantity - 1 }
         )
 
         await bookCopiesRepo.update(
-            {copy_id: copyExists?.copy_id},
-            {status: BookStatus.Borrowed}
+            { copy_id: copyExists?.copy_id },
+            { status: BookStatus.Borrowed }
         )
 
         res.status(200).json({ message: `Book was borrowed to be returned on ${due_date}` });
@@ -132,4 +131,35 @@ export const returnController = asyncHandler(async (req: UserRequest, res, next)
         console.error("Error updating book:", error)
         res.status(500).json({ message: "Internal Server Error" })
     }
+})
+
+export const displayBorrowedBooks = asyncHandler(async (req: BookRequest, res, next) => {
+
+    try {
+        const id = req.user?.id
+
+        if (!req.user?.id) {
+            res.status(404).json({message: "No Token"})
+            return
+        }
+
+        const borrowedBooks = await borrowersRepo.find({ where: 
+            { user: { id: req.user?.id } } ,
+            relations: ['copy', 'book', 'user']
+        })
+
+        if (!borrowedBooks) {
+            res.status(404).json({ message: "You have no borrowed books" })
+            return
+        }
+
+        res.status(201).json({
+            borrowedBooks
+        })
+        
+    } catch (error) {
+        console.error("Cant get borrowed Books:", error)
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+
 })
