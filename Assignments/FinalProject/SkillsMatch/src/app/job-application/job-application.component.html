@@ -1,0 +1,16 @@
+<form [formGroup]="jobApplicationForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="cv">Upload CV</label>
+    <!-- Use ngModel to bind the file input -->
+    <input type="file" name="cv" id="cv" accept=".doc, .docx, .pdf" (change)="onFileSelected($event)" />
+  </div>
+
+  <div>
+    <label for="cover-letter">Cover Letter</label>
+    <textarea name="cover-letter" id="cover-letter" formControlName="coverLetter"></textarea>
+  </div>
+
+  <button type="submit" [disabled]="jobApplicationForm.invalid">
+    Submit
+  </button>
+</form>

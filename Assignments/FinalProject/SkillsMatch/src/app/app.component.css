@@ -1,0 +1,18 @@
+.spacer {
+  flex: 1 1 auto;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.pink-toolbar {
+  background-color: #e91ee9; /* Material Pink 500 */
+  color: white;
+  width: 100vw;
+}
+
+.container {
+
+}
