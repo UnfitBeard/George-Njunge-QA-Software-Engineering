@@ -1,3 +1,4 @@
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { Routes } from '@angular/router';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RecruitersDashboardComponent } from './recruiters-dashboard/recruiters-dashboard.component';
@@ -10,6 +11,7 @@ import { JobsSearchComponent } from './jobs-search/jobs-search.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { JobseekerDashboardComponent } from './jobseeker-dashboard/jobseeker-dashboard.component';
 import { ChatComponent } from './chat/chat.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 export const routes: Routes = [
   {path: 'login', component: LoginPageComponent},
@@ -22,5 +24,7 @@ export const routes: Routes = [
   {path: 'job-application', component: JobApplicationComponent},
   {path: 'job-search', component: JobsSearchComponent},
   {path: 'landing-page', component: LandingPageComponent},
-  {path: 'chat', component: ChatComponent}
+  {path: 'chat', component: ChatComponent},
+  {path: 'admin-dashboard', component: AdminDashboardComponent},
+  {path: 'notifications', component: NotificationsComponent},
 ];
