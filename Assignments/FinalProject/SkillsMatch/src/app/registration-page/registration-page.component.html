@@ -1,4 +1,5 @@
 <div class="registration-container">
+  <h2>Registration</h2>
   <form action="" (ngSubmit)="onSubmit()" [formGroup]="myForm">
     <div class="username">
       <label for="username">Username: </label>
@@ -12,21 +13,10 @@
       <input type="password" name="password" id="password" formControlName="password">
     </div>
 
-    <div class="role">
-      <p>I am a:</p>
-      
-      <label>
-        <input type="radio" formControlName="role" value="job-seeker" />
-        Job Seeker
-      </label>
-
-      <label>
-        <input type="radio" formControlName="role" value="recruiter" />
-        Recruiter
-      </label>
+    <div class="role-buttons">
+      <button (onclick)="onRoleSelected('recruiter')">Recruiter</button>
+      <button (onclick)="onRoleSelected('JobSeeker')">Job Seeker</button>
     </div>
-
-
     <button type="submit" [disabled]="!myForm.valid">
       Submit
     </button>

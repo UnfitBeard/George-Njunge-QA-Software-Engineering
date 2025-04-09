@@ -1,178 +1,173 @@
-/* General Body Styling */
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
-  color: #333;
+/* Main Intro Section Styling */
+.intro-section {
+  background: linear-gradient(135deg, #ff5f6d, #ffc371);
   padding: 20px;
-  margin: 0;
-}
-
-/* Form Container Styling */
-form {
-  background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 30px;
-  font-size: 16px;
-}
-
-/* Header and Labels */
-h1 {
-  color: #6a1b9a;
-  text-align: center;
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-/* Label Styling */
-label {
-  color: #6a1b9a;
-  font-weight: bold;
-  margin-bottom: 8px;
-  display: block;
-  font-size: 14px;
-}
-
-/* Form Inputs and Controls */
-input[type="text"],
-input[type="url"],
-textarea {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0 20px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  box-sizing: border-box;
-  background-color: #f9f9f9;
-}
-
-input[type="text"]:focus,
-input[type="url"]:focus,
-textarea:focus {
-  outline: none;
-  border-color: #6a1b9a;
-  box-shadow: 0 0 5px rgba(106, 27, 154, 0.4);
-  background-color: #fff;
-}
-
-/* Button Styles */
-button {
-  background-color: #6a1b9a;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: white;
-  border: none;
-  padding: 12px 20px;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 10px;
-  display: inline-block;
-}
-
-button:hover {
-  background-color: #8e24aa;
-}
-
-button[type="button"]:hover {
-  background-color: #9c27b0;
-}
-
-/* Button Disabled State */
-button:disabled {
-  background-color: #d3b8e1;
-  cursor: not-allowed;
-}
-
-/* Form Array (Skills and Projects) Fields */
-div[formArrayName="skills"], div[formArrayName="projects"] {
+  text-align: center;
+  font-size: 1.2rem;
   margin-bottom: 30px;
 }
 
-div[formArrayName="skills"] div, div[formArrayName="projects"] div {
-  background-color: #f1e6f7;
-  padding: 15px;
-  border-radius: 6px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+button {
+  margin: 10px;
+  width: fit-content;
+  align-self: center;
 }
 
-div[formArrayName="skills"] div input,
-div[formArrayName="projects"] div input,
-div[formArrayName="projects"] div textarea {
+input textarea {
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.intro-section h1 {
   margin-bottom: 10px;
 }
 
-div[formArrayName="skills"] div button,
-div[formArrayName="projects"] div button {
-  margin-top: 10px;
-  background-color: #d500f9;
-  width: 100%;
+.intro-section p {
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
-div[formArrayName="skills"] div button:hover,
-div[formArrayName="projects"] div button:hover {
-  background-color: #8e24aa;
+/* Form Input Styling */
+form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 20px 0;
+  padding: 30px;
 }
 
-/* Add Skill / Add Project Button */
-button[type="button"] {
-  background-color: #8e24aa;
-  width: 100%;
-  margin-bottom: 20px;
+form div {
+  display: flex;
+  flex-direction: column;
 }
 
-button[type="button"]:hover {
-  background-color: #9c27b0;
+label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: 1rem;
 }
 
-/* Form Inputs (Spacing & Layout) */
-div {
-  margin-bottom: 20px;
+input,
+textarea {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
 }
 
-input, textarea {
-  font-size: 14px;
+input:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 textarea {
-  height: 100px;
+  resize: vertical;
+  min-height: 100px;
 }
 
-textarea:focus {
-  background-color: #fff;
+/* Responsive Design */
+@media (max-width: 768px) {
+  form {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* Error Styling for Invalid Inputs */
-input.ng-invalid, textarea.ng-invalid {
-  border-color: red;
+/* Skills, Projects, Courses Sections */
+form div[formGroupName="skills"],
+form div[formGroupName="projects"],
+form div[formGroupName="courses"] {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-input.ng-valid, textarea.ng-valid {
-  border-color: green;
-}
-/* Form Array (Courses and Certifications) Fields */
-div[formArrayName="courses"] div {
-  background-color: #f1e6f7;
-  padding: 15px;
+button {
+  background-color: #5558da;
+  color: white;
+  padding: 12px 18px;
   border-radius: 6px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-div[formArrayName="courses"] div input,
-div[formArrayName="courses"] div textarea {
-  margin-bottom: 10px;
+button:hover {
+  background-color: #2389da;
+  transform: translateY(-2px);
 }
 
-div[formArrayName="courses"] div button {
-  margin-top: 10px;
-  background-color: #d500f9;
+/* Add/Remove Buttons in Skills, Projects, Courses */
+button[type="button"] {
+  background-color: #ff5f6d;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+}
+
+button[type="button"]:hover {
+  background-color: #ffc371;
+  transform: translateY(-2px);
+}
+
+/* Submit Button */
+button[type="submit"] {
+  background-color: #5558da;
+  padding: 15px 25px;
+  font-size: 1.2rem;
   width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-div[formArrayName="courses"] div button:hover {
-  background-color: #8e24aa;
+button[type="submit"]:disabled {
+  background-color: #d3d3d3;
+  cursor: not-allowed;
+}
+
+button[type="submit"]:hover {
+  background-color: #2389da;
+  transform: translateY(-2px);
+}
+
+/* Hover Effects on Skill/Project Rows */
+form .skills .form-group,
+form .projects .form-group,
+form .courses .form-group {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+form .skills .form-group:hover,
+form .projects .form-group:hover,
+form .courses .form-group:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Color-Coding Sections */
+.skills {
+  background-color: #f9e7f1;
+}
+
+.projects {
+  background-color: #e0f1fa;
+}
+
+.courses {
+  background-color: #f1f8e4;
+}
+
+/* Skills Match Percentage in Pink */
+.skills-match-percentage {
+  color: #ff5f6d;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: 10px;
 }

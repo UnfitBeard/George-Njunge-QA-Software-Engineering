@@ -9,6 +9,9 @@ import { Route, Router } from '@angular/router';
   styleUrl: './registration-page.component.css'
 })
 export class RegistrationPageComponent {
+onRoleSelected(arg0: string) {
+throw new Error('Method not implemented.');
+}
   constructor(private router: Router) { }
 
   myForm = new FormGroup({
