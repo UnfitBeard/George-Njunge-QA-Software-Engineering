@@ -60,32 +60,32 @@ jobs:
           path: Assignments/FinalProject/SkillsMatch/dist/skills-match
 
   deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Get Code
-        uses: actions/checkout@v4
+  runs-on: ubuntu-latest
+  needs: build
+  steps:
+    - name: Get Code
+      uses: actions/checkout@v4
 
-      - name: Get Build Files
-        uses: actions/download-artifact@v4
-        with:
-          name: dist-files
-          path: Assignments/FinalProject/SkillsMatch/dist/skills-match
+    - name: Get Build Files
+      uses: actions/download-artifact@v4
+      with:
+        name: dist-files
+        path: ./Assignments/FinalProject/SkillsMatch/dist/skills-match  # Correct path to dist folder
 
-      - name: List Build Files
-        run: ls -R Assignments/FinalProject/SkillsMatch/dist/skills-match  # Debugging step to check files
+    - name: List Build Files
+      run: ls -R ./Assignments/FinalProject/SkillsMatch/dist/skills-match  # Debugging step to check files
 
-      - name: Deploy
-        id: deploy
-        uses: ./.github/actions
-        env:
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        with:
-          bucket: dkcohort
-          dist-folder: ./dist
-          bucket-region: us-east-1
+    - name: Deploy
+      id: deploy
+      uses: ./.github/actions/my-deploy-action
+      env:
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      with:
+        bucket: dkcohort
+        dist-folder: ./Assignments/FinalProject/SkillsMatch/dist/skills-match  # Correct path to dist folder
+        bucket-region: us-east-1
 
-      - name: Output Live URL
-        run: |
-            echo "Live URL: ${{ steps.deploy.outputs.website-url }}"
+    - name: Output Live URL
+      run: |
+        echo "Live URL: ${{ steps.deploy.outputs.website-url }}"
