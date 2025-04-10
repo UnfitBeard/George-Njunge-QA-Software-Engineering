@@ -88,6 +88,7 @@ jobs:
             bucket: dkcohort
             dist-folder: ./dist
             bucket-region: us-east-1
+            #bucket regions
 
         - name: output URL
           run: echo "Live URL:${{steps.deploy.outputs.website-url}}"
