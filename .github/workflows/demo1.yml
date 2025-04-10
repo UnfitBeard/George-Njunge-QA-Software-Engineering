@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  MyPAss: 1234
+  MyPass: 1234
 
 jobs:
   test:
