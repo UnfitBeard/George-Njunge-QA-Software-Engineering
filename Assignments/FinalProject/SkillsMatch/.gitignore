@@ -8,6 +8,12 @@
 
 # Node
 /node_modules
+# Ignore all node_modules
+**/node_modules/
+
+# Except for node_modules in custom GitHub Actions
+!.github/actions/**/node_modules/
+
 npm-debug.log
 yarn-error.log
 
