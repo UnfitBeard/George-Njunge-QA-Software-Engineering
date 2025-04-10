@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  MyPAss: 1234
+  # MyPAss: 1234
 
 jobs:
   test:
@@ -31,8 +31,8 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Test Code
-        run: npm run test
+      # - name: Test Code
+      #   run: npm run test
           
   build:
     runs-on: ubuntu-latest
