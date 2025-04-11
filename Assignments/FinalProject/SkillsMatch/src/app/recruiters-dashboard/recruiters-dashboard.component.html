@@ -1,66 +1,249 @@
-<div class="stats-top">
-  <div id="posted-jobs" class="stats-div">
-    <div class="number">
-      <p>{{postedJobs.length}}</p>
+<div class="recruiter-dashboard">
+  <!-- Stats Section -->
+  <div class="stats-top enhanced-stats">
+    <div class="stats-div" style="--start: #ff5f6d; --end: #ffc371;">
+      <div class="number">
+        <h2>{{postedJobs.length}}</h2>
+        <p>📈 {{postedJobsProgress}}% Progress</p>
+      </div>
+      <div class="title">
+        <p>Posted Jobs</p>
+        <button class="small-btn" (click)="createNewJob()">+ New</button>
+      </div>
     </div>
-    <div class="title">
-      <p>Posted Jobs</p>
+
+    <div class="stats-div" style="--start: #5558da; --end: #2389da;">
+      <div class="number">
+        <h2>{{candidatesApplied.length}}</h2>
+        <div class="trend" [class.positive]="candidateTrend >= 0">
+          {{candidateTrend}}% ↑
+        </div>
+      </div>
+      <div class="title">
+        <p>Candidates Applied</p>
+        <small>Last 30 days</small>
+      </div>
+    </div>
+
+    <div class="stats-div" style="--start: #6a11cb; --end: #2575fc;">
+      <div class="number">
+        <h2>{{offersMade.length}}</h2>
+        <div class="progress-bar">
+          <div [style.width]="offerAcceptanceRate + '%'"></div>
+        </div>
+      </div>
+      <div class="title">
+        <p>Offers Made</p>
+        <small>{{offerAcceptanceRate}}% Acceptance</small>
+      </div>
+    </div>
+
+    <div class="stats-div" style="--start: #00c6fb; --end: #005bea;">
+      <div class="number">
+        <h2>{{offersAccepted.length}}</h2>
+        <div class="time-frame">
+          <span>🕒 {{averageHireTime}} days</span>
+        </div>
+      </div>
+      <div class="title">
+        <p>Offers Accepted</p>
+        <small>Avg. Time to Hire</small>
+      </div>
     </div>
   </div>
-  <div id="candidates-applied" class="stats-div">
-    <div class="number">
-      <p>{{candidatesApplied.length}}</p>
+
+  <!-- AI Analytics Section -->
+  <div class="ai-analytics">
+    <div class="ai-card candidate-match">
+      <h3>AI Candidate Matching</h3>
+      <canvas baseChart width="400" height="300"
+              [type]="'bar'"
+              [data]="candidateMatchData"
+              [options]="barChartOptions">
+      </canvas>
+      <div class="ai-summary">
+        <p>🔍 Top Skill Matches: {{topCandidateSkills.join(', ')}}</p>
+      </div>
     </div>
-    <div class="title">
-      <p>Candidates Applied</p>
+
+    <div class="ai-card hiring-trends">
+      <h3>Hiring Trends Analysis</h3>
+      <canvas baseChart width="400" height="300"
+              [type]="'line'"
+              [data]="hiringTrendsData"
+              [options]="lineChartOptions">
+      </canvas>
+      <div class="ai-prediction">
+        <p>📈 Next 30 Days Prediction: {{predictedHires}} hires</p>
+      </div>
     </div>
   </div>
-  <div id="offers-made" class="stats-div">
-    <div class="number">
-      <p>{{offersMade.length}}</p>
+
+  <!-- Enhanced Profile Section -->
+  <div class="recruiter-profile">
+    <div class="profile-card">
+      <div class="avatar">
+        <img [src]="recruiter.avatar" alt="Profile Picture">
+        <div class="verification-badge" *ngIf="recruiter.verified">✓</div>
+      </div>
+      <div class="profile-info">
+        <h2>{{recruiter.name}}</h2>
+        <p class="company">{{recruiter.company}}</p>
+        <div class="stats">
+          <div class="stat">
+            <h3>{{recruiter.rating}}</h3>
+            <p>⭐ Rating</p>
+          </div>
+          <div class="stat">
+            <h3>{{recruiter.hires}}</h3>
+            <p>🚀 Total Hires</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="title">
-      <p>Offers Made</p>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <button class="action-btn" (click)="openScheduleModal()">
+        📅 Schedule Interview
+      </button>
+      <button class="action-btn" (click)="reviewCandidates()">
+        👥 Review Candidates
+      </button>
+      <button class="action-btn" (click)="generateReport()">
+        📊 Generate Report
+      </button>
     </div>
   </div>
-  <div id="offers-accepted" class="stats-div">
-    <div class="number">
-      <p>{{offersAccepted.length}}</p>
+
+  <!-- Enhanced Applications Table -->
+  <div class="applications-section">
+    <div class="section-header">
+      <h2>Recent Applications</h2>
+      <div class="search-filter">
+        <input type="text" [(ngModel)]="applicationSearch" placeholder="Search applications...">
+        <select [(ngModel)]="statusFilter">
+          <option value="all">All Statuses</option>
+          <option value="new">New</option>
+          <option value="reviewed">Reviewed</option>
+          <option value="hired">Hired</option>
+        </select>
+      </div>
     </div>
-    <div class="title">
-      <p>Offers Accepted</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <th>Job Title</th>
+          <th>Match Score</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let application of filteredApplications">
+          <td class="candidate-info">
+            <img [src]="application.candidate.avatar" class="candidate-avatar">
+            {{application.candidate.name}}
+          </td>
+          <td>{{application.jobTitle}}</td>
+          <td>
+            <div class="score-bar" [style.--score]="application.matchScore">
+              {{application.matchScore}}%
+            </div>
+          </td>
+          <td>
+            <span class="status-badge" [class]="application.status">
+              {{application.status}}
+            </span>
+          </td>
+          <td>
+            <button class="action-btn small" (click)="viewApplication(application)">
+              👀 View
+            </button>
+            <button class="action-btn small" (click)="contactCandidate(application)">
+              ✉️ Contact
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Job Management Section -->
+  <div class="job-management">
+    <div class="section-header">
+      <h2>Active Job Postings</h2>
+      <button class="action-btn" (click)="createNewJob()">
+        ➕ Create New Job
+      </button>
+    </div>
+
+    <div class="job-cards">
+      <div class="job-card" *ngFor="let job of activeJobs">
+        <div class="job-header">
+          <h3>{{job.title}}</h3>
+          <span class="applicant-count">
+            👥 {{job.applicants.length}} applicants
+          </span>
+        </div>
+        <div class="job-details">
+          <p class="deadline">⏳ {{job.deadline | date: 'medium'}}</p>
+          <div class="progress">
+            <div class="progress-bar" [style.width]="job.completion + '%'">
+              {{job.completion}}%
+            </div>
+          </div>
+        </div>
+        <div class="job-actions">
+          <button class="action-btn small">📊 Analytics</button>
+          <button class="action-btn small">✏️ Edit</button>
+          <button class="action-btn small danger">🗑️ Delete</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="personal-info">
-  <div class="image">
-    <img src="" alt="person-avatar">
-  </div>
-  <div class="info">
-    <p *ngFor="let item of personalInfo">
-      {{item.name}}
-    </p>
+<!-- Schedule Interview Modal -->
+<div class="modal-overlay" *ngIf="showScheduleModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Schedule Interview</h2>
+      <button class="close-btn" (click)="closeScheduleModal()">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <form (ngSubmit)="scheduleInterview()">
+        <div class="form-group">
+          <label>Candidate:</label>
+          <select [(ngModel)]="selectedCandidate" name="candidate" required>
+            <option *ngFor="let candidate of candidates" [value]="candidate.id">
+              {{ candidate.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Date & Time:</label>
+          <input type="datetime-local" [(ngModel)]="interviewDateTime" name="datetime" required>
+        </div>
+
+        <div class="form-group">
+          <label>Interview Type:</label>
+          <select [(ngModel)]="interviewType" name="type" required>
+            <option value="phone">Phone Interview</option>
+            <option value="video">Video Call</option>
+            <option value="in-person">In-Person</option>
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn cancel" (click)="closeScheduleModal()" style="background-color: #005bea;">Cancel</button>
+          <button type="submit" class="btn send" style="background-color: #005bea;">Send Invitation</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
-
-<h2>Posted Jobs</h2>
-<div class="your-posted-jobs">
-  <div class="posted-job" *ngFor="let item of yourPostedJobs">
-    <p>{{item.title}}</p>
-    <p>{{item.description}}</p>
-    <button id="view-candidates">View Candidate</button>
-  </div>
-</div>
-
-<table class="applications">
-  <h2>Applications</h2>
-  <tr>
-    <th>Name</th>
-    <th>Job</th>
-  </tr>
-  <tr *ngFor="let item of yourPostedJobs">
-    <td>{{item.applicants[0].name}}</td>
-    <td>{{item.title}}</td>
-  </tr>
-</table>

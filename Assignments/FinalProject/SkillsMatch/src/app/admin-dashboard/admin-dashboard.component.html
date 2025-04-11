@@ -34,47 +34,81 @@
     </div>
   </div>
 </div>
-  <h2>Skill Growth & Job Analytics</h2>
-<div class="charts">
-  <!-- Skill Development Chart -->
-  <div class="chart-container">
-    <h3>Skill Development Over Time</h3>
-    <canvas baseChart width="400" height="400"
+ <!-- Add to existing HTML -->
+<h2>AI-Powered Insights</h2>
+<div class="ai-analytics">
+  <!-- Predictive Analytics Card -->
+  <div class="ai-card">
+    <h3>Predictive Hiring Trends</h3>
+    <canvas baseChart width="400" height="300"
             [type]="'line'"
-            [data]="skillGrowthChartData"
-            [options]="lineChartOptions"
-            [legend]="lineChartLegend">
+            [data]="predictiveHiringChartData"
+            [options]="predictiveChartOptions"
+            [legend]="true">
     </canvas>
+    <div class="ai-summary">
+      <p>📈 Next month's projection: {{ predictedHiring | number }} applications</p>
+      <p>🔍 Top growing skill: {{ topGrowingSkill }}</p>
+    </div>
   </div>
 
-  <!-- Job Analytics Chart -->
-  <div class="chart-container">
-    <h3>Job Analytics: Posted Jobs</h3>
-    <canvas baseChart width="400" height="400"
-            [type]="'line'"
-            [data]="jobAnalyticsChartData"
-            [options]="lineChartOptions"
-            [legend]="lineChartLegend">
+  <!-- Anomaly Detection Card -->
+  <div class="ai-card">
+    <h3>Application Anomaly Detection</h3>
+    <canvas baseChart width="400" height="300"
+            [type]="'bar'"
+            [data]="anomalyDetectionChartData"
+            [options]="anomalyChartOptions"
+            [legend]="true">
     </canvas>
+    <div class="ai-alerts">
+      <div *ngIf="anomalies.length > 0" class="alert">
+        ⚠️ Detected {{ anomalies.length }} anomalies in past 30 days
+      </div>
+    </div>
   </div>
 
-  <!-- Offers Made Chart -->
-  <div class="chart-container">
-    <h3>Offers Made Over Time</h3>
-    <canvas baseChart width="400" height="400"
-            [type]="'line'"
-            [data]="offersMadeChartData"
-            [options]="lineChartOptions"
-            [legend]="lineChartLegend">
-    </canvas>
+  <!-- Skill Gap Analysis -->
+  <div class="ai-card">
+    <h3>AI Skill Gap Analysis</h3>
+    <div class="skill-gap-chart">
+      <canvas baseChart width="400" height="300"
+              [type]="'radar'"
+              [data]="skillGapChartData"
+              [options]="radarChartOptions"
+              [legend]="true">
+      </canvas>
+    </div>
+    <div class="recommendations">
+      <h4>AI Recommendations</h4>
+      <ul>
+        <li *ngFor="let recommendation of aiRecommendations">
+          {{ recommendation }}
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
 
+<!-- user-search -->
+ <!-- Add Search Bars -->
+<div class="search-section">
+  <div class="search-bar">
+    <input type="text" [(ngModel)]="userSearch" placeholder="Search users...">
+    <button class="search-btn">🔍</button>
+  </div>
+  <div class="search-bar">
+    <input type="text" [(ngModel)]="jobSearch" placeholder="Search jobs...">
+    <button class="search-btn">🔍</button>
+  </div>
+</div>
 
+<!-- Enhanced Users Table -->
 <h2>Manage Users</h2>
-<table class="data-table">
+<table class="data-table expandable-table">
   <thead>
     <tr>
+      <th></th>
       <th>Username</th>
       <th>User Role</th>
       <th>Status</th>
@@ -83,53 +117,64 @@
     </tr>
   </thead>
   <tbody>
-    <!-- Dynamic content would go here -->
-    <tr>
-      <td>johndoe</td>
-      <td>Admin</td>
-      <td>Active</td>
-      <td>2025-04-08</td>
-      <td><button class="action-btn">Edit</button></td>
-    </tr>
-    <tr>
-      <td>janedoe</td>
-      <td>User</td>
-      <td>Inactive</td>
-      <td>2025-03-30</td>
-      <td><button class="action-btn">Edit</button></td>
-    </tr>
+    <ng-container *ngFor="let user of filteredUsers">
+      <tr>
+        <td>
+          <button class="expand-btn" (click)="toggleUserExpand(user)">
+            {{ user.isExpanded ? '−' : '+' }}
+          </button>
+        </td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.role }}</td>
+        <td><span class="status-badge" [class.active]="user.status === 'Active'">{{ user.status }}</span></td>
+        <td>{{ user.lastLogin | date }}</td>
+        <td>
+          <button class="action-btn" (click)="onEdit(user)">Edit</button>
+          <button class="action-btn danger" (click)="onDelete(user)">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="user.isExpanded" class="expanded-row">
+        <td colspan="6">
+          <div class="expanded-content">
+            <h4>User Details</h4>
+            <p>Email: {{ user.email }}</p>
+            <p>Registered: {{ user.registered | date }}</p>
+            <p>Last Activity: {{ user.lastActivity }}</p>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
   </tbody>
 </table>
 
+<!-- Enhanced Jobs Table -->
 <h2>Manage Jobs</h2>
-<table class="data-table">
-  <thead>
-    <tr>
-      <th>Job Title</th>
-      <th>Company</th>
-      <th>Posted Date</th>
-      <th>Application Deadline</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- Dynamic content would go here -->
-    <tr>
-      <td>Software Engineer</td>
-      <td>Tech Corp</td>
-      <td>2025-04-01</td>
-      <td>2025-05-01</td>
-      <td>Open</td>
-      <td><button class="action-btn">Edit</button></td>
-    </tr>
-    <tr>
-      <td>Product Manager</td>
-      <td>Design Co.</td>
-      <td>2025-03-15</td>
-      <td>2025-04-15</td>
-      <td>Closed</td>
-      <td><button class="action-btn">Edit</button></td>
-    </tr>
-  </tbody>
+<table class="data-table expandable-table">
+  <!-- Similar structure to users table with job-specific fields -->
 </table>
+
+<!-- Notifications Section -->
+<h2>Notifications</h2>
+<div class="notifications-container">
+  <div class="notification-header">
+    <span>Unread: {{ unreadNotifications }}</span>
+    <button class="clear-btn" (click)="clearNotifications()">Clear All</button>
+  </div>
+  <div class="notification-list">
+    <div *ngFor="let notification of notifications"
+         class="notification"
+         [class.unread]="!notification.read"
+         [class.warning]="notification.type === 'warning'"
+         [class.info]="notification.type === 'info'">
+      <div class="notification-icon">
+        {{ getNotificationIcon(notification.type) }}
+      </div>
+      <div class="notification-content">
+        <p class="notification-title">{{ notification.title }}</p>
+        <p class="notification-message">{{ notification.message }}</p>
+        <small>{{ notification.timestamp }}</small>
+      </div>
+      <button class="close-btn" (click)="dismissNotification(notification)">×</button>
+    </div>
+  </div>
+</div>

@@ -1,33 +1,146 @@
-<div class="content-top">
-  <div class="intro-message">
-    <h2>Finding the jobs that suits you</h2>
-    <p>We are dedicated to help you find a job that can help improve your skills</p>
-  </div>
+<div class="container">
+  <div class="content-top">
+    <!-- AI Analytics Section -->
+    <div class="ai-analytics">
+      <div class="ai-card skill-gap">
+        <h3>AI Skill Gap Analysis</h3>
+        <canvas baseChart width="400" height="300" [type]="'radar'" [data]="skillGapChartData"
+          [options]="radarChartOptions">
+        </canvas>
+        <div class="ai-summary">
+          <p>🔍 Top 3 skills to develop:
+            <span *ngFor="let skill of topSkills">{{skill}}</span>
+          </p>
+        </div>
+      </div>
 
-  <div class="recommended">
-    <h3>Recommended for you</h3>
-    <p *ngFor="let item of recommended">
-      {{item.name}}
-    </p>
-    <div class="complete-profile">
-      <p>Complete your profile for better recommendations</p>
+      <div class="ai-card match-prediction">
+        <h3>Job Match Prediction</h3>
+        <div class="prediction-meter">
+          <div class="progress-circle" [style.--progress]="matchProbability">
+            {{matchProbability}}%
+          </div>
+          <p>AI predicts {{matchProbability}}% match for next application</p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="notifications">
-    <h2>Notifications</h2>
-    <div class="notification" *ngFor="let item of notifications">
-      <p>{{item.name}}</p>
-      <p>{{item.from}}</p>
+  <div class="dashboard-grid">
+    <div class="intro-message">
+      <h2>Finding the jobs that suits you</h2>
+      <p>We are dedicated to help you find a job that can help improve your skills</p>
+      <div class="ai-recommendation">
+        <h4>AI Career Tip</h4>
+        <p>{{aiCareerTip}}</p>
+      </div>
+    </div>
+
+    <!-- Enhanced Notifications -->
+    <div class="notifications">
+      <h2>🔔 Notifications</h2>
+      <div class="notification-list">
+        <div class="notification" *ngFor="let item of notifications" [class.unread]="!item.read"
+          [class.urgent]="item.priority === 'high'">
+          <div class="notification-icon">
+            {{item.type === 'application' ? '📨' : 'ℹ️'}}
+          </div>
+          <div class="notification-content">
+            <p class="notification-title">{{item.name}}</p>
+            <p class="notification-company">{{item.from}}</p>
+            <small>{{item.date}}</small>
+          </div>
+          <button class="dismiss-btn" (click)="dismissNotification(item)">×</button>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="jobs">
-  <div class="job" *ngFor="let item of jobs">
-    <p>{{item.name}}</p>
-    <p>{{item.company}}</p>
-    <p>{{item.skillsMatch}}%</p>
-    <button id="apply">Apply</button>
+  <!-- Add Stats Section -->
+  <div class="stats-grid">
+    <div class="stat-card applied">
+      <div class="stat-content">
+        <div class="stat-icon">📨</div>
+        <div class="stat-info">
+          <h3>{{ jobsApplied }}</h3>
+          <p>Jobs Applied</p>
+        </div>
+        <div class="stat-progress">
+          <div class="progress-bar" [style.width]="applicationProgress + '%'"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card interviews">
+      <div class="stat-content">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info">
+          <h3>{{ interviews }}</h3>
+          <p>Interviews</p>
+        </div>
+        <div class="stat-trend">
+          <span [class.positive]="interviewTrend >= 0">↑ {{ interviewTrend }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card offers">
+      <div class="stat-content">
+        <div class="stat-icon">💼</div>
+        <div class="stat-info">
+          <h3>{{ offersReceived }}</h3>
+          <p>Offers Received</p>
+        </div>
+        <div class="offer-badges">
+          <span class="badge" *ngFor="let offer of recentOffers">{{ offer }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card profile">
+      <div class="stat-content">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <h3>{{ profileStrength }}%</h3>
+          <p>Profile Strength</p>
+        </div>
+        <div class="progress-circle" [style.--progress]="profileStrength">
+          {{ profileStrength }}%
+        </div>
+      </div>
+    </div>
+  </div> <!-- Closing stats-grid -->
+
+  <!-- Modified Jobs Section with Color -->
+  <div class="jobs">
+    <div class="jobs-header" style="background: linear-gradient(135deg, #2389da, #5558da);">
+      <h2 style="color: white;">Recommended Jobs</h2>
+      <div class="search-bar">
+        <input type="text" [(ngModel)]="jobSearch" placeholder="Search jobs...">
+        <button class="search-btn">🔍</button>
+      </div>
+    </div>
+
+    <div class="job-cards">
+      <div class="job-card" *ngFor="let item of filteredJobs">
+        <div class="job-header">
+          <div class="company-logo"></div>
+          <div class="job-info">
+            <h3>{{item.name}}</h3>
+            <p class="company">{{item.company}}</p>
+          </div>
+          <div class="match-percent" [style.--percent]="item.skillsMatch">
+            {{item.skillsMatch}}%
+          </div>
+        </div>
+        <div class="job-details">
+          <p class="deadline">⏳ Apply before {{item.deadline | date}}</p>
+          <div class="skills">
+            <span class="skill-tag" *ngFor="let skill of item.keySkills">{{skill}}</span>
+          </div>
+        </div>
+        <button class="apply-btn" (click)="redirectToApplyJob()">Apply Now</button>
+      </div>
+    </div>
   </div>
-</div>
+</div> <!-- Closing body -->

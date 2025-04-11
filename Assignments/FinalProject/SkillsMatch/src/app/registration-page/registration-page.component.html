@@ -11,14 +11,32 @@
     </div>
     <div class="password"><label for="password">Password: </label>
       <input type="password" name="password" id="password" formControlName="password">
+
     </div>
 
     <div class="role-buttons">
-      <button (onclick)="onRoleSelected('recruiter')">Recruiter</button>
-      <button (onclick)="onRoleSelected('JobSeeker')">Job Seeker</button>
+      <div class="role-buttons">
+        <button [ngClass]="{ 'active': selectedRole === 'recruiter' }" (click)="onRoleSelected('recruiter')">
+          Recruiter
+        </button>
+
+        <button [ngClass]="{ 'active': selectedRole === 'JobSeeker' }" (click)="onRoleSelected('JobSeeker')">
+          Job Seeker
+        </button>
+      </div>
+
     </div>
     <button type="submit" [disabled]="!myForm.valid">
       Submit
     </button>
+    <p class="password-requirements">
+      <strong>Password Requirements:</strong>
+      <ul>
+        <li>Must be at least 8 characters long</li>
+        <li>Must include at least one uppercase letter (A–Z)</li>
+        <li>Must include at least one lowercase letter (a–z)</li>
+        <li>Must include at least one number (0–9)</li>
+        <li>Must include at least one special character: <code>$ ! % * ? & # ^ + =</code></li>
+      </ul>
   </form>
 </div>

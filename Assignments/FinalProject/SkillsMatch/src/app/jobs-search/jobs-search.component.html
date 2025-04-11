@@ -1,65 +1,118 @@
-<div class="main">
-  <div class="container">
-    <div class="filters-and-jobs">
-      <!-- Filters Section (Left) -->
-      <div class="filters">
-        <h1>Job Search</h1>
-        <form [formGroup]="jobSearchForm" (ngSubmit)="onSearch()">
+<div class="job-search-container">
+  <div class="search-layout">
+    <!-- Filters Section -->
+    <div class="filters-section">
+      <h2 class="section-title">Refine Your Search</h2>
+      <form [formGroup]="jobSearchForm" (ngSubmit)="onSearch()" class="filter-form">
 
-          <!-- Salary Range -->
-          <div class="form-group">
-            <label for="salaryRange">Salary Range ($)</label>
-            <input type="range" id="salaryRange" formControlName="salaryRange" min="0" max="200000" step="5000"
-              class="form-control-range">
-            <p>Salary: ${{ jobSearchForm.get('salaryRange')?.value }}</p>
+        <!-- Search Term -->
+        <div class="form-group">
+          <label for="searchTerm">Keywords</label>
+          <input type="text" id="searchTerm" formControlName="searchTerm"
+                 placeholder="Job title, skills, or company">
+        </div>
+
+        <!-- Salary Range -->
+        <div class="form-group">
+          <label for="salaryRange">Salary Range: ${{ jobSearchForm.get('salaryRange')?.value | number }}</label>
+          <div class="range-container">
+            <span>$0</span>
+            <input type="range" id="salaryRange" formControlName="salaryRange"
+                   min="0" max="200000" step="5000" class="range-slider">
+            <span>$200K+</span>
           </div>
+        </div>
 
-          <!-- Experience Level -->
-          <div class="form-group">
-            <label for="experience">Experience Level</label>
-            <select id="experience" formControlName="experience" class="form-control">
-              <option *ngFor="let level of experienceLevels" [value]="level">{{ level }}</option>
-            </select>
-          </div>
+        <!-- Experience Level -->
+        <div class="form-group">
+          <label for="experience">Experience Level</label>
+          <select id="experience" formControlName="experience">
+            <option *ngFor="let level of experienceLevels" [value]="level">{{ level }}</option>
+          </select>
+        </div>
 
-          <!-- Location -->
-          <div class="form-group">
-            <label for="location">Location</label>
-            <input type="text" id="location" formControlName="location" class="form-control" placeholder="Enter location">
-          </div>
+        <!-- Location -->
+        <div class="form-group">
+          <label for="location">Location</label>
+          <input type="text" id="location" formControlName="location"
+                 placeholder="City or remote">
+        </div>
 
-          <!-- Job Type -->
-          <div class="form-group">
-            <label for="jobType">Job Type</label>
-            <select id="jobType" formControlName="jobType" class="form-control">
-              <option *ngFor="let type of jobTypes" [value]="type">{{ type }}</option>
-            </select>
-          </div>
+        <!-- Job Type -->
+        <div class="form-group">
+          <label for="jobType">Job Type</label>
+          <select id="jobType" formControlName="jobType">
+            <option *ngFor="let type of jobTypes" [value]="type">{{ type }}</option>
+          </select>
+        </div>
 
-          <button type="submit" [disabled]="jobSearchForm.invalid" class="btn btn-primary">Search</button>
-        </form>
+        <button type="submit" class="search-btn" [disabled]="jobSearchForm.invalid">
+          Search Jobs
+        </button>
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-section">
+      <!-- AI Search -->
+      <div class="ai-search-container">
+        <h3 class="ai-title">AI Job Match Assistant</h3>
+        <div class="ai-search-box">
+          <input type="text" [(ngModel)]="aiQuery" placeholder="Which jobs fit my skillset?">
+          <button class="ai-btn" (click)="askAI()">Ask AI</button>
+        </div>
       </div>
 
-      <!-- Jobs Section (Right) -->
-      <div class="jobs">
-        <p>Ask AI</p>
-        <div class="ai-search">
-          <input type="text" id="ai" placeholder="Which jobs fit my skillset"><span>Ask</span>
-        </div>
-        <div class="recommended-items">
-          <div class="job" *ngFor="let item of jobs">
-            <p>{{item.name}}</p>
-            <p>{{item.company}}</p>
-            <p>{{item.skillsMatch}}%</p>
-            <button id="apply">Apply</button>
+      <!-- Recommended Jobs -->
+      <div class="jobs-section">
+        <h3 class="section-title">Recommended For You</h3>
+        <div class="job-cards">
+          <div class="job-card" *ngFor="let job of recommendedJobs">
+            <div class="job-header">
+              <h4>{{job.title}}</h4>
+              <span class="company">{{job.company}}</span>
+            </div>
+            <div class="job-details">
+              <span class="salary">${{job.salary | number}}/year</span>
+              <span class="location">{{job.location}}</span>
+            </div>
+            <div class="match-badge" [style.--match]="job.matchScore">
+              {{job.matchScore}}% Match
+            </div>
+            <div class="job-actions">
+              <button class="apply-btn">Quick Apply</button>
+              <button class="save-btn">Save</button>
+            </div>
           </div>
         </div>
-        <div class="job-items">
-          <div class="job" *ngFor="let item of jobs">
-            <p>{{item.name}}</p>
-            <p>{{item.company}}</p>
-            <p>{{item.skillsMatch}}%</p>
-            <button id="apply">Apply</button>
+      </div>
+
+      <!-- All Job Listings -->
+      <div class="jobs-section">
+        <h3 class="section-title">Available Positions ({{filteredJobs.length}})</h3>
+        <div class="job-listings">
+          <div class="job-listing" *ngFor="let job of filteredJobs">
+            <div class="job-content">
+              <div class="job-info">
+                <h4>{{job.title}}</h4>
+                <p class="company">{{job.company}}</p>
+                <div class="job-meta">
+                  <span class="salary">${{job.salary | number}}</span>
+                  <span class="location">{{job.location}}</span>
+                  <span class="type">{{job.type}}</span>
+                </div>
+              </div>
+              <div class="match-score">
+                <div class="score-circle" [style.--score]="job.matchScore">
+                  {{job.matchScore}}%
+                </div>
+                <small>Match</small>
+              </div>
+            </div>
+            <div class="job-actions">
+              <button class="apply-btn">Apply Now</button>
+              <button class="details-btn">View Details</button>
+            </div>
           </div>
         </div>
       </div>

@@ -194,3 +194,266 @@
     gap: 15px;
   }
 }
+/* AI Analytics Section - Blends with existing style */
+.ai-analytics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.ai-analytics:hover {
+  transform: translateY(-3px);
+}
+
+.ai-card {
+  padding: 1.5rem;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #2389da, #5558da);
+}
+
+/* Predictive Analytics */
+.predictive-chart {
+  background: rgba(245, 245, 245, 0.9);
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.ai-summary {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(255, 95, 109, 0.05), rgba(35, 137, 218, 0.05));
+  border-radius: 8px;
+  border: 1px solid rgba(35, 137, 218, 0.1);
+}
+
+/* Anomaly Detection */
+.alert {
+  background: rgba(255, 95, 109, 0.1);
+  color: #ff5f6d;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  border: 1px solid rgba(255, 95, 109, 0.3);
+  border-radius: 8px;
+  font-size: 0.9em;
+}
+
+/* Skill Gap Analysis */
+.skill-gap-chart {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  position: relative;
+  height: 300px;
+}
+
+.recommendations {
+  margin-top: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(255, 207, 113, 0.05), rgba(255, 95, 109, 0.05));
+  border-radius: 8px;
+  border: 1px solid rgba(255, 95, 109, 0.1);
+}
+
+.recommendations h4 {
+  color: #5558da;
+  margin-top: 0;
+  font-size: 1.1em;
+}
+
+.recommendations ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5rem 0;
+}
+
+.recommendations li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  font-size: 0.95em;
+  color: #444;
+}
+
+.recommendations li:last-child {
+  border-bottom: none;
+}
+
+/* Chart Enhancements */
+canvas {
+  transition: opacity 0.3s ease;
+}
+
+canvas:hover {
+  opacity: 0.9;
+}
+
+/* Responsive AI Cards */
+@media (max-width: 768px) {
+  .ai-analytics {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+
+  .ai-card {
+    margin-bottom: 1.5rem;
+  }
+
+  .skill-gap-chart {
+    height: 250px;
+  }
+}
+
+/* Color Consistency Enhancements */
+.ai-card h3 {
+  color: #5558da;
+  margin-top: 0;
+  font-size: 1.2em;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(85, 88, 218, 0.1);
+}
+
+/* Animation Additions */
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
+.alert {
+  animation: pulse 2s infinite;
+}
+
+/* Tooltip Styling Consistency */
+.chartjs-tooltip {
+  background: linear-gradient(135deg, #5558da, #2389da) !important;
+  color: white !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1) !important;
+}
+/* Enhanced CSS */
+.search-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.8rem 2.5rem 0.8rem 1rem;
+  border: 2px solid #2389da;
+  border-radius: 25px;
+  font-size: 1rem;
+}
+
+.search-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #2389da;
+}
+
+.expandable-table tr.expanded-row {
+  background: #f8f9fa;
+}
+
+.expanded-content {
+  padding: 1rem;
+  border-top: 2px solid #eee;
+}
+
+.expand-btn {
+  background: #2389da;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.expand-btn:hover {
+  transform: scale(1.1);
+}
+
+.notifications-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+  padding: 1.5rem;
+}
+
+.notification {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-left: 4px solid transparent;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.notification.unread {
+  background: rgba(35, 137, 218, 0.05);
+  border-left-color: #2389da;
+}
+
+.notification.warning {
+  border-left-color: #ff5f6d;
+  background: rgba(255, 95, 109, 0.05);
+}
+
+.notification-icon {
+  font-size: 1.5rem;
+  margin-right: 1rem;
+}
+
+.notification-content {
+  flex-grow: 1;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.clear-btn {
+  background: #ff5f6d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+}
