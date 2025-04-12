@@ -1,7 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
+html, body { height: 100%;}
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
   -webkit-font-feature-settings: "liga" 1; /* Enable ligatures */
   font-feature-settings: "liga" 1; /* Vendor prefix for older browsers */ }
+
+/* src/styles.css */
+:root {
+  --primary-blue: #2389da;
+  --primary-red: #ff5f6d;
+  --accent-yellow: #ffc371;
+  --background: #f8f9fa;
+  --text-dark: #2c3e50;
+  --text-light: #ffffff;
+  --success-green: #4CAF50;
+  --warning-orange: #FF9800;
+  --border-radius: 15px;
+  --shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
 

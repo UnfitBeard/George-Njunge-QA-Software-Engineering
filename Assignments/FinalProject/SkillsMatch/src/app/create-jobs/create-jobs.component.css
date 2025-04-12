@@ -1,100 +1,152 @@
-/* Common Styles */
-body {
-  font-family: Arial, sans-serif;
-  color: #333;
-  margin: 0;
-  padding: 0;
-}
-
-h1, h2, h3 {
-  color: #555;
-}
-
-h1 {
-  font-size: 32px;
-  margin-bottom: 20px;
-}
-
-/* Form Styles */
-.container {
-  width: 100%;
+/* job-creation.component.css */
+.job-creation-container {
   max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
 }
 
-form {
-  background: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+.creation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.creation-header h2 {
+  color: var(--primary-blue);
+  margin: 0;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--primary-blue);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.job-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-section {
+  background: var(--background);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+}
+
+.form-section h3 {
+  color: var(--primary-blue);
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 }
 
-label {
-  font-size: 16px;
-  color: #555;
+.form-group label {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-dark);
 }
 
-input[type="text"], input[type="number"], input[type="date"], select, textarea {
+.form-group input,
+.form-group select,
+.form-group textarea {
   width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
-textarea {
-  min-height: 150px;
+.form-group textarea {
+  min-height: 120px;
   resize: vertical;
 }
 
-input[type="range"] {
-  width: 100%;
+.form-row {
+  display: flex;
+  gap: 1.5rem;
 }
 
-.error {
-  color: red;
-  font-size: 12px;
+.form-row .form-group {
+  flex: 1;
 }
 
-/* Submit Button Styles */
-.btn-primary {
-  background: linear-gradient(135deg, #5558da, #2389da);
-  color: white;
+.salary-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.salary-inputs input {
+  flex: 1;
+}
+
+.salary-inputs span {
+  color: #666;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn {
+  padding: 0.8rem 1.5rem;
   border: none;
-  padding: 12px 20px;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background 0.3s ease;
-  width: 100%;
-  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-.btn-primary:disabled {
-  background: #ddd;
+.btn.cancel {
+  background: var(--background);
+  color: var(--text-dark);
+}
+
+.btn.submit {
+  background: var(--primary-blue);
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.btn:disabled {
+  background: #ccc;
   cursor: not-allowed;
+  transform: none;
 }
 
-.btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2389da, #5558da);
-}
-
-/* Responsive Layout */
-@media (max-width: 1024px) {
-  .container {
-    width: 90%;
-  }
-}
-
+/* Responsive adjustments */
 @media (max-width: 768px) {
-  .container {
-    width: 100%;
-    padding: 15px;
+  .job-creation-container {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 1rem;
   }
 }

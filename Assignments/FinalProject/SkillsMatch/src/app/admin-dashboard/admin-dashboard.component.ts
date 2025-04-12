@@ -242,6 +242,9 @@ export class AdminDashboardComponent {
   toggleUserExpand(user: any) {
     user.isExpanded = !user.isExpanded;
   }
+  toggleJobExpand(job:any) {
+    job.isExpanded = !job.isExpanded
+  }
 
   dismissNotification(notification: any) {
     this.notifications = this.notifications.filter(n => n.id !== notification.id);
@@ -259,9 +262,19 @@ export class AdminDashboardComponent {
     }
   }
 
-  onDelete(userToDelete: any): void {
-    this.users = this.users.filter(user => user.id !== userToDelete.id);
+  onDelete(userOrJob: any): void {
+    if (userOrJob && userOrJob.id) {
+      if (userOrJob.hasOwnProperty('role')) {
+        // Deleting a user
+        this.users = this.users.filter(user => user.id !== userOrJob.id);
+      } else if (userOrJob.hasOwnProperty('title')) {
+        // Deleting a job
+        this.jobs = this.jobs.filter(job => job.id !== userOrJob.id);
+      }
+    }
   }
+
+
 
   onEdit(userToEdit: any): void {
 
@@ -271,6 +284,4 @@ export class AdminDashboardComponent {
   constructor(private cdr: ChangeDetectorRef) { }
 
   ngOnInit() { }
-
-
 }

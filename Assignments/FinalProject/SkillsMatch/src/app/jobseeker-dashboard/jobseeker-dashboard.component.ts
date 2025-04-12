@@ -7,7 +7,7 @@ import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-jobseeker-dashboard',
-  imports: [CommonModule, BaseChartDirective, FormsModule],
+  imports: [CommonModule, BaseChartDirective, FormsModule, RouterLink],
   templateUrl: './jobseeker-dashboard.component.html',
   styleUrls: ['./jobseeker-dashboard.component.css']
 })

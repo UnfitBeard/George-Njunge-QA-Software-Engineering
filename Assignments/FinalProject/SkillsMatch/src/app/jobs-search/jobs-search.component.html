@@ -8,8 +8,7 @@
         <!-- Search Term -->
         <div class="form-group">
           <label for="searchTerm">Keywords</label>
-          <input type="text" id="searchTerm" formControlName="searchTerm"
-                 placeholder="Job title, skills, or company">
+          <input type="text" id="searchTerm" formControlName="searchTerm" placeholder="Job title, skills, or company">
         </div>
 
         <!-- Salary Range -->
@@ -17,8 +16,8 @@
           <label for="salaryRange">Salary Range: ${{ jobSearchForm.get('salaryRange')?.value | number }}</label>
           <div class="range-container">
             <span>$0</span>
-            <input type="range" id="salaryRange" formControlName="salaryRange"
-                   min="0" max="200000" step="5000" class="range-slider">
+            <input type="range" id="salaryRange" formControlName="salaryRange" min="0" max="200000" step="5000"
+              class="range-slider">
             <span>$200K+</span>
           </div>
         </div>
@@ -34,8 +33,7 @@
         <!-- Location -->
         <div class="form-group">
           <label for="location">Location</label>
-          <input type="text" id="location" formControlName="location"
-                 placeholder="City or remote">
+          <input type="text" id="location" formControlName="location" placeholder="City or remote">
         </div>
 
         <!-- Job Type -->
@@ -46,7 +44,7 @@
           </select>
         </div>
 
-        <button type="submit" class="search-btn" [disabled]="jobSearchForm.invalid">
+        <button type="submit" class="search-btn">
           Search Jobs
         </button>
       </form>
@@ -76,11 +74,11 @@
               <span class="salary">${{job.salary | number}}/year</span>
               <span class="location">{{job.location}}</span>
             </div>
-            <div class="match-badge" [style.--match]="job.matchScore">
+            <div *ngIf="isLoggedIn === true" class="match-badge" [style.--match]="job.matchScore">
               {{job.matchScore}}% Match
             </div>
             <div class="job-actions">
-              <button class="apply-btn">Quick Apply</button>
+              <button class="apply-btn" (click)="onApply(selectedJob)">Quick Apply</button>
               <button class="save-btn">Save</button>
             </div>
           </div>
@@ -110,11 +108,55 @@
               </div>
             </div>
             <div class="job-actions">
-              <button class="apply-btn">Apply Now</button>
-              <button class="details-btn">View Details</button>
+              <button class="apply-btn" (click)="onApply(selectedJob)">Apply Now</button>
+              <button class="details-btn" (click)="openJobDetailsModal(job)">View Details</button>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <!-- Add this right before the closing tags of your job-search-container -->
+  <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()"></div>
+
+  <div class="job-details-modal" *ngIf="showModal">
+    <div class="modal-content">
+      <button class="close-btn" (click)="closeModal()">&times;</button>
+
+      <div class="job-header">
+        <h2>{{ selectedJob?.title }}</h2>
+        <h3>{{ selectedJob?.company }}</h3>
+        <div class="job-meta">
+          <span class="location">{{ selectedJob?.location }}</span>
+          <span class="salary">${{ selectedJob?.salary | number }} per year</span>
+          <span class="type">{{ selectedJob?.type }}</span>
+        </div>
+      </div>
+
+      <div class="job-content">
+        <div class="job-section">
+          <h4>Job Description</h4>
+          <p>{{ selectedJob?.title }}</p>
+        </div>
+
+        <div class="job-section">
+          <h4>Requirements</h4>
+          <ul>
+            <li *ngFor="let requirement of selectedJob?.skills">{{ requirement }}</li>
+          </ul>
+        </div>
+
+        <div class="job-section">
+          <h4>Benefits</h4>
+          <ul>
+            <li *ngFor="let benefit of selectedJob?.benefits">{{ benefit }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="job-actions">
+        <button class="apply-btn" (click)="onApply(selectedJob)">Apply Now</button>
+        <button class="save-btn" (click)="onSave(selectedJob)">Save Job</button>
       </div>
     </div>
   </div>

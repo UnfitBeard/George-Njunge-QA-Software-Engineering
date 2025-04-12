@@ -149,9 +149,51 @@
 
 <!-- Enhanced Jobs Table -->
 <h2>Manage Jobs</h2>
+
 <table class="data-table expandable-table">
-  <!-- Similar structure to users table with job-specific fields -->
+  <thead>
+    <tr>
+      <th></th>
+      <th>Title</th>
+      <th>Company</th>
+      <th>Status</th>
+      <th>Applications</th>
+      <th>Posted</th>
+      <th>Deadline</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let job of jobs">
+      <tr>
+        <td>
+          <button class = "expand-btn" (click)="toggleJobExpand(job)">
+            {{ job.isExpanded ? '−' : '+' }}
+          </button>
+        </td>
+        <td>{{ job.title }}</td>
+        <td>{{ job.company }}</td>
+        <td>{{ job.status }}</td>
+        <td>{{ job.applications }}</td>
+        <td>{{ job.postedDate | date }}</td>
+        <td>{{ job.deadline | date }}</td>
+        <td>
+          <button class="action-btn">Edit</button>
+          <button class="action-btn danger" (click)="onDelete(job)">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="job.isExpanded" class="expanded-row">
+        <td colspan="8">
+          <div class="expanded-content">
+            <strong>Description:</strong>
+            <p>{{ job.description }}</p>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
 </table>
+
 
 <!-- Notifications Section -->
 <h2>Notifications</h2>

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-jobs-search',
@@ -10,8 +11,36 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
   styleUrls: ['./jobs-search.component.css']
 })
 export class JobsSearchComponent {
+  isLoggedIn: boolean = false;
   jobSearchForm: FormGroup;
   aiQuery = '';
+  showModal = false;
+  selectedJob: any = null;
+
+
+//Job details Modal Functionalities
+  openJobDetailsModal(job: any): void {
+    this.selectedJob = job;
+    this.showModal = true;
+    document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    document.body.style.overflow = ''; // Re-enable scrolling
+    this.selectedJob = null;
+  }
+
+  onApply(job: any): void {
+    this.router.navigate(['job-application'])
+    console.log('Applying to:', job.title);
+    this.closeModal();
+  }
+
+  onSave(job: any): void {
+    console.log('Saving job:', job.title);
+  }
+
 
   experienceLevels = ['Entry Level', 'Mid Level', 'Senior Level', 'Manager', 'Executive'];
   jobTypes = ['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote'];
@@ -72,7 +101,7 @@ export class JobsSearchComponent {
     }
   ];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router: Router) {
     this.jobSearchForm = this.fb.group({
       searchTerm: ['', Validators.required],
       salaryRange: [80000, Validators.required],
@@ -83,10 +112,10 @@ export class JobsSearchComponent {
   }
 
   onSearch() {
-    if (this.jobSearchForm.valid) {
+    if (this.jobSearchForm) {
       console.log('Search filters:', this.jobSearchForm.value);
       // Implement actual search logic here
-      // this.filterJobs();
+      this.filterJobs();
     }
   }
 

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-job-application',
@@ -9,32 +10,43 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
   styleUrl: './job-application.component.css'
 })
 export class JobApplicationComponent {
-  jobApplicationForm = new FormGroup({
-    cv: new FormControl<File | null>(null), // The FormControl for the file input
-    coverLetter: new FormControl(''), // The FormControl for the cover letter textarea
-  });
+  jobApplicationForm: FormGroup;
+  isSubmitting = false; // Add this property
+
+  constructor(private fb: FormBuilder, private router:Router) {
+    this.jobApplicationForm = this.fb.group({
+      cv: [null, [Validators.required]],
+      coverLetter: ['', [Validators.required, Validators.maxLength(2000)]]
+    });
+  }
+
+  get coverLetter() {
+    return this.jobApplicationForm.get('coverLetter');
+  }
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.jobApplicationForm.patchValue({
-        cv: file,
-      });
+      if (file.size > 5 * 1024 * 1024) {
+        this.jobApplicationForm.get('cv')?.setErrors({ tooLarge: true });
+        return;
+      }
+      this.jobApplicationForm.patchValue({ cv: file });
     }
   }
 
   onSubmit() {
-    const formData = new FormData();
+    if (this.jobApplicationForm.valid) {
+      this.isSubmitting = true; // Set to true when submitting
 
-    const cvFile = this.jobApplicationForm.get('cv')?.value;
-
-    if (cvFile) {
-      console.log('CV Selected:', cvFile);
-    } else {
-      console.error('No CV file selected');
+      // Simulate API call (replace with your actual submission logic)
+      setTimeout(() => {
+        console.log('Form submitted:', this.jobApplicationForm.value);
+        this.isSubmitting = false; // Reset when done
+        // You might want to reset the form here too:
+        // this.jobApplicationForm.reset();
+      }, 1500);
+      this.router.navigate(['job-search'])
     }
-    const coverLetter = this.jobApplicationForm.get('coverLetter')?.value;
-    console.log('Cover Letter:', coverLetter);
-    console.log('Form Values:', this.jobApplicationForm.value);
   }
 }

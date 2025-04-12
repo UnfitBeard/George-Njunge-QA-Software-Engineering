@@ -1,15 +1,34 @@
 <form [formGroup]="jobApplicationForm" (ngSubmit)="onSubmit()" class="job-application-form">
+  <!-- CV Upload -->
   <div class="form-group">
-    <label for="cv">Upload CV</label>
-    <input type="file" name="cv" id="cv" accept=".doc, .docx, .pdf" (change)="onFileSelected($event)" />
+    <label for="cv" class="form-label">Upload CV (PDF, DOC, DOCX)*</label>
+    <input type="file" id="cv" formControlName="cv" accept=".pdf,.doc,.docx" (change)="onFileSelected($event)" required
+      class="form-control">
+    <small class="hint">Max file size: 5MB</small>
+    <div *ngIf="jobApplicationForm.get('cv')?.errors?.['required'] && jobApplicationForm.get('cv')?.touched"
+      class="error-message">
+      CV is required
+    </div>
   </div>
 
+  <!-- Cover Letter -->
   <div class="form-group">
-    <label for="cover-letter">Cover Letter</label>
-    <textarea name="cover-letter" id="cover-letter" formControlName="coverLetter"></textarea>
+    <label for="cover-letter" class="form-label">Cover Letter*</label>
+    <textarea id="cover-letter" formControlName="coverLetter"
+      placeholder="Explain why you're a good fit for this position..." rows="6" required
+      class="form-control"></textarea>
+    <div *ngIf="coverLetter?.invalid && (coverLetter?.dirty || coverLetter?.touched)" class="error-message">
+      <div *ngIf="coverLetter?.errors?.['required']">
+        Cover letter is required
+      </div>
+      <div *ngIf="coverLetter?.errors?.['maxlength']">
+        Maximum 2000 characters allowed
+      </div>
+    </div>
   </div>
 
-  <button type="submit" [disabled]="jobApplicationForm.invalid" class="btn-submit">
-    Submit
+  <button type="submit" class="btn btn-primary submit-button" [disabled]="jobApplicationForm.invalid || isSubmitting">
+    <span *ngIf="!isSubmitting">Submit Application</span>
+    <span *ngIf="isSubmitting">Submitting...</span>
   </button>
 </form>

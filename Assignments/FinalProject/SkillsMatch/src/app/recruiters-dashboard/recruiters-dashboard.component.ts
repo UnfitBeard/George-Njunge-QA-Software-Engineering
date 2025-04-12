@@ -1,17 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Chart, ChartConfiguration } from 'chart.js';
 import { Router } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-recruiters-dashboard',
-  imports:[FormsModule, BaseChartDirective, CommonModule],
+  imports:[ReactiveFormsModule,FormsModule, BaseChartDirective, CommonModule, CommonModule],
   templateUrl: './recruiters-dashboard.component.html',
   styleUrls: ['./recruiters-dashboard.component.css']
 })
 export class RecruitersDashboardComponent {
+
+deleteJob(jobName: { id: number; title: string; description: string; applicants: any[]; deadline: string; completion: number; status: string; }) {
+  this.activeJobs = this.activeJobs.filter(job => job !== jobName)
+}
   // Stats Section Data
   postedJobs = Array(8).fill({}).map((_, i) => ({
     id: i + 1,
@@ -150,6 +154,77 @@ export class RecruitersDashboardComponent {
     { id: 3, name: 'Michael Chen' }
   ];
 
+  //Job Editing Modal
+  // Add these to your component class
+showEditJobModal = false;
+currentJobToEdit: any = null;
+editJobForm: FormGroup;
+
+constructor(private fb: FormBuilder, private router:Router) {
+  this.editJobForm = this.fb.group({
+    title: ['', Validators.required],
+    company: ['', Validators.required],
+    description: ['', Validators.required],
+    minSalary: [null, Validators.required],
+    maxSalary: [null, Validators.required],
+    jobType: ['Full-time', Validators.required],
+    deadline: ['', Validators.required],
+    location: ['', Validators.required],
+    skills: ['', Validators.required]
+  });
+}
+
+// Update your existing edit button to call this method
+openEditJobModal(job: any) {
+  this.currentJobToEdit = job;
+  this.editJobForm.patchValue({
+    title: job.title,
+    company: job.company,
+    description: job.description,
+    minSalary: job.salaryRange?.min || job.salary || 0,
+    maxSalary: job.salaryRange?.max || job.salary || 0,
+    jobType: job.type || 'Full-time',
+    deadline: this.formatDateForInput(job.deadline),
+    location: job.location || '',
+    skills: job.skills?.join(', ') || ''
+  });
+  this.showEditJobModal = true;
+}
+
+closeEditJobModal() {
+  this.showEditJobModal = false;
+  this.currentJobToEdit = null;
+  this.editJobForm.reset();
+}
+
+saveJobChanges() {
+  if (this.editJobForm.valid && this.currentJobToEdit) {
+    const updatedJob = {
+      ...this.currentJobToEdit,
+      ...this.editJobForm.value,
+      skills: this.editJobForm.value.skills.split(',').map((s: string) => s.trim()),
+      salaryRange: {
+        min: this.editJobForm.value.minSalary,
+        max: this.editJobForm.value.maxSalary
+      }
+    };
+
+    // Update the job in your array (replace with API call in real app)
+    const index = this.activeJobs.findIndex(j => j.id === this.currentJobToEdit.id);
+    if (index !== -1) {
+      this.activeJobs[index] = updatedJob;
+    }
+
+    this.closeEditJobModal();
+  }
+}
+
+private formatDateForInput(date: string | Date): string {
+  if (!date) return '';
+  const d = new Date(date);
+  return d.toISOString().split('T')[0];
+}
+
   // Chart Options
   barChartOptions: ChartConfiguration<'bar'>['options'] = { responsive: true };
   lineChartOptions: ChartConfiguration<'line'>['options'] = { responsive: true };
@@ -192,18 +267,22 @@ export class RecruitersDashboardComponent {
   }
 
   viewApplication(application: any) {
-    this.router.navigate(['profile-viewer'])
+    this.router.navigate(['profile-viewer'],
+      {state: {candidate: application.candidate}}
+    )
     console.log('Viewing application:', application);
   }
 
   contactCandidate(application: any) {
-    this.router.navigate(['chat'])
+    this.router.navigate(['chat'], {
+      state: {candidate: application.candidate}
+    })
     console.log('Contacting candidate:', application);
   }
 
   createNewJob() {
     console.log('Creating new job...');
+    this.router.navigate(['create-jobs'])
   }
 
-  constructor(private router:Router) {}
 }

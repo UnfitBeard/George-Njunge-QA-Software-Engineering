@@ -52,6 +52,8 @@
           </div>
           <button class="dismiss-btn" (click)="dismissNotification(item)">×</button>
         </div>
+        <button class="see-more-btn" [routerLink]="['/notifications']" routerLinkActive="router-link-active">See more
+          Notifications</button>
       </div>
     </div>
   </div>
@@ -108,6 +110,12 @@
           {{ profileStrength }}%
         </div>
       </div>
+      <div class="profile-buttons" style="display: flex; flex-direction: row; gap: 10px;">
+        <button class="see-more-btn" [routerLink]="['/profile-viewer']" routerLinkActive="router-link-active">View
+          profile</button>
+        <button class="see-more-btn" [routerLink]="['/profile-editor']" routerLinkActive="router-link-active">Edit
+          profile</button>
+      </div>
     </div>
   </div> <!-- Closing stats-grid -->
 
@@ -142,5 +150,7 @@
         <button class="apply-btn" (click)="redirectToApplyJob()">Apply Now</button>
       </div>
     </div>
+    <button class="see-more-btn" [routerLink]="['/job-search']" routerLinkActive="router-link-active">See more
+      Jobs</button>
   </div>
 </div> <!-- Closing body -->

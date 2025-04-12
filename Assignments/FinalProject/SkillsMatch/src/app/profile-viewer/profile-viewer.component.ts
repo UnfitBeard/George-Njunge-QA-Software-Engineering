@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { BaseChartDirective} from 'ng2-charts'
 
@@ -74,7 +75,12 @@ export class ProfileViewerComponent {
   };
   public lineChartLegend = true;
 
-  constructor() {}
+  candidate:any;
+
+  constructor(private router: Router) {
+    const nav = router.getCurrentNavigation();
+    this.candidate = nav?.extras.state?.['candidate'];
+  }
 
   // Modal visibility toggle
   isModalVisible = false;

@@ -1,17 +1,12 @@
 /* SkillMatch AI Navbar and Footer Styling */
 
 /* Global Styles */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Roboto', 'Segoe UI', sans-serif;
-}
 
 body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  margin: 0;
 }
 
 /* Toolbar / Navigation */
@@ -25,7 +20,7 @@ body {
   z-index: 1000;
   display: flex;
   flex-wrap: wrap;
-  height: auto;
+  height: fit-content;
   min-height: 64px;
 }
 
@@ -61,6 +56,12 @@ body {
 .router-link-active {
   background-color: rgba(255, 255, 255, 0.25) !important;
   border-bottom: 3px solid white;
+}
+
+.content-wrapper {
+  flex: 1;
+  /* Add padding if needed */
+  padding: 20px 0;
 }
 
 /* Responsive Navbar */

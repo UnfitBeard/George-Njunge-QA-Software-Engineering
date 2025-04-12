@@ -54,9 +54,10 @@ textarea {
   resize: vertical;
 }
 
+
 /* Submit Button Styles */
 .btn-submit {
-  background: linear-gradient(135deg, #5558da, #2389da);
+  background-color: linear-gradient(135deg, #5558da, #2389da);
   color: white;
   border: none;
   padding: 12px 20px;

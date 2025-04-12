@@ -1,101 +1,172 @@
-<div class="intro-section">
-  <h1>Personal Information</h1>
-  <p>Fill in your personal details below.</p>
+<div class="profile-edit-container">
+  <div class="intro-section">
+    <h1>Edit Your Profile</h1>
+    <p>Complete your profile to increase your visibility to recruiters by 80%</p>
+    <div class="progress-bar">
+      <div class="progress" [style.width]="calculateProfileCompletion() + '%'"></div>
+      <span>{{ calculateProfileCompletion() }}% Complete</span>
+    </div>
+  </div>
+
+  <form [formGroup]="personalDetailsForm" (ngSubmit)="onSubmit()" class="profile-form">
+    <!-- Personal Info Section -->
+    <fieldset class="form-section">
+      <legend>Personal Information</legend>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="firstName">First Name*</label>
+          <input id="firstName" formControlName="firstName" type="text"
+                 [ngClass]="{'invalid': personalDetailsForm.get('firstName')?.invalid && personalDetailsForm.get('firstName')?.touched}" />
+          <div class="error-message" *ngIf="personalDetailsForm.get('firstName')?.invalid && personalDetailsForm.get('firstName')?.touched">
+            First name is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name*</label>
+          <input id="lastName" formControlName="lastName" type="text"
+                 [ngClass]="{'invalid': personalDetailsForm.get('lastName')?.invalid && personalDetailsForm.get('lastName')?.touched}" />
+          <div class="error-message" *ngIf="personalDetailsForm.get('lastName')?.invalid && personalDetailsForm.get('lastName')?.touched">
+            Last name is required
+          </div>
+        </div>
+
+        <div class="form-group span-2">
+          <label for="description">Professional Summary*</label>
+          <textarea id="description" formControlName="description" rows="4"
+                    placeholder="Describe your professional background, skills, and career goals (3-5 sentences)"
+                    [ngClass]="{'invalid': personalDetailsForm.get('description')?.invalid && personalDetailsForm.get('description')?.touched}"></textarea>
+          <div class="counter">{{ personalDetailsForm.get('description')?.value?.length || 0 }}/500</div>
+          <div class="error-message" *ngIf="personalDetailsForm.get('description')?.invalid && personalDetailsForm.get('description')?.touched">
+            Professional summary is required (minimum 100 characters)
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Contact Information -->
+    <fieldset class="form-section">
+      <legend>Contact Information</legend>
+      <div class="form-grid">
+        <div class="form-group" formGroupName="address">
+          <label for="location">Location*</label>
+          <input id="location" formControlName="location" type="text"
+                 placeholder="City, Country"
+                 [ngClass]="{'invalid': personalDetailsForm.get('address.location')?.invalid && personalDetailsForm.get('address.location')?.touched}" />
+          <div class="error-message" *ngIf="personalDetailsForm.get('address.location')?.invalid && personalDetailsForm.get('address.location')?.touched">
+            Location is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="telephone">Phone Number</label>
+          <input id="telephone" formControlName="telephone" type="tel"
+                 placeholder="+1 (123) 456-7890" />
+        </div>
+
+        <div class="form-group span-2">
+          <label for="linkedin">LinkedIn Profile</label>
+          <div class="input-with-icon">
+            <i class="fab fa-linkedin"></i>
+            <input id="linkedin" formControlName="linkedin" type="url"
+                   placeholder="https://linkedin.com/in/yourprofile" />
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Skills Section -->
+    <fieldset class="form-section">
+      <legend>Skills & Expertise</legend>
+      <div class="skills-container" formArrayName="skills">
+        <div *ngFor="let skill of skills.controls; let i = index" [formGroupName]="i" class="skill-card">
+          <div class="skill-header">
+            <h4>Skill #{{i + 1}}</h4>
+            <button type="button" class="remove-btn" (click)="removeSkill(i)">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="skill-{{i}}">Skill Name*</label>
+              <input id="skill-{{i}}" formControlName="skill" type="text"
+                     placeholder="e.g. Angular, Project Management"
+                     [ngClass]="{'invalid': skill.get('skill')?.invalid && skill.get('skill')?.touched}" />
+            </div>
+
+            <div class="form-group">
+              <label for="experience-{{i}}">Experience Level*</label>
+              <select id="experience-{{i}}" formControlName="experience">
+                <option value="">Select experience</option>
+                <option value="Beginner">Beginner (1-2 years)</option>
+                <option value="Intermediate">Intermediate (3-5 years)</option>
+                <option value="Advanced">Advanced (5+ years)</option>
+                <option value="Expert">Expert (8+ years)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="add-btn" (click)="addSkill()">
+          <i class="fas fa-plus"></i> Add Skill
+        </button>
+      </div>
+    </fieldset>
+
+    <!-- Projects Section -->
+    <fieldset class="form-section">
+      <legend>Projects</legend>
+      <div class="projects-container" formArrayName="projects">
+        <div *ngFor="let project of projects.controls; let j = index" [formGroupName]="j" class="project-card">
+          <div class="project-header">
+            <h4>Project #{{j + 1}}</h4>
+            <button type="button" class="remove-btn" (click)="removeProject(j)">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="projectName-{{j}}">Project Name*</label>
+              <input id="projectName-{{j}}" formControlName="projectName" type="text"
+                     placeholder="e.g. E-commerce Website"
+                     [ngClass]="{'invalid': project.get('projectName')?.invalid && project.get('projectName')?.touched}" />
+            </div>
+
+            <div class="form-group span-2">
+              <label for="projectDescription-{{j}}">Description*</label>
+              <textarea id="projectDescription-{{j}}" formControlName="projectDescription" rows="3"
+                        placeholder="Describe the project, your role, and technologies used"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="projectLink-{{j}}">Project URL</label>
+              <input id="projectLink-{{j}}" formControlName="projectLink" type="url"
+                     placeholder="https://example.com" />
+            </div>
+
+            <div class="form-group">
+              <label for="projectDate-{{j}}">Completion Date</label>
+              <input id="projectDate-{{j}}" formControlName="projectDate" type="month" />
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="add-btn" (click)="addProject()">
+          <i class="fas fa-plus"></i> Add Project
+        </button>
+      </div>
+    </fieldset>
+
+    <!-- Submit Section -->
+    <div class="form-actions">
+      <button type="button" class="cancel-btn" (click)="onCancel()">Cancel</button>
+      <button type="submit" class="submit-btn" [disabled]="personalDetailsForm.invalid">
+        Save Profile
+        <i class="fas fa-save" *ngIf="!isSubmitting"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+      </button>
+    </div>
+  </form>
 </div>
-<form [formGroup]="personalDetailsForm" (ngSubmit)="onSubmit()">
-
-  <!-- Personal Info Fields -->
-  <div>
-    <label for="firstName">First Name</label>
-    <input id="firstName" formControlName="firstName" type="text" />
-  </div>
-
-  <div>
-    <label for="lastName">Last Name</label>
-    <input id="lastName" formControlName="lastName" type="text" />
-  </div>
-
-  <div>
-    <label for="description">Description</label>
-    <textarea id="description" formControlName="description"></textarea>
-  </div>
-
-  <!-- Address -->
-  <div formGroupName="address">
-    <div>
-      <label for="location">Location</label>
-      <input id="location" formControlName="location" type="text" />
-    </div>
-    <div>
-      <label for="postalAddress">Postal Address</label>
-      <input id="postalAddress" formControlName="postalAddress" type="text" />
-    </div>
-  </div>
-
-  <div>
-    <label for="telephone">Telephone</label>
-    <input id="telephone" formControlName="telephone" type="text" />
-  </div>
-
-  <!-- Skills Section -->
-  <div class="skills" formArrayName="skills">
-    <div *ngFor="let skill of skills.controls; let i = index" [formGroupName]="i" class="form-group">
-      <div>
-        <label for="skill">Skill</label>
-        <input id="skill" formControlName="skill" type="text" />
-      </div>
-      <div>
-        <label for="experience">Experience</label>
-        <input id="experience" formControlName="experience" type="text" />
-      </div>
-      <button type="button" (click)="removeSkill(i)">Remove</button>
-    </div>
-    <button type="button" (click)="addSkill()">Add Skill</button>
-  </div>
-
-
-  <!-- Projects Section -->
-  <div class="projects" formArrayName="projects">
-    <div *ngFor="let project of projects.controls; let j = index" [formGroupName]="j" class="form-group">
-      <div>
-        <label for="projectName">Project Name</label>
-        <input id="projectName" formControlName="projectName" type="text" />
-      </div>
-      <div>
-        <label for="projectDescription">Description</label>
-        <textarea id="projectDescription" formControlName="projectDescription"></textarea>
-      </div>
-      <div>
-        <label for="projectLink">Link</label>
-        <input id="projectLink" formControlName="projectLink" type="url" />
-      </div>
-      <button type="button" (click)="removeProject(j)">Remove Project</button>
-    </div>
-    <button type="button" (click)="addProject()">Add Project</button>
-  </div>
-
-
-  <!-- Courses Section -->
-  <div class="courses" formArrayName="courses">
-    <div *ngFor="let course of courses.controls; let k = index" [formGroupName]="k" class="form-group">
-      <div>
-        <label for="courseName">Course Name</label>
-        <input id="courseName" formControlName="courseName" type="text" />
-      </div>
-      <div>
-        <label for="courseDescription">Description</label>
-        <textarea id="courseDescription" formControlName="courseDescription"></textarea>
-      </div>
-      <div>
-        <label for="courseDate">Date Obtained</label>
-        <input id="courseDate" formControlName="courseDate" type="date" />
-      </div>
-      <button type="button" (click)="removeCourse(k)">Remove Course</button>
-    </div>
-    <button type="button" (click)="addCourse()">Add Course</button>
-  </div>
-
-
-  <!-- Submit Button -->
-  <button type="submit" [disabled]="personalDetailsForm.invalid">Submit</button>
-</form>

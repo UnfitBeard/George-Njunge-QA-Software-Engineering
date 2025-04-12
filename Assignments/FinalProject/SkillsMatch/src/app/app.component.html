@@ -1,3 +1,4 @@
+<body>
 <mat-toolbar class="pink-toolbar">
   <span class="logo">SkillMatch AI</span>
 
@@ -7,20 +8,17 @@
   <button mat-button [routerLink]="['login']">Login</button>
   <button mat-button [routerLink]="['registration-page']">Register</button>
   <button mat-button [routerLink]="['job-search']">Available Jobs</button>
-  <button mat-button [routerLink]="['recruiters-dashboard']">Recruiters</button>
-  <button mat-button [routerLink]="['jobseeker-dashboard']">JobSeeker</button>
+  <button mat-button [routerLink]="['recruiters-dashboard']">Recruiters Dashboard</button>
+  <button mat-button [routerLink]="['jobseeker-dashboard']">JobSeekers Dashboard</button>
   <button mat-button [routerLink]="['profile-viewer']">View Profile</button>
   <button mat-button [routerLink]="['profile-editor']">Edit Profile</button>
   <button mat-button [routerLink]="['create-jobs']">Create Jobs</button>
-  <button mat-button [routerLink]="['job-application']">Job Application</button>
-  <button mat-button [routerLink]="['chat']">Chat</button>
   <button mat-button [routerLink]="['admin-dashboard']">Admin</button>
   <button mat-button [routerLink]="['notifications']">notifications</button>
- <button mat-button [routerLink]="['interview']">Interview</button>
- <button mat-button>About us</button>
-  <button mat-button>AI chat</button>
 </mat-toolbar>
-<router-outlet></router-outlet>
+<div class="content-wrapper">
+  <router-outlet></router-outlet>
+</div>
 <!-- Footer -->
 <footer class="blue-footer">
   <div class="footer-content">
@@ -32,3 +30,4 @@
     </div>
   </div>
 </footer>
+</body>

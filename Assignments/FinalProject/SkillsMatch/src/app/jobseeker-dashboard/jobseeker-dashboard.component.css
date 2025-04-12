@@ -1,11 +1,6 @@
-/* Consistent Color Scheme */
-:root {
-  --primary-blue: #2389da;
-  --primary-red: #ff5f6d;
-  --accent-yellow: #ffc371;
-  --background: #f8f9fa;
+.container {
+  margin: 10px;
 }
-
 /* AI Analytics Section */
 .ai-analytics {
   display: grid;
@@ -263,4 +258,11 @@
 
 button {
   border-radius: 12px;
+}
+
+.see-more-btn {
+  background-color: #2389da;
+  border: 0cap;
+  color: #eee;
+  height: 30px;
 }
