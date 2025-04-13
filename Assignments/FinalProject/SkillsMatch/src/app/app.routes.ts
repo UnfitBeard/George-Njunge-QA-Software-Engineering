@@ -12,6 +12,7 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
 import { JobseekerDashboardComponent } from './jobseeker-dashboard/jobseeker-dashboard.component';
 import { ChatComponent } from './chat/chat.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { RecruitersProfileEditorComponent } from './recruiters-profile-editor/recruiters-profile-editor.component';
 
 export const routes: Routes = [
   {path: 'login', component: LoginPageComponent},
@@ -19,6 +20,7 @@ export const routes: Routes = [
   {path: 'jobseeker-dashboard', component: JobseekerDashboardComponent},
   {path: 'profile-viewer', component: ProfileViewerComponent},
   {path: 'profile-editor', component: ProfileEditorComponent},
+  {path: 'recruiter-profile-editor', component: RecruitersProfileEditorComponent},
   {path: 'registration-page', component: RegistrationPageComponent},
   {path: 'create-jobs', component: CreateJobsComponent},
   {path: 'job-application', component: JobApplicationComponent},

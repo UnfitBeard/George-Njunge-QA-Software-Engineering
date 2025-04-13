@@ -3,10 +3,9 @@
 /* Global Styles */
 
 body {
-  min-height: 100vh;
+  min-height: fit-content;
   display: flex;
   flex-direction: column;
-  margin: 0;
 }
 
 /* Toolbar / Navigation */
@@ -69,6 +68,7 @@ body {
   .pink-toolbar {
     padding: 10px 16px;
     justify-content: center;
+    height: 100px;
   }
 
   .logo {

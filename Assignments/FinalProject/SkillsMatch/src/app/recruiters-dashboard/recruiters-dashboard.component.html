@@ -98,6 +98,7 @@
             <h3>{{recruiter.hires}}</h3>
             <p>🚀 Total Hires</p>
           </div>
+          <button class="edit-profile" (click)="onEditProfile(recruiter)">Edit Profile</button>
         </div>
       </div>
     </div>
@@ -106,12 +107,6 @@
     <div class="quick-actions">
       <button class="action-btn" (click)="openScheduleModal()">
         📅 Schedule Interview
-      </button>
-      <button class="action-btn" (click)="reviewCandidates()">
-        👥 Review Candidates
-      </button>
-      <button class="action-btn" (click)="generateReport()">
-        📊 Generate Report
       </button>
     </div>
   </div>

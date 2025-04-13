@@ -12,6 +12,9 @@ import { BaseChartDirective } from 'ng2-charts';
   styleUrls: ['./recruiters-dashboard.component.css']
 })
 export class RecruitersDashboardComponent {
+onEditProfile(recruiter: any) {
+  this.router.navigate(['recruiter-profile-editor'],{state: {recruiterData: this.recruiter}});
+}
 
 deleteJob(jobName: { id: number; title: string; description: string; applicants: any[]; deadline: string; completion: number; status: string; }) {
   this.activeJobs = this.activeJobs.filter(job => job !== jobName)
@@ -69,6 +72,8 @@ deleteJob(jobName: { id: number; title: string; description: string; applicants:
   // Recruiter Profile
   recruiter = {
     name: 'Sarah Johnson',
+    firstname: 'Sarah',
+    lastname: 'Johnson',
     company: 'Tech Innovators Inc.',
     avatar: 'https://via.placeholder.com/150',
     verified: true,
