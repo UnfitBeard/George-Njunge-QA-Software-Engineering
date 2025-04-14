@@ -18,5 +18,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
   --border-radius: 15px;
   --shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
+:root {
+  --primary-color: #4361ee;
+  --secondary-color: #3f37c9;
+  --accent-color: #4cc9f0;
+  --dark-color: #2b2d42;
+  --light-color: #f8f9fa;
+  --success-color: #4caf50;
+  --text-color: #333;
+  --text-light-dash: #6c757d;
+}
 
 

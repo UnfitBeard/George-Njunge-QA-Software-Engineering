@@ -22,7 +22,11 @@ export class LoginPageComponent {
   })
 
   onSubmit() {
-    console.log(this.myForm.value)
+    if(this.myForm.valid) {
+      console.log(this.myForm.value)
+      this.router.navigate(['admin-page'])
+      return
+    }
   }
 
 

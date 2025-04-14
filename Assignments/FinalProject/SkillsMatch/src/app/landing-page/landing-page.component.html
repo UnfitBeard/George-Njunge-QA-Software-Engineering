@@ -1,11 +1,114 @@
-<div class="container">
-  <div class="intro-p">
-    <h1>Help You Hire</h1>
-    <h1>Help You get Hired</h1>
-    <p>We are dedicated to finding the right Job/Talent for you</p>
-  </div>
+<div class="landing-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="intro-content">
+        <h1>Help You Hire</h1>
+        <h1>Help You Get Hired</h1>
+        <p class="tagline">We are dedicated to finding the right Job/Talent for you</p>
+        <div class="cta-buttons">
+          <button class="primary-btn" [routerLink]="['/job-search']" routerLinkActive="router-link-active" >Find Jobs</button>
+          <button class="secondary-btn" [routerLink]="['/recruiters-dashboard']" routerLinkActive="router-link-active" >Find Talent</button>
+        </div>
+        <div class="trust-badges">
+          <div class="badge">
+            <i class="fas fa-check-circle"></i>
+            <span>Trusted by 10,000+ companies</span>
+          </div>
+          <div class="badge">
+            <i class="fas fa-user-friends"></i>
+            <span>1M+ successful hires</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="image-hero-desktop.png" alt="Happy professionals" class="desktop-img">
+        <img src="image-hero-mobile.png" alt="Happy professionals" class="mobile-img">
+      </div>
+    </div>
+  </section>
 
-  <div class="img-intro">
-    <img src="image-hero-desktop.png" alt="img-intro">
-  </div>
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stat-card">
+        <h3>50K+</h3>
+        <p>Job Openings</p>
+      </div>
+      <div class="stat-card">
+        <h3>98%</h3>
+        <p>Match Accuracy</p>
+      </div>
+      <div class="stat-card">
+        <h3>3x</h3>
+        <p>Faster Hiring</p>
+      </div>
+      <div class="stat-card">
+        <h3>10M+</h3>
+        <p>Professionals</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works">
+    <div class="container">
+      <h2 class="section-title">How It Works</h2>
+      <div class="steps-container">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Create Your Profile</h3>
+          <p>Tell us about your skills or hiring needs</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Get Matched</h3>
+          <p>Our AI finds perfect matches in seconds</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Connect & Succeed</h3>
+          <p>Interview and make the perfect match</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="container">
+      <h2 class="section-title">Success Stories</h2>
+      <div class="testimonial-cards">
+        <div class="testimonial">
+          <div class="quote">"Found my dream job in just 2 weeks!"</div>
+          <div class="author">
+            <img src="user1.jpg" alt="Sarah J.">
+            <div>
+              <h4>Sarah J.</h4>
+              <p>UX Designer at TechCorp</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <div class="quote">"Hired 3 perfect candidates in one month."</div>
+          <div class="author">
+            <img src="user2.jpg" alt="Michael T.">
+            <div>
+              <h4>Michael T.</h4>
+              <p>HR Director at InnovateCo</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="final-cta">
+    <div class="container">
+      <h2>Ready to Transform Your Career or Team?</h2>
+      <p>Join thousands of professionals and companies finding perfect matches every day</p>
+      <button class="primary-btn large" [routerLink]="['/registration-page']" routerLinkActive="router-link-active" >Get Started Now</button>
+    </div>
+  </section>
 </div>

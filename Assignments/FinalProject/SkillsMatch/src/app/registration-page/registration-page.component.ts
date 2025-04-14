@@ -16,6 +16,10 @@ export class RegistrationPageComponent {
     this.selectedRole = role
     //
     this.myForm.get('role')?.setValue(role);
+
+    if(role === 'Admin') {
+      this.router.navigate(['Admin-dashboard'])
+    }
   }
   constructor(private router: Router) { }
 
