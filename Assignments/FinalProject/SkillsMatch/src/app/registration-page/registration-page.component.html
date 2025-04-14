@@ -23,6 +23,10 @@
         <button [ngClass]="{ 'active': selectedRole === 'JobSeeker' }" (click)="onRoleSelected('JobSeeker')">
           Job Seeker
         </button>
+
+        <button [ngClass]="{ 'active': selectedRole === 'Admin' }" (click)="onRoleSelected('Admin')">
+          Admin
+        </button>
       </div>
 
     </div>

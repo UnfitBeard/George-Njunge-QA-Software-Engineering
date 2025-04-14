@@ -113,7 +113,7 @@ export class AdminDashboardComponent {
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: '#36A2EB',
-        fill: true // Proper fill configuration
+        fill: true 
       },
       {
         label: 'Industry Demand',

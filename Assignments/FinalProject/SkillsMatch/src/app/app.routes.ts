@@ -29,4 +29,5 @@ export const routes: Routes = [
   {path: 'chat', component: ChatComponent},
   {path: 'admin-dashboard', component: AdminDashboardComponent},
   {path: 'notifications', component: NotificationsComponent},
+  {path: '', component: LandingPageComponent}
 ];
