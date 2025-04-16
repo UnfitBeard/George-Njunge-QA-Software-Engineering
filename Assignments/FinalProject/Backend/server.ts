@@ -1,7 +1,9 @@
 import express from 'express'
 import pool from './db/db.config'
 import cors from 'cors'
-import userRoutes from './Routes/authRoutes'
+import authRoutes from './Routes/authRoutes'
+import usersRoutes from './Routes/userRoutes'
+import jobRouter from './Routes/jobRoutes'
 
 const app = express()
 app.use(express.json())
@@ -11,19 +13,9 @@ app.use(cors({
     credentials: true
 }))
 
-app.get("/api/v1/users", async(req, res) => {
-    try {
-        const users = await pool.query("SELECT * FROM Users");
-        res.status(200).json({
-            user: users.rows
-        })
-    } catch (error) {
-        console.error(error)
-        res.status(500).json({ message: "Internal Server Error" })
-    }
-})
-
-app.use("/api/v1/auth", userRoutes)
+app.use("/api/v1/auth", authRoutes)
+app.use("/api/v1/users", usersRoutes)
+app.use("/api/v1/jobs", jobRouter)
 
 app.listen(3000, ()=> {
     console.log('The server is listening on port 3000')

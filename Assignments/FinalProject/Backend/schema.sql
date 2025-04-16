@@ -20,12 +20,8 @@ CREATE TABLE JobSeekers (
     resume_url VARCHAR(512),
     linkedin_url VARCHAR(512),
     github_url VARCHAR(512),
-    desired_job_title VARCHAR(100),
-    desired_salary INT,
-    work_status VARCHAR(20) CHECK (work_status IN ('active', 'passive')),
-    experience_level VARCHAR(50),
-    open_to_remote BOOLEAN DEFAULT FALSE
 );
+
 CREATE TABLE Companies (
     company_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -38,6 +34,7 @@ CREATE TABLE Companies (
     founded_year INT,
     company_type VARCHAR(50)
 );
+
 CREATE TABLE Recruiters (
     recruiter_id SERIAL PRIMARY KEY,
     user_id INT REFERENCES Users(user_id) ON DELETE CASCADE,
@@ -48,6 +45,7 @@ CREATE TABLE Recruiters (
     average_time_to_hire VARCHAR(50),
     specialization VARCHAR(100)
 );
+
 CREATE TABLE Jobs (
     job_id SERIAL PRIMARY KEY,
     company_id INT REFERENCES Companies(company_id),

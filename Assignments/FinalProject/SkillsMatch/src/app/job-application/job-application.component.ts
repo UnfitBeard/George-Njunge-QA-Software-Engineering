@@ -37,16 +37,37 @@ export class JobApplicationComponent {
 
   onSubmit() {
     if (this.jobApplicationForm.valid) {
-      this.isSubmitting = true; // Set to true when submitting
+      this.isSubmitting = true;
 
-      // Simulate API call (replace with your actual submission logic)
-      setTimeout(() => {
-        console.log('Form submitted:', this.jobApplicationForm.value);
-        this.isSubmitting = false; // Reset when done
-        // You might want to reset the form here too:
-        // this.jobApplicationForm.reset();
-      }, 1500);
-      this.router.navigate(['job-search'])
+      const formData = new FormData();
+      const formValue = this.jobApplicationForm.value;
+
+      // Replace with real data from route or service
+      const jobId = 1;
+      const jobSeekerId = 1;
+
+      formData.append('resume', formValue.cv);
+      formData.append('cover_letter', formValue.coverLetter);
+      formData.append('job_id', jobId.toString());
+      formData.append('job_seeker_id', jobSeekerId.toString());
+      formData.append('match_score', '90.00'); // Optional
+      formData.append('feedback', '');         // Optional
+
+      fetch('http://localhost:3000/api/applications/apply', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Application successful:', data);
+          this.isSubmitting = false;
+          this.router.navigate(['job-search']);
+        })
+        .catch(error => {
+          console.error('Error submitting application:', error);
+          this.isSubmitting = false;
+        });
     }
   }
+
 }
