@@ -17,7 +17,7 @@ import { Notification } from "../Models/Notifications";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: "skillsmatch2.cm3sy866c0qr.us-east-1.rds.amazonaws.com",
+    host: "localhost",
     port: 5432,
     username: "postgres",
     password: "postgres",
