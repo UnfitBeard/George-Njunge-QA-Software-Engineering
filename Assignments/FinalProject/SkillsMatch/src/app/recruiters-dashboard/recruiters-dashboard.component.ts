@@ -20,30 +20,18 @@ deleteJob(jobName: { id: number; title: string; description: string; applicants:
   this.activeJobs = this.activeJobs.filter(job => job !== jobName)
 }
   // Stats Section Data
-  postedJobs = Array(8).fill({}).map((_, i) => ({
-    id: i + 1,
-    title: `Job ${i + 1}`,
-    status: ['Open', 'Closed'][Math.floor(Math.random() * 2)]
-  }));
+  postedJobs = []
 
-  candidatesApplied = Array(45).fill({}).map((_, i) => ({
-    id: i + 1,
-    name: `Candidate ${i + 1}`,
-    appliedDate: new Date(Date.now() - Math.random() * 1000000000)
-  }));
+  candidatesApplied = []
 
-  offersMade = Array(12).fill({}).map((_, i) => ({
-    id: i + 1,
-    candidate: `Candidate ${i + 1}`,
-    position: `Position ${i % 3 + 1}`
-  }));
+  offersMade = []
 
   offersAccepted = this.offersMade.slice(0, 9);
 
   // Metrics
-  postedJobsProgress = 75;
-  candidateTrend = 8.5;
-  offerAcceptanceRate = 75;
+  postedJobsProgress = 0
+  candidateTrend = 0
+  offerAcceptanceRate = 0
   averageHireTime = 14;
   predictedHires = 22;
 

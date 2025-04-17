@@ -1,11 +1,14 @@
 import express from 'express'
-import { Router } from 'express'
-import { applyToJob, createJob, upload } from '../Controllers/jobControllers'
+import {  applyToJobController, createJob, deleteJob, getAllJobs, updateJob, upload } from '../Controllers/jobControllers'
+import { protect } from '../Middlewares/protect';
 
 const router = express.Router()
 
-router.post("/addJobs", createJob)
-router.post('/apply', upload.single('resume'), applyToJob);
+router.post("/addJobs", protect, createJob)
+router.post('/apply', upload.single('resume'), applyToJobController);
+router.get("/getAllJobs", getAllJobs)
+router.patch("/updateJob/:id", updateJob)
+router.delete("/deleteJob/:id", deleteJob)
 
 
 export default router

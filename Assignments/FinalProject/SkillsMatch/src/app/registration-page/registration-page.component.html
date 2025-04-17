@@ -1,10 +1,6 @@
 <div class="registration-container">
   <h2>Registration</h2>
   <form action="" (ngSubmit)="onSubmit()" [formGroup]="myForm">
-    <div class="username">
-      <label for="username">Username: </label>
-      <input type="text" name="username" id="username" formControlName="username">
-    </div>
     <div class="email">
       <label for="email">Email: </label>
       <input type="email" name="email" id="email" formControlName="email">
@@ -20,11 +16,11 @@
           Recruiter
         </button>
 
-        <button [ngClass]="{ 'active': selectedRole === 'JobSeeker' }" (click)="onRoleSelected('JobSeeker')">
+        <button [ngClass]="{ 'active': selectedRole === 'job_seeker' }" (click)="onRoleSelected('job_seeker')">
           Job Seeker
         </button>
 
-        <button [ngClass]="{ 'active': selectedRole === 'Admin' }" (click)="onRoleSelected('Admin')">
+        <button [ngClass]="{ 'active': selectedRole === 'admin' }" (click)="onRoleSelected('admin')">
           Admin
         </button>
       </div>

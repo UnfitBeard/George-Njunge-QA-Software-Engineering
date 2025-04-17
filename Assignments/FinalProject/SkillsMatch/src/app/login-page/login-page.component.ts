@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router';
+import { AuthServicesService } from '../auth-services.service';
 
 @Component({
   selector: 'app-login-page',
@@ -10,6 +11,11 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './login-page.component.css'
 })
 export class LoginPageComponent {
+
+  loginData = {
+    email: '',
+    password: ''
+  }
 
   router = inject(Router)
   navigateToSignup() {
@@ -21,15 +27,29 @@ export class LoginPageComponent {
     password: new FormControl('')
   })
 
+  constructor(private authService:AuthServicesService) {}
+
   onSubmit() {
-    if(this.myForm.valid) {
-      console.log(this.myForm.value)
-      this.router.navigate(['admin-page'])
-      return
+    if (this.loginData.email && this.loginData.password) {
+      this.authService.login(this.loginData.email, this.loginData.password).subscribe(
+        response => {
+          console.log("Login sucessful", response)
+          if (response.user.user_type === 'admin') {
+            this.router.navigate(['admin-dashboard'])
+          } else if (response.user.user_type === 'recruiter') {
+            this.router.navigate(['recruiters-dashboard']);
+          } else if (response.user.user_type=== 'job_seeker') {
+            this.router.navigate(['jobseeker-dashboard']);
+          } else {
+            this.router.navigate([''])
+          }
+        },
+        error => {
+          console.log("Login failed: ", error)
+        }
+      )
+    } else {
+      console.log('Form is invalid');
     }
   }
-
-
-  constructor() { }
-
 }
