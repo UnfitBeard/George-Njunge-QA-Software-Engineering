@@ -1,4 +1,3 @@
-import { getAllJobs } from './../../../../Backend/Controllers/jobControllers';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, ObservedValueOf } from 'rxjs';
