@@ -7,9 +7,7 @@ export enum JobStatus {
     OPEN = 'open',
     CLOSED = 'closed',
     DRAFT = 'draft'
-  }
-  
-  
+}
 
 @Entity()
 export class Job {
@@ -23,7 +21,10 @@ export class Job {
   @Column({ name: 'company_id' })
   company_id!: number;
 
-  @ManyToOne(() => Recruiter)
+  @ManyToOne(() => Recruiter, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'recruiter_id' })
   recruiter!: Recruiter;
 
@@ -57,7 +58,7 @@ export class Job {
   @Column({ name: 'experience_required', nullable: true })
   experience_required!: string;
 
-  @Column({ type: 'text',array: true, nullable: true })
+  @Column({ type: 'text', array: true, nullable: true })
   skills!: string[];
 
   @Column({ name: 'experience_level', nullable: true })
@@ -72,6 +73,9 @@ export class Job {
   @Column({ name: 'max_salary', type: 'integer', nullable: true })
   max_salary!: number;
 
-  @OneToMany(() => Application, application => application.job)
+  @OneToMany(() => Application, application => application.job, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   applications!: Application[];
 }

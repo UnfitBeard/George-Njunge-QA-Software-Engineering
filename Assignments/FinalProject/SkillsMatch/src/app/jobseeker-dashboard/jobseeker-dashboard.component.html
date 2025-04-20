@@ -4,9 +4,11 @@
     <div class="ai-analytics">
       <div class="ai-card skill-gap">
         <h3>AI Skill Gap Analysis</h3>
-        <canvas baseChart width="400" height="300" [type]="'radar'" [data]="skillGapChartData"
-          [options]="radarChartOptions">
-        </canvas>
+        <div class="chart-container">
+          <canvas baseChart [type]="'radar'" [data]="skillGapChartData" [options]="radarChartOptions">
+          </canvas>
+        </div>
+
         <div class="ai-summary">
           <p>🔍 Top 3 skills to develop:
             <span *ngFor="let skill of topSkills">{{skill}}</span>
@@ -113,14 +115,22 @@
       <div class="profile-buttons" style="display: flex; flex-direction: row; gap: 10px;">
         <button class="see-more-btn" [routerLink]="['/profile-viewer']" routerLinkActive="router-link-active">View
           profile</button>
-        <button class="see-more-btn" [routerLink]="['/profile-editor']" routerLinkActive="router-link-active">Edit
+        <button class="see-more-btn" [routerLink]="['/edit-profile']" routerLinkActive="router-link-active">Edit
           profile</button>
       </div>
     </div>
   </div> <!-- Closing stats-grid -->
 
+
+
   <!-- Modified Jobs Section with Color -->
   <div class="jobs">
+    <button (click)="loadRecommendations()" class="btn btn-primary" [disabled]="loadingRecommendations">
+      Load AI Recommended Jobs
+    </button>
+
+    <div *ngIf="loadingRecommendations">Loading...</div>
+
     <div class="jobs-header" style="background: linear-gradient(135deg, #2389da, #5558da);">
       <h2 style="color: white;">Recommended Jobs</h2>
       <div class="search-bar">
@@ -142,12 +152,12 @@
           </div>
         </div>
         <div class="job-details">
-          <p class="deadline">⏳ Apply before {{item.deadline | date}}</p>
+          <p class="deadline" style="color: black;">⏳ Apply before {{item.deadline| date}}</p>
           <div class="skills">
             <span class="skill-tag" *ngFor="let skill of item.keySkills">{{skill}}</span>
           </div>
         </div>
-        <button class="apply-btn" (click)="redirectToApplyJob()">Apply Now</button>
+        <button class="apply-btn" (click)="redirectToApplyJob(item)">Apply Now</button>
       </div>
     </div>
     <button class="see-more-btn" [routerLink]="['/job-search']" routerLinkActive="router-link-active">See more

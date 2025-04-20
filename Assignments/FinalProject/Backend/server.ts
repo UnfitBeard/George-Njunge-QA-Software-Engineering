@@ -4,10 +4,13 @@ import cors from 'cors'
 import authRoutes from './Routes/authRoutes'
 import usersRoutes from './Routes/userRoutes'
 import jobRouter from './Routes/jobRoutes'
+import geminiRouter from './Routes/AIGeminiRoutes'
 import { AppDataSource } from './db/dataSource'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 app.use(express.json())
+app.use(cookieParser())
 app.use(cors({
     origin: 'http://localhost:4200', // Allow requests from this origin
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
@@ -18,6 +21,7 @@ app.use(cors({
 app.use("/api/v1/auth", authRoutes)
 app.use("/api/v1/users", usersRoutes)
 app.use("/api/v1/jobs", jobRouter)
+app.use("/api/v1/gemini", geminiRouter)
 
 app.listen(3000, async () => {
   try {

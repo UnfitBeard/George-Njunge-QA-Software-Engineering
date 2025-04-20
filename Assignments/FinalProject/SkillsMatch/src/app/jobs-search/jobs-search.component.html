@@ -61,30 +61,6 @@
         </div>
       </div>
 
-      <!-- Recommended Jobs -->
-      <div class="jobs-section">
-        <h3 class="section-title">Recommended For You</h3>
-        <div class="job-cards">
-          <div class="job-card" *ngFor="let job of recommendedJobs">
-            <div class="job-header">
-              <h4>{{job.title}}</h4>
-              <span class="company">{{job.company}}</span>
-            </div>
-            <div class="job-details">
-              <span class="salary">${{job.salary | number}}/year</span>
-              <span class="location">{{job.location}}</span>
-            </div>
-            <div *ngIf="isLoggedIn === true" class="match-badge" [style.--match]="job.matchScore">
-              {{job.matchScore}}% Match
-            </div>
-            <div class="job-actions">
-              <button class="apply-btn" (click)="onApply(selectedJob)">Quick Apply</button>
-              <button class="save-btn">Save</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- All Job Listings -->
       <div class="jobs-section">
         <h3 class="section-title">Available Positions ({{filteredJobs.length}})</h3>
@@ -95,20 +71,20 @@
                 <h4>{{job.title}}</h4>
                 <p class="company">{{job.company}}</p>
                 <div class="job-meta">
-                  <span class="salary">${{job.salary | number}}</span>
+                  <span class="salary">${{job.min_salary | number}}</span>
                   <span class="location">{{job.location}}</span>
                   <span class="type">{{job.type}}</span>
                 </div>
               </div>
               <div class="match-score">
                 <div class="score-circle" [style.--score]="job.matchScore">
-                  {{job.matchScore}}%
+                  {{job.skillsMatch}}%
                 </div>
                 <small>Match</small>
               </div>
             </div>
             <div class="job-actions">
-              <button class="apply-btn" (click)="onApply(selectedJob)">Apply Now</button>
+              <button class="apply-btn" (click)="onApply(job)">Apply Now</button>
               <button class="details-btn" (click)="openJobDetailsModal(job)">View Details</button>
             </div>
           </div>
@@ -128,7 +104,7 @@
         <h3>{{ selectedJob?.company }}</h3>
         <div class="job-meta">
           <span class="location">{{ selectedJob?.location }}</span>
-          <span class="salary">${{ selectedJob?.salary | number }} per year</span>
+          <span class="salary">${{ selectedJob?.min_salary | number }} per year</span>
           <span class="type">{{ selectedJob?.type }}</span>
         </div>
       </div>

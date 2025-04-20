@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-profile-editor',
@@ -17,7 +18,7 @@ export class ProfileEditorComponent {
   // Sample data for demonstration - replace with your actual data structure
   experienceLevels = ['Beginner (1-2 years)', 'Intermediate (3-5 years)', 'Advanced (5+ years)', 'Expert (8+ years)'];
 
-  constructor(private fb: FormBuilder, private router: Router) {}
+  constructor(private fb: FormBuilder, private router: Router, private profileService: UserService) {}
 
   ngOnInit(): void {
     this.initializeForm();
@@ -136,7 +137,6 @@ export class ProfileEditorComponent {
     return this.profileCompletion;
   }
 
-  // Form Submission
   onSubmit(): void {
     if (this.personalDetailsForm.invalid) {
       this.markAllAsTouched();
@@ -145,22 +145,25 @@ export class ProfileEditorComponent {
 
     this.isSubmitting = true;
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Form submitted:', this.personalDetailsForm.value);
-      this.isSubmitting = false;
+    const formData = this.personalDetailsForm.value;
 
-      // In a real app, you would navigate after successful submission
-      // this.router.navigate(['/profile']);
-
-      // Show success message
-      alert('Profile updated successfully!');
-    }, 1500);
+    this.profileService.updateProfile(formData).subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        alert('Profile updated successfully!');
+        this.router.navigate(['/jobseeker-dashboard']); // Optional
+      },
+      error: (error) => {
+        console.error('Profile update failed:', error);
+        alert('Something went wrong while updating your profile.');
+        this.isSubmitting = false;
+      }
+    });
   }
 
   onCancel(): void {
     if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
-      this.router.navigate(['/profile']);
+      this.router.navigate(['/jobseeker-dashboard']);
     }
   }
 

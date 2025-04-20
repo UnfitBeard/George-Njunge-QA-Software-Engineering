@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { BaseChartDirective} from 'ng2-charts'
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-profile-viewer',
@@ -12,111 +13,71 @@ import { BaseChartDirective} from 'ng2-charts'
   styleUrl: './profile-viewer.component.css'
 })
 export class ProfileViewerComponent {
-  personalInfo: any[] = [
-    { name: 'The G', github: 'https://yufhwik', location: 'Kenya' }
-  ]
-
-  skills = ['HTML', 'Angular']
-
-  projects = [
-    {
-      title: 'Backend Software Engineer',
-      description: 'Looks like a good job',
-    },
-    {
-      title: 'Backend Software Engineer',
-      description: 'Looks like a good job',
-    },
-    {
-      title: 'Backend Software Engineer',
-      description: 'Looks like a good job',
-    }
-  ]
-  postedJobs: any[] = [
-    { name: 'Job1' }
-  ]
-
-  candidatesApplied: any[] = [
-    { name: 'Merlow' }
-  ]
-
-  offersMade: any[] = [
-    { amount: 1 }
-  ]
-
-  offersAccepted: any[] = [
-    { amount: 1 }
-  ]
-
-  // Chart Data
-  public lineChartData: ChartConfiguration<'line'>['data'] = {
-    labels: [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-    ],
-    datasets: [
-      {
-        data: [65, 71, 80, 81, 80, 82, 80],
-        label: 'Skill Development',
-        fill: true,
-        tension: 0.5,
-        borderColor: 'black',
-        backgroundColor: 'rgba(35, 137, 218, 0.3)'
-      }
-    ]
-  };
-  public lineChartOptions: ChartOptions<'line'> = {
-    responsive: false
-  };
-  public lineChartLegend = true;
-
-  candidate:any;
-
-  constructor(private router: Router) {
-    const nav = router.getCurrentNavigation();
-    this.candidate = nav?.extras.state?.['candidate'];
-  }
-
-  // Modal visibility toggle
-  isModalVisible = false;
-
-  openModal() {
-    this.isModalVisible = true;
-  }
-
-  closeModal() {
-    this.isModalVisible = false;
-  }
-
-  interviewDetails = {
+  candidate: any;
+  personalInfo: any[] = [];
+  skills: string[] = [];
+  bio: string = '';
+  linkedInUrl:string = ''
+  projects: any[] = [];
+  postedJobs: any[] = [];
+  candidatesApplied: any[] = [];
+  offersMade: any[] = [];
+  offersAccepted: any[] = [];
+  lineChartData: any;
+  lineChartOptions: any;
+  lineChartLegend: boolean = true;
+  isModalVisible: boolean = false;
+  interviewDetails: any = {
     candidateName: '',
     interviewDate: '',
     interviewTime: '',
-    interviewType: 'In-person',
+    interviewType: 'In-person'
   };
 
-  // Schedule Interview
-  scheduleInterview() {
-    const { candidateName, interviewDate, interviewTime, interviewType } = this.interviewDetails;
-    alert(`Interview scheduled for ${candidateName} on ${interviewDate} at ${interviewTime} (${interviewType})`);
+  constructor(private profileService: UserService) {}
 
-    // Reset form after scheduling
-    this.interviewDetails = {
-      candidateName: '',
-      interviewDate: '',
-      interviewTime: '',
-      interviewType: 'In-person',
-    };
+  ngOnInit(): void {
+    this.profileService.viewProfileDetails().subscribe(
+      (data) => {
+        console.log(data)
+        this.candidate = `${data.firstName ?? ''} ${data.lastName ?? ''}`;
+        this.personalInfo = [
+          { github: data.github ?? 'Not Provided', location: data.location ?? 'Unknown' }
+        ];
 
-    this.closeModal();  // Close the modal after scheduling
+        this.skills = data.skills.map((skill: any) =>
+          `Skill ID: ${skill.skill_id}, Level: ${skill.experience_level}, Years: ${skill.years_experience ?? 'N/A'}`
+        );
+
+        this.projects = data.projects;
+        this.postedJobs = data.postedJobs ?? [];
+        this.candidatesApplied = data.candidatesApplied ?? [];
+        this.offersMade = data.offersMade ?? [];
+        this.offersAccepted = data.offersAccepted ?? [];
+        this.bio = data.bio
+        this.linkedInUrl = data.linkedinUrl
+
+
+      },
+      (error) => {
+        console.error('Error fetching profile data:', error);
+      }
+    );
   }
 
-  ngOnInit() {}
 
+
+  openModal(): void {
+    this.isModalVisible = true;
+  }
+
+  closeModal(): void {
+    this.isModalVisible = false;
+  }
+
+  scheduleInterview(): void {
+    console.log(this.interviewDetails);
+    // Call the API to schedule the interview
+  }
 }
 

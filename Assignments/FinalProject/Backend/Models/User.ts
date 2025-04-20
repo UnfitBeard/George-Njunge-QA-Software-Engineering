@@ -37,14 +37,23 @@ export class User {
   @Column({ nullable: true })
   profile_picture_url!: string;
 
-  @OneToMany(() => JobSeeker, jobSeeker => jobSeeker.user)
+  @OneToMany(() => JobSeeker, jobSeeker => jobSeeker.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   jobSeekers!: JobSeeker[];
 
-  @OneToMany(() => Recruiter, recruiter => recruiter.user)
+  @OneToMany(() => Recruiter, recruiter => recruiter.user,{
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   recruiters!: Recruiter[];
 
 
-  @OneToMany(() => Message, message => message.sender)
+  @OneToMany(() => Message, message => message.sender, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   sentMessages!: Message[];
 
   @OneToMany(() => Message, message => message.receiver)
@@ -57,7 +66,6 @@ export class User {
   activities!: UserActivity[];
 }
 
-// Companies
 
 
 

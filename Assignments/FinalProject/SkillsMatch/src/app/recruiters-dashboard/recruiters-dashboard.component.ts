@@ -1,281 +1,155 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ChartConfiguration } from 'chart.js';
+import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
+import { RecruiterService, ActiveJob, JobApplication, RecruiterProfile, DashboardData } from '../services/recruiter.service';
+import { HttpClient } from '@angular/common/http';
+import { response } from 'express';
 
 @Component({
   selector: 'app-recruiters-dashboard',
-  imports:[ReactiveFormsModule,FormsModule, BaseChartDirective, CommonModule, CommonModule],
+  standalone: true,
+  imports: [ReactiveFormsModule, FormsModule, BaseChartDirective, CommonModule],
   templateUrl: './recruiters-dashboard.component.html',
   styleUrls: ['./recruiters-dashboard.component.css']
 })
-export class RecruitersDashboardComponent {
-onEditProfile(recruiter: any) {
-  this.router.navigate(['recruiter-profile-editor'],{state: {recruiterData: this.recruiter}});
-}
 
-deleteJob(jobName: { id: number; title: string; description: string; applicants: any[]; deadline: string; completion: number; status: string; }) {
-  this.activeJobs = this.activeJobs.filter(job => job !== jobName)
-}
-  // Stats Section Data
-  postedJobs = []
-
-  candidatesApplied = []
-
-  offersMade = []
-
-  offersAccepted = this.offersMade.slice(0, 9);
-
-  // Metrics
-  postedJobsProgress = 0
-  candidateTrend = 0
-  offerAcceptanceRate = 0
-  averageHireTime = 14;
-  predictedHires = 22;
-
-  // AI Analytics Data
-  candidateMatchData: ChartConfiguration<'bar'>['data'] = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    datasets: [{
-      label: 'Candidate Matches',
-      data: [65, 59, 80, 81, 56, 72],
-      backgroundColor: 'rgba(35, 137, 218, 0.5)'
-    }]
-  };
-
-  hiringTrendsData: ChartConfiguration<'line'>['data'] = {
-    labels: ['2020', '2021', '2022', '2023', '2024'],
-    datasets: [{
-      label: 'Hiring Trends',
-      data: [85, 92, 78, 88, 95],
-      borderColor: '#ff5f6d',
-      fill: false
-    }]
-  };
-
-  topCandidateSkills = ['Angular', 'React', 'Node.js', 'AWS', 'Python'];
-
-  // Recruiter Profile
-  recruiter = {
-    name: 'Sarah Johnson',
-    firstname: 'Sarah',
-    lastname: 'Johnson',
-    company: 'Tech Innovators Inc.',
-    avatar: 'https://via.placeholder.com/150',
-    verified: true,
-    rating: 4.7,
-    hires: 142
-  };
-
-  // Applications Data
-  applicationSearch = '';
-  statusFilter = 'all';
-  filteredApplications = [
-    {
-      id: 1,
-      candidate: {
-        name: 'John Carter',
-        avatar: 'https://via.placeholder.com/40'
-      },
-      jobTitle: 'Senior Frontend Developer',
-      matchScore: 92,
-      status: 'new'
-    },
-    {
-      id: 2,
-      candidate: {
-        name: 'Emma Wilson',
-        avatar: 'https://via.placeholder.com/40'
-      },
-      jobTitle: 'DevOps Engineer',
-      matchScore: 85,
-      status: 'reviewed'
-    },
-    {
-      id: 3,
-      candidate: {
-        name: 'Michael Chen',
-        avatar: 'https://via.placeholder.com/40'
-      },
-      jobTitle: 'Full Stack Developer',
-      matchScore: 88,
-      status: 'hired'
-    }
-  ];
-
-  // Job Management Data
-  activeJobs = [
-    {
-      id: 1,
-      title: 'Senior Frontend Developer',
-      description: 'Looking for experienced Angular developer',
-      applicants: Array(15).fill({}),
-      deadline: '2024-06-30',
-      completion: 65,
-      status: 'Active'
-    },
-    {
-      id: 2,
-      title: 'Cloud Infrastructure Engineer',
-      description: 'AWS/Azure cloud specialist needed',
-      applicants: Array(8).fill({}),
-      deadline: '2024-05-15',
-      completion: 45,
-      status: 'Active'
-    },
-    {
-      id: 3,
-      title: 'AI/ML Specialist',
-      description: 'Machine learning expert with Python experience',
-      applicants: Array(22).fill({}),
-      deadline: '2024-07-01',
-      completion: 35,
-      status: 'Active'
-    }
-  ];
-
-  // Schedule Interview Modal
+export class RecruitersDashboardComponent implements OnInit {
+  dashboardData: DashboardData | null = null;
   showScheduleModal = false;
-  selectedCandidate: number | null = null;
-  interviewDateTime: string = '';
-  interviewType: string = 'video';
-  candidates = [
-    { id: 1, name: 'John Carter' },
-    { id: 2, name: 'Emma Wilson' },
-    { id: 3, name: 'Michael Chen' }
-  ];
+  scheduleForm!: FormGroup;
+  selectedAppIndex = -1;
+  showEditJobModal = false;
+  editableJob: any = {};
 
-  //Job Editing Modal
-  // Add these to your component class
-showEditJobModal = false;
-currentJobToEdit: any = null;
-editJobForm: FormGroup;
+  constructor(
+    private dashboardService: RecruiterService,
+    private fb: FormBuilder,
+  ) { }
 
-constructor(private fb: FormBuilder, private router:Router) {
-  this.editJobForm = this.fb.group({
-    title: ['', Validators.required],
-    company: ['', Validators.required],
-    description: ['', Validators.required],
-    minSalary: [null, Validators.required],
-    maxSalary: [null, Validators.required],
-    jobType: ['Full-time', Validators.required],
-    deadline: ['', Validators.required],
-    location: ['', Validators.required],
-    skills: ['', Validators.required]
-  });
-}
+  // Exposed for template binding
+  postedJobsProgress!: number;
+  candidateTrend!: number;
+  offerAcceptanceRate!: number;
+  averageHireTime!: number;
+  predictedHires!: number;
+  recruiter!: DashboardData['recruiter'];
+  activeJobs!: DashboardData['activeJobs'];
+  applications!: DashboardData['JobApplications'];
+  topSkills!: string[];
 
-// Update your existing edit button to call this method
-openEditJobModal(job: any) {
-  this.currentJobToEdit = job;
-  this.editJobForm.patchValue({
-    title: job.title,
-    company: job.company,
-    description: job.description,
-    minSalary: job.salaryRange?.min || job.salary || 0,
-    maxSalary: job.salaryRange?.max || job.salary || 0,
-    jobType: job.type || 'Full-time',
-    deadline: this.formatDateForInput(job.deadline),
-    location: job.location || '',
-    skills: job.skills?.join(', ') || ''
-  });
-  this.showEditJobModal = true;
-}
+  // Chart.js data + options
+  candidateMatchChartData!: ChartConfiguration<'bar'>['data'];
+  hiringTrendsChartData!: ChartConfiguration<'line'>['data'];
+  chartOptions: ChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false
+  };
 
-closeEditJobModal() {
-  this.showEditJobModal = false;
-  this.currentJobToEdit = null;
-  this.editJobForm.reset();
-}
+  ngOnInit() {
+    this.scheduleForm = this.fb.group({
+      applicationIndex: [null, Validators.required],
+      interviewType: ['video', Validators.required],
+      scheduledAt: [null, Validators.required]
+    });
+    this.loadJobs()
 
-saveJobChanges() {
-  if (this.editJobForm.valid && this.currentJobToEdit) {
-    const updatedJob = {
-      ...this.currentJobToEdit,
-      ...this.editJobForm.value,
-      skills: this.editJobForm.value.skills.split(',').map((s: string) => s.trim()),
-      salaryRange: {
-        min: this.editJobForm.value.minSalary,
-        max: this.editJobForm.value.maxSalary
-      }
-    };
-
-    // Update the job in your array (replace with API call in real app)
-    const index = this.activeJobs.findIndex(j => j.id === this.currentJobToEdit.id);
-    if (index !== -1) {
-      this.activeJobs[index] = updatedJob;
-    }
-
-    this.closeEditJobModal();
   }
-}
-
-private formatDateForInput(date: string | Date): string {
-  if (!date) return '';
-  const d = new Date(date);
-  return d.toISOString().split('T')[0];
-}
-
-  // Chart Options
-  barChartOptions: ChartConfiguration<'bar'>['options'] = { responsive: true };
-  lineChartOptions: ChartConfiguration<'line'>['options'] = { responsive: true };
-
-  // Methods
-  openScheduleModal() {
+  openScheduleModal(idx: number) {
+    this.selectedAppIndex = idx;
+    this.scheduleForm.patchValue({ applicationIndex: idx });
     this.showScheduleModal = true;
   }
 
-  closeScheduleModal() {
+  closeModal() {
     this.showScheduleModal = false;
-    this.resetForm();
+    this.scheduleForm.reset({ interviewType: 'video' });
   }
 
-  scheduleInterview() {
-    if (this.selectedCandidate && this.interviewDateTime) {
-      const interviewDetails = {
-        candidateId: this.selectedCandidate,
-        datetime: this.interviewDateTime,
-        type: this.interviewType
-      };
-      console.log('Scheduling interview:', interviewDetails);
-      this.closeScheduleModal();
-    }
-  }
+  submitSchedule() {
+    if (this.scheduleForm.invalid) return;
+    const { applicationIndex, interviewType, scheduledAt } = this.scheduleForm.value;
+    const app = this.applications[applicationIndex];
 
-  private resetForm() {
-    this.selectedCandidate = null;
-    this.interviewDateTime = '';
-    this.interviewType = 'video';
-  }
+    // Create a _new_ object with the extra fields
+    const updatedApp: JobApplication = {
+      ...app,
+      interviewType,
+      scheduledAt
+    };
 
-  // Dummy action methods
-  reviewCandidates() {
-    console.log('Opening candidate review...');
-  }
-
-  generateReport() {
-    console.log('Generating report...');
-  }
-
-  viewApplication(application: any) {
-    this.router.navigate(['profile-viewer'],
-      {state: {candidate: application.candidate}}
+    this.dashboardService.scheduleInterview(updatedApp).subscribe(
+      response => {
+        if (response) {
+          console.log(response)
+        }
+      }, error => {
+        console.log(error)
+      }
     )
-    console.log('Viewing application:', application);
+
+    console.log('Scheduled application:', updatedApp);
+    // then send updatedApp to your backend if you want to persist it…
+    this.closeModal();
   }
 
-  contactCandidate(application: any) {
-    this.router.navigate(['chat'], {
-      state: {candidate: application.candidate}
-    })
-    console.log('Contacting candidate:', application);
+  //Edit Job
+  openEditJobModal(job: any) {
+    this.editableJob = {
+      ...job,
+      job_id: job.id  // Ensure the backend receives job_id, not id
+    };
+    delete this.editableJob.id; // Optional: clean up
+    this.showEditJobModal = true;
   }
 
-  createNewJob() {
-    console.log('Creating new job...');
-    this.router.navigate(['create-jobs'])
+  closeEditJobModal() {
+    this.showEditJobModal = false;
+    this.editableJob = {};
+    this.loadJobs()
   }
 
+  updateJob() {
+    if (!this.editableJob.job_id) {
+      console.error('Missing job_id in editableJob:', this.editableJob);
+      alert('Cannot update job without a valid job ID.');
+      return;
+    }
+
+    this.dashboardService.updateJob(this.editableJob).subscribe({
+      next: (res) => {
+        alert('Job updated successfully!');
+        this.showEditJobModal = false;
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Failed to update job.');
+      }
+    });
+    this.loadJobs()
+  }
+
+  loadJobs() {
+    this.dashboardService.getDashboardInsights()
+      .subscribe((data: DashboardData) => {
+        this.dashboardData = data;
+
+        // map out primitives
+        this.postedJobsProgress = data.postedJobsProgress;
+        this.candidateTrend = data.candidateTrend;
+        this.offerAcceptanceRate = data.offerAcceptanceRate;
+        this.averageHireTime = data.averageHireTime;
+        this.predictedHires = data.predictedHires;
+        this.recruiter = data.recruiter;
+        this.activeJobs = data.activeJobs;
+        this.applications = data.JobApplications;
+        this.topSkills = data.topCandidateSkills;
+
+        // set charts
+        this.candidateMatchChartData = data.candidateMatchData;
+        this.hiringTrendsChartData = data.hiringTrendsData;
+      });
+  }
 }

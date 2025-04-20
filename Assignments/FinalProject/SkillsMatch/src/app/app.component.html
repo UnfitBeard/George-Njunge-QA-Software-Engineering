@@ -5,18 +5,19 @@
       <span class="spacer"></span>
     </div>
     <div class="center">
-      <button mat-button [routerLink]="['landing-page']" routerLinkActive="router-link-active">Home</button>
+      <button mat-button [routerLink]="['landing-page']">Home</button>
       <button mat-button [routerLink]="['job-search']">Search Jobs</button>
-      <button mat-button [routerLink]="['recruiters-dashboard']">Recruiters Dashboard</button>
-      <button mat-button [routerLink]="['jobseeker-dashboard']">JobSeekers Dashboard</button>
-      <button mat-button [routerLink]="['admin-dashboard']">Admin Dashboard</button>
-      <button mat-button [routerLink]="['profile-viewer']">View Profile</button>
-      <button mat-button [routerLink]="['create-jobs']">Create Jobs</button>
-      <button mat-button [routerLink]="['notifications']">notifications</button>
+      <button mat-button *ngIf="user?.user_type === 'job_seeker'" [routerLink]="['jobseeker-dashboard']">JobSeekers Dashboard</button>
+      <button mat-button *ngIf="user" [routerLink]="['profile-viewer']">View Profile</button>
+      <button mat-button *ngIf="user?.user_type === 'admin'" [routerLink]="['admin-dashboard']">Admin Dashboard</button>
+      <button mat-button *ngIf="user?.user_type === 'recruiter'" [routerLink]="['recruiters-dashboard']">Recruiters Dashboard</button>
+      <button mat-button *ngIf="user?.user_type === 'recruiter'" [routerLink]="['create-jobs']">Create Jobs</button>
+      <button mat-button *ngIf="user" [routerLink]="['notifications']">notifications</button>
+      <button mat-button *ngIf="user" (click)="logout()">Logout</button>
     </div>
     <div class="register">
-      <button mat-button [routerLink]="['login']">Login</button>
-      <button mat-button [routerLink]="['registration-page']">Register</button>
+      <button mat-button *ngIf="!user" [routerLink]="['login']">Login</button>
+      <button mat-button *ngIf="!user" [routerLink]="['register']">Register</button>
     </div>
 
   </mat-toolbar>

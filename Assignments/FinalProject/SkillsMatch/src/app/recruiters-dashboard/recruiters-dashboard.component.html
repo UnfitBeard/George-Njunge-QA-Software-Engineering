@@ -1,316 +1,198 @@
-<div class="recruiter-dashboard">
-  <!-- Stats Section -->
-  <div class="stats-top enhanced-stats">
-    <div class="stats-div" style="--start: #ff5f6d; --end: #ffc371;">
-      <div class="number">
-        <h2>{{postedJobs.length}}</h2>
-        <p>📈 {{postedJobsProgress}}% Progress</p>
-      </div>
-      <div class="title">
-        <p>Posted Jobs</p>
-        <button class="small-btn" (click)="createNewJob()">+ New</button>
-      </div>
+<div class="container" *ngIf="dashboardData">
+  <!-- Recruiter Info -->
+  <section class="card recruiter-card">
+    <img [src]="recruiter.avatar" alt="Avatar" class="avatar"/>
+    <div class="recruiter-details">
+      <h2>{{ recruiter.name }}</h2>
+      <p class="company">{{ recruiter.company }}</p>
+      <p *ngIf="recruiter.verified" class="verified">✔ Verified</p>
+      <p>Rating: {{ recruiter.rating }} ★</p>
+      <p>Hires: {{ recruiter.hires }}</p>
     </div>
+  </section>
 
-    <div class="stats-div" style="--start: #5558da; --end: #2389da;">
-      <div class="number">
-        <h2>{{candidatesApplied.length}}</h2>
-        <div class="trend" [class.positive]="candidateTrend >= 0">
-          {{candidateTrend}}% ↑
-        </div>
-      </div>
-      <div class="title">
-        <p>Candidates Applied</p>
-        <small>Last 30 days</small>
-      </div>
-    </div>
-
-    <div class="stats-div" style="--start: #6a11cb; --end: #2575fc;">
-      <div class="number">
-        <h2>{{offersMade.length}}</h2>
-        <div class="progress-bar">
-          <div [style.width]="offerAcceptanceRate + '%'"></div>
-        </div>
-      </div>
-      <div class="title">
-        <p>Offers Made</p>
-        <small>{{offerAcceptanceRate}}% Acceptance</small>
-      </div>
-    </div>
-
-    <div class="stats-div" style="--start: #00c6fb; --end: #005bea;">
-      <div class="number">
-        <h2>{{offersAccepted.length}}</h2>
-        <div class="time-frame">
-          <span>🕒 {{averageHireTime}} days</span>
-        </div>
-      </div>
-      <div class="title">
-        <p>Offers Accepted</p>
-        <small>Avg. Time to Hire</small>
-      </div>
-    </div>
+  <!-- KPI Cards (grid) -->
+  <div class="kpi-grid">
+    <section class="card kpi-card" style="background-color: var(--primary-red);">
+      <h3>Posted Jobs Progress</h3>
+      <p>{{ postedJobsProgress }}%</p>
+    </section>
+    <section class="card kpi-card" style="background-color: var(--accent-yellow);">
+      <h3>Candidate Trend</h3>
+      <p>{{ candidateTrend }}%</p>
+    </section>
+    <section class="card kpi-card" style="background-color: var(--primary-red);">
+      <h3>Offer Acceptance</h3>
+      <p>{{ offerAcceptanceRate }}%</p>
+    </section>
+    <section class="card kpi-card" style="background-color: var(--accent-yellow);">
+      <h3>Avg. Hire Time</h3>
+      <p>{{ averageHireTime }} days</p>
+    </section>
+    <section class="card kpi-card" style="background-color: var(--primary-blue);">
+      <h3>Predicted Hires</h3>
+      <p>{{ predictedHires }}</p>
+    </section>
   </div>
 
-  <!-- AI Analytics Section -->
-  <div class="ai-analytics">
-    <div class="ai-card candidate-match">
-      <h3>AI Candidate Matching</h3>
-      <canvas baseChart width="400" height="300"
-              [type]="'bar'"
-              [data]="candidateMatchData"
-              [options]="barChartOptions">
+  <!-- Charts (flex) -->
+  <section class="charts-section">
+    <div class="card chart-card">
+      <h3>Candidate Matches</h3>
+      <canvas baseChart
+              [data]="candidateMatchChartData"
+              [options]="chartOptions"
+              [type]="'bar'">
       </canvas>
-      <div class="ai-summary">
-        <p>🔍 Top Skill Matches: {{topCandidateSkills.join(', ')}}</p>
-      </div>
     </div>
-
-    <div class="ai-card hiring-trends">
-      <h3>Hiring Trends Analysis</h3>
-      <canvas baseChart width="400" height="300"
-              [type]="'line'"
-              [data]="hiringTrendsData"
-              [options]="lineChartOptions">
+    <div class="card chart-card">
+      <h3>Hiring Trends</h3>
+      <canvas baseChart
+              [data]="hiringTrendsChartData"
+              [options]="chartOptions"
+              [type]="'line'">
       </canvas>
-      <div class="ai-prediction">
-        <p>📈 Next 30 Days Prediction: {{predictedHires}} hires</p>
+    </div>
+  </section>
+
+  <!-- Top Skills (block) -->
+  <section class="card skills-card">
+    <h3>Top Candidate Skills</h3>
+    <ul>
+      <li *ngFor="let skill of topSkills">{{ skill }}</li>
+    </ul>
+  </section>
+
+  <!-- Active Jobs (block) -->
+  <section class="card jobs-card">
+    <h3>Active Jobs</h3>
+    <div *ngFor="let job of activeJobs" class="job-item">
+      <h4>{{ job.title }}</h4>
+      <p>{{ job.description }}</p>
+      <p>Deadline: {{ job.deadline | date:'mediumDate' }}</p>
+      <p>Completion: {{ job.completion }}%</p>
+      <p>Status: {{ job.status }}</p>
+
+      <!-- Button group -->
+      <div class="job-actions">
+        <button class="btn edit-btn" (click)="openEditJobModal(job)">Edit Job</button>
+        <button class="btn delete-btn">Delete Job</button>
       </div>
     </div>
+  </section>
+
+
+  <section class="card apps-card">
+    <h3>Recent Applications</h3>
+    <div *ngFor="let app of applications" class="app-item">
+      <p>
+        <strong>{{ app.candidate.name }}</strong>
+        applied for
+        <em>{{ app.jobTitle }}</em>
+        — Match: {{ app.matchScore }}%
+      </p>
+
+      <!-- Button wrapper -->
+      <div class="app-actions">
+        <button class="btn invite-btn" (click)="openScheduleModal(selectedAppIndex)">Send Interview Invitation</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- trigger on each application -->
+<!-- <div *ngFor="let app of applications; let i = index" class="app-item">
+  existing content…
+  <div class="app-actions">
+    <button class="btn invite-btn" (click)="openScheduleModal(i)">
+      Schedule Interview
+    </button>
   </div>
+</div> -->
 
-  <!-- Enhanced Profile Section -->
-  <div class="recruiter-profile">
-    <div class="profile-card">
-      <div class="avatar">
-        <img [src]="recruiter.avatar" alt="Profile Picture">
-        <div class="verification-badge" *ngIf="recruiter.verified">✓</div>
-      </div>
-      <div class="profile-info">
-        <h2>{{recruiter.name}}</h2>
-        <p class="company">{{recruiter.company}}</p>
-        <div class="stats">
-          <div class="stat">
-            <h3>{{recruiter.rating}}</h3>
-            <p>⭐ Rating</p>
-          </div>
-          <div class="stat">
-            <h3>{{recruiter.hires}}</h3>
-            <p>🚀 Total Hires</p>
-          </div>
-          <button class="edit-profile" (click)="onEditProfile(recruiter)">Edit Profile</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-      <button class="action-btn" (click)="openScheduleModal()">
-        📅 Schedule Interview
-      </button>
-    </div>
-  </div>
-
-  <!-- Enhanced Applications Table -->
-  <div class="applications-section">
-    <div class="section-header">
-      <h2>Recent Applications</h2>
-      <div class="search-filter">
-        <input type="text" [(ngModel)]="applicationSearch" placeholder="Search applications...">
-        <select [(ngModel)]="statusFilter">
-          <option value="all">All Statuses</option>
-          <option value="new">New</option>
-          <option value="reviewed">Reviewed</option>
-          <option value="hired">Hired</option>
+<!-- modal overlay -->
+<div class="modal-backdrop" *ngIf="showScheduleModal">
+  <div class="modal">
+    <h2>Schedule Interview</h2>
+    <form [formGroup]="scheduleForm" (ngSubmit)="submitSchedule()">
+      <label>
+        Candidate
+        <select formControlName="applicationIndex">
+          <option *ngFor="let app of applications; let j = index" [value]="j">
+            {{ app.candidate.name }}
+          </option>
         </select>
+      </label>
+
+      <label>
+        Interview Type
+        <select formControlName="interviewType">
+          <option value="video">Video</option>
+          <option value="physical">Physical</option>
+        </select>
+      </label>
+
+      <label>
+        Date &amp; Time
+        <input type="datetime-local" formControlName="scheduledAt"/>
+      </label>
+
+      <div class="modal-actions">
+        <button type="button" class="btn" (click)="closeModal()">Cancel</button>
+        <button type="submit" class="btn invite-btn" [disabled]="scheduleForm.invalid">
+          Confirm
+        </button>
       </div>
-    </div>
-
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Candidate</th>
-          <th>Job Title</th>
-          <th>Match Score</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let application of filteredApplications">
-          <td class="candidate-info">
-            <img [src]="application.candidate.avatar" class="candidate-avatar">
-            {{application.candidate.name}}
-          </td>
-          <td>{{application.jobTitle}}</td>
-          <td>
-            <div class="score-bar" [style.--score]="application.matchScore">
-              {{application.matchScore}}%
-            </div>
-          </td>
-          <td>
-            <span class="status-badge" [class]="application.status">
-              {{application.status}}
-            </span>
-          </td>
-          <td>
-            <button class="action-btn small" (click)="viewApplication(application)">
-              👀 View
-            </button>
-            <button class="action-btn small" (click)="contactCandidate(application)">
-              ✉️ Contact
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    </form>
   </div>
+</div>
 
-  <!-- Job Management Section -->
-  <div class="job-management">
-    <div class="section-header">
-      <h2>Active Job Postings</h2>
-      <button class="action-btn" (click)="createNewJob()">
-        ➕ Create New Job
-      </button>
-    </div>
+<!-- Edit Job Modal -->
+<div class="modal-backdrop" *ngIf="showEditJobModal">
+  <div class="modal">
+    <h2>Edit Job</h2>
+    <form (ngSubmit)="updateJob()">
+      <label>Title:
+        <input type="text" [(ngModel)]="editableJob.title" name="title" required />
+      </label>
 
-    <div class="job-cards">
-      <div class="job-card" *ngFor="let job of activeJobs">
-        <div class="job-header">
-          <h3>{{job.title}}</h3>
-          <span class="applicant-count">
-            👥 {{job.applicants.length}} applicants
-          </span>
-        </div>
-        <div class="job-details">
-          <p class="deadline">⏳ {{job.deadline | date: 'medium'}}</p>
-          <div class="progress">
-            <div class="progress-bar" [style.width]="job.completion + '%'">
-              {{job.completion}}%
-            </div>
-          </div>
-        </div>
-        <div class="job-actions">
-          <button class="action-btn small">📊 Analytics</button>
-          <button class="action-btn small" (click)="openEditJobModal(job)">✏️ Edit</button>
-          <button class="action-btn small danger" (click)="deleteJob(job)">🗑️ Delete</button>
-        </div>
+      <label>Description:
+        <textarea [(ngModel)]="editableJob.description" name="description" required></textarea>
+      </label>
+
+      <label>Salary From:
+        <input type="number" [(ngModel)]="editableJob.salaryFrom" name="salaryFrom" required />
+      </label>
+
+      <label>Salary To:
+        <input type="number" [(ngModel)]="editableJob.salaryTo" name="salaryTo" required />
+      </label>
+
+      <label>Job Type:
+        <select [(ngModel)]="editableJob.jobType" name="jobType" required>
+          <option value="Full-time">Full-time</option>
+          <option value="Part-time">Part-time</option>
+          <option value="Contract">Contract</option>
+          <option value="Internship">Internship</option>
+        </select>
+      </label>
+
+      <label>Deadline:
+        <input type="date" [(ngModel)]="editableJob.deadline" name="deadline" required />
+      </label>
+
+      <label>Location:
+        <input type="text" [(ngModel)]="editableJob.location" name="location" required />
+      </label>
+
+      <label>Required Skills (comma-separated):
+        <input type="text" [(ngModel)]="editableJob.requiredSkills" name="requiredSkills" required />
+      </label>
+
+      <div class="modal-buttons">
+        <button type="submit">Save</button>
+        <button type="button" (click)="closeEditJobModal()">Cancel</button>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 
-<!-- Schedule Interview Modal -->
-<div class="modal-overlay" *ngIf="showScheduleModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>Schedule Interview</h2>
-      <button class="close-btn" (click)="closeScheduleModal()">&times;</button>
-    </div>
-
-    <div class="modal-body">
-      <form (ngSubmit)="scheduleInterview()">
-        <div class="form-group">
-          <label>Candidate:</label>
-          <select [(ngModel)]="selectedCandidate" name="candidate" required>
-            <option *ngFor="let candidate of candidates" [value]="candidate.id">
-              {{ candidate.name }}
-            </option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Date & Time:</label>
-          <input type="datetime-local" [(ngModel)]="interviewDateTime" name="datetime" required>
-        </div>
-
-        <div class="form-group">
-          <label>Interview Type:</label>
-          <select [(ngModel)]="interviewType" name="type" required>
-            <option value="phone">Phone Interview</option>
-            <option value="video">Video Call</option>
-            <option value="in-person">In-Person</option>
-          </select>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn cancel" (click)="closeScheduleModal()" style="background-color: #005bea;">Cancel</button>
-          <button type="submit" class="btn send" style="background-color: #005bea;">Send Invitation</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- Job Editing Form -->
-<div class="modal-overlay" *ngIf="showEditJobModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>Edit Job Posting</h2>
-      <button class="close-btn" (click)="closeEditJobModal()">&times;</button>
-    </div>
-
-    <div class="modal-body">
-      <form [formGroup]="editJobForm" (ngSubmit)="saveJobChanges()">
-        <div class="form-group">
-          <label>Job Title</label>
-          <input type="text" formControlName="title" required>
-        </div>
-
-        <div class="form-group">
-          <label>Company</label>
-          <input type="text" formControlName="company" required>
-        </div>
-
-        <div class="form-group">
-          <label>Description</label>
-          <textarea formControlName="description" rows="4" required></textarea>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Salary Range ($)</label>
-            <div class="salary-inputs">
-              <input type="number" formControlName="minSalary" placeholder="Min">
-              <span>to</span>
-              <input type="number" formControlName="maxSalary" placeholder="Max">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Job Type</label>
-            <select formControlName="jobType" required>
-              <option value="Full-time">Full-time</option>
-              <option value="Part-time">Part-time</option>
-              <option value="Contract">Contract</option>
-              <option value="Remote">Remote</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Deadline</label>
-            <input type="date" formControlName="deadline" required>
-          </div>
-
-          <div class="form-group">
-            <label>Location</label>
-            <input type="text" formControlName="location" required>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Required Skills (comma separated)</label>
-          <input type="text" formControlName="skills" required>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn cancel" (click)="closeEditJobModal()">Cancel</button>
-          <button type="submit" class="btn save">Save Changes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>

@@ -22,7 +22,8 @@ export const protect = asyncHandler(async (req: UserRequest, res: Response, next
 
     // If no token is provided
     if (!token) {
-        return res.status(401).json({ message: "Not Authorized, no token" });
+        res.status(401).json({ message: "Not Authorized, no token" });
+        return 
     }
 
     try {
@@ -32,13 +33,13 @@ export const protect = asyncHandler(async (req: UserRequest, res: Response, next
         }
 
         // Verify the token and decode the user information
-        const decoded = jwt.verify(token, process.env.JWT_SECRET) as { user_id: string, user_type: string };
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) as { user_id: number, user_type: string };
 
         // Attach decoded user information to the request
-        req.user = { user_id: parseInt(decoded.user_id), user_type: decoded.user_type };
+        req.user = { user_id: decoded.user_id, user_type: decoded.user_type };
 
         // Get the user from the database using the decoded user_id
-        const userQuery = await userRepo.findOne({ where: { user_id: req.user?.user_id } });
+        const userQuery = await userRepo.findOne({ where: { user_id: decoded.user_id } });
 
         // If no user is found, return an error
         if (!userQuery) {

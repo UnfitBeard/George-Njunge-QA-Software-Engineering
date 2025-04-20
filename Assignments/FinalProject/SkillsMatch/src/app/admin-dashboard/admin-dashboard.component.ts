@@ -5,6 +5,10 @@ import { ChangeDetectorRef } from '@angular/core';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { UserService } from '../services/user.service';
+import { AnalyticsPayload, JobsService } from '../jobs.service';
+import { error } from 'console';
+import { response } from 'express';
 Chart.register(annotationPlugin);
 @Component({
   selector: 'app-admin-dashboard',
@@ -13,6 +17,30 @@ Chart.register(annotationPlugin);
   styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent {
+
+  getUsers() {
+    this.userService.getAllUsers().subscribe(
+      response => {
+        console.log(response)
+        this.users = response.allUsers
+      }, error => {
+        console.log(error)
+      }
+    )
+  }
+
+  getJobs() {
+    this.jobService.getAllJobs().subscribe(
+      (response: any) => {
+        console.log('Jobs response:', response);
+        this.jobs = response.jobs; // ✅ not the whole object!
+      },
+      error => {
+        console.error('Error fetching jobs:', error);
+      }
+    );
+  }
+
 
   postedJobs: any[] = [
     { name: 'Job1' }
@@ -30,35 +58,9 @@ export class AdminDashboardComponent {
     { amount: 1 }
   ]
 
-  users: any[] = [
-    {
-      id: 1,
-      username: 'johndoe',
-      role: 'Admin',
-      status: 'Active',
-      lastLogin: new Date(),
-      email: 'john@example.com',
-      registered: new Date('2024-01-01'),
-      lastActivity: '2 hours ago',
-      isExpanded: false
-    },
-    // More users...
-  ];
+  users: any[] = [];
 
-  jobs: any[] = [
-    {
-      id: 1,
-      title: 'Software Engineer',
-      company: 'Tech Corp',
-      status: 'Open',
-      applications: 15,
-      postedDate: new Date(),
-      deadline: new Date('2024-06-01'),
-      isExpanded: false,
-      description: 'Full-stack development position...'
-    },
-    // More jobs...
-  ];
+  jobs: any[] = [];
 
   notifications = [
     {
@@ -72,117 +74,10 @@ export class AdminDashboardComponent {
     // More notifications...
   ];
 
-  //Charts
-  public predictiveHiringChartData: ChartConfiguration<'line'>['data'] = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-    datasets: [
-      {
-        label: 'Actual Applications',
-        data: [120, 145, 130, 160, 175, 190, 210],
-        borderColor: '#36A2EB',
-        fill: false
-      },
-      {
-        label: 'AI Prediction',
-        data: [null, null, null, null, 175, 195, 220],
-        borderColor: '#FF6384',
-        borderDash: [5, 5],
-        fill: false
-      }
-    ]
-  };
-
-  public anomalyDetectionChartData: ChartConfiguration<'bar'>['data'] = {
-    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-    datasets: [{
-      label: 'Application Anomalies',
-      data: [45, 52, 48, 85],
-      backgroundColor: ['#4CAF50', '#4CAF50', '#4CAF50', '#FF5252']
-    }]
-  };
-
-  public skillGapChartData: ChartConfiguration<'radar'>['data'] = {
-    labels: ['JavaScript', 'Python', 'Cloud', 'AI/ML', 'Communication'],
-    datasets: [
-      {
-        label: 'Current Skills',
-        data: new Array(5).fill(0).map(() => Math.floor(Math.random() * 100)),
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: '#36A2EB',
-        pointBackgroundColor: '#36A2EB',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: '#36A2EB',
-        fill: true 
-      },
-      {
-        label: 'Industry Demand',
-        data: new Array(5).fill(0).map(() => Math.floor(Math.random() * 100)),
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        borderColor: '#FF6384',
-        pointBackgroundColor: '#FF6384',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: '#FF6384',
-        fill: true
-      }
-    ]
-  };
-  // Add chart options
-  public predictiveChartOptions: ChartOptions<'line'> = {
-    responsive: true,
-    plugins: {
-      annotation: {
-        annotations: {
-          predictionLine: {
-            type: 'line',
-            scaleID: 'x',
-            value: 4,
-            borderColor: 'gray',
-            borderDash: [5, 5],
-            label: {
-              content: 'Prediction Start',
-              display: true
-            }
-          }
-        }
-      }
-    }
-  };
-
-  public anomalyChartOptions: ChartOptions<'bar'> = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      tooltip: {
-        callbacks: {
-          label: (context) => {
-            const value = context.parsed.y;
-            return value > 75 ? `Anomaly detected: ${value}` : `Normal: ${value}`;
-          }
-        }
-      }
-    }
-  };
-
-  public radarChartOptions: ChartOptions<'radar'> = {
-    responsive: true,
-    scales: {
-      r: {
-        beginAtZero: true,
-        ticks: {
-          stepSize: 20
-        }
-      }
-    }
-  };
-
   // Add AI data properties
   predictedHiring = 245;
   topGrowingSkill = 'AI/ML Development';
-  anomalies = [{ week: 'Week 4', value: 85 }];
+  // anomalies = [{ week: 'Week 4', value: 85 }];
   aiRecommendations = [
     'Increase AI/ML training programs',
     'Focus on cloud certification initiatives',
@@ -190,26 +85,6 @@ export class AdminDashboardComponent {
   ];
 
   // Add to ngOnInit for mock data simulation
-  simulateAIData() {
-    setInterval(() => {
-      this.predictedHiring = Math.floor(Math.random() * 300) + 200;
-
-      // Update radar chart data safely
-      this.skillGapChartData = {
-        ...this.skillGapChartData,
-        datasets: [
-          {
-            ...this.skillGapChartData.datasets[0],
-            data: new Array(5).fill(0).map(() => Math.floor(Math.random() * 100))
-          },
-          this.skillGapChartData.datasets[1]
-        ]
-      };
-
-      // Trigger Angular change detection
-      this.cdr.detectChanges();
-    }, 5000);
-  }
 
   public lineChartOptions: ChartOptions<'line'> = {
     responsive: true,  // Ensures responsiveness for smaller screens
@@ -263,25 +138,137 @@ export class AdminDashboardComponent {
   }
 
   onDelete(userOrJob: any): void {
-    if (userOrJob && userOrJob.id) {
-      if (userOrJob.hasOwnProperty('role')) {
-        // Deleting a user
-        this.users = this.users.filter(user => user.id !== userOrJob.id);
-      } else if (userOrJob.hasOwnProperty('title')) {
-        // Deleting a job
-        this.jobs = this.jobs.filter(job => job.id !== userOrJob.id);
+    if (!userOrJob) {
+        console.error('Error: userOrJob is undefined');
+        return;
+    }
+
+    console.log('Object passed to delete:', userOrJob);
+
+    if (userOrJob.hasOwnProperty('email')) {
+        // User
+        if (!userOrJob.user_id) {
+            console.error('Error: User does not have an id');
+            return;
+        }
+
+        this.userService.deleteUser(userOrJob.user_id).subscribe(
+            (response) => {
+                console.log("User deleted successfully");
+                this.getUsers(); // ✅ refresh after delete
+            },
+            (error) => {
+                console.error("Error deleting user", error);
+            }
+        );
+
+    } else if (userOrJob.hasOwnProperty('title')) {
+        // Job
+        if (!userOrJob.job_id) {
+            console.error('Error: Job does not have an id');
+            return;
+        }
+
+        this.jobService.deleteJob(userOrJob.job_id).subscribe(
+            (response) => {
+                console.log("Job deleted successfully");
+                this.getJobs(); // ✅ refresh after delete
+            },
+            (error) => {
+                console.error("Error deleting job", error);
+            }
+        );
+
+    } else {
+        console.error('Error: Object is neither a user nor a job');
+    }
+}
+
+
+  public predictiveHiringChartData!: ChartConfiguration<'line'>['data'];
+  public skillGapChartData!: ChartConfiguration<'radar'>['data'];
+  public salaryDistributionChartData!: ChartConfiguration<'bar'>['data'];
+
+  public predictiveChartOptions: ChartOptions<'line'> = {
+    responsive: true,
+    scales: {
+      x: {},        // ← Declare the X axis
+      y: {          // ← And at least a basic Y axis
+        beginAtZero: true
+      }
+    },
+    plugins: {
+      annotation: {
+        annotations: {
+          predictionLine: {
+            type: 'line',
+            scaleID: 'x',      // now matches the declared scale
+            value: 4,
+            borderColor: 'gray',
+            borderDash: [5,5],
+            label: { content: 'Prediction Start', display: true }
+          }
+        }
       }
     }
+  };
+
+
+  public radarChartOptions: ChartOptions<'radar'> = {
+    responsive: true,
+    scales: { r: { beginAtZero: true, ticks: { stepSize: 20 } } }
+  };
+
+  public barChartOptions: ChartOptions<'bar'> = { responsive: true };
+
+  public anomalies: AnalyticsPayload['anomalies'] = []
+
+  constructor(private cdr: ChangeDetectorRef, private userService: UserService, private jobService: JobsService) { }
+
+  ngOnInit() {
+    // ——— fetch and map AI analytics ———
+    this.jobService.getAnalytics().subscribe((a: AnalyticsPayload) => {
+      // 1) Trends line chart: pad actual[] to match labels
+      const labels = a.trends.labels;
+      const actual = [...a.trends.actual];
+      while (actual.length < labels.length) actual.push(0);
+
+      this.predictiveHiringChartData = {
+        labels,
+        datasets: [
+          { data: actual, label: 'Actual Applications', fill: false },
+          { data: a.trends.predicted, label: 'AI Prediction', borderDash: [5,5], fill: false }
+        ]
+      };
+
+      // 2) Skills radar chart
+      this.skillGapChartData = {
+        labels: a.skills.map(s => s.name),
+        datasets: [
+          { data: a.skills.map(s => s.demand), label: 'Demand %', fill: true }
+        ]
+      };
+
+      // 3) Salary distribution bar chart
+      this.salaryDistributionChartData = {
+        labels: Object.keys(a.salaries),
+        datasets: [
+          { data: Object.values(a.salaries), label: 'Jobs per bracket' }
+        ]
+      };
+
+      // 4) Anomalies table
+      this.anomalies = a.anomalies;
+
+      this.cdr.detectChanges();
+    });
+
+    this.getJobs()
+    this.getUsers()
+    setInterval(() => {
+      this.getJobs();
+      this.getUsers();
+    }, 30000); // every 30 seconds
+
   }
-
-
-
-  onEdit(userToEdit: any): void {
-
-  }
-
-
-  constructor(private cdr: ChangeDetectorRef) { }
-
-  ngOnInit() { }
 }

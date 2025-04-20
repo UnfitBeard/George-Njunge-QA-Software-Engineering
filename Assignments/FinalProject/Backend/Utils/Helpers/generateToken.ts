@@ -6,7 +6,7 @@ dotenv.config()
 
 console.log(process.env['JWT_SECRET']);
 console.log(process.env['REFRESH_TOKEN_SECRET'])
-export const generateToken = (res: Response, userId: number, usertype: string) => {
+export const generateToken = (res: Response, user_id: number, user_type: string) => {
     const jwtSecret = process.env['JWT_SECRET']
     const refreshSecret = process.env['REFRESH_TOKEN_SECRET']
 
@@ -15,8 +15,8 @@ export const generateToken = (res: Response, userId: number, usertype: string) =
     }
 
     try {
-        const accessToken = jwt.sign({ userId, usertype }, jwtSecret, { expiresIn: "15m" })
-        const refreshToken = jwt.sign({ userId  }, refreshSecret, { expiresIn: "30d" })
+        const accessToken = jwt.sign({ user_id, user_type }, jwtSecret, { expiresIn: "15m" })
+        const refreshToken = jwt.sign({ user_id  }, refreshSecret, { expiresIn: "30d" })
 
         res.cookie("access_token", accessToken, {
             httpOnly: true,

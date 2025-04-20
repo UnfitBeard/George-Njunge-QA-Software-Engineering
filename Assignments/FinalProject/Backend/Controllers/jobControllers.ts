@@ -1,3 +1,4 @@
+import { Job } from './../Models/Job';
 import { Interview } from './../Models/Interview';
 import express from 'express'
 import { Request, Response, NextFunction } from 'express'
@@ -7,18 +8,22 @@ import pool from '../db/db.config';
 import multer from 'multer';
 import { error } from 'console';
 import { AppDataSource } from '../db/dataSource';
-import { Job } from '../Models/Job';
 import { Company } from '../Models/Company';
 import { Application, ApplicationStatus } from '../Models/Application';
 import { JobSeeker } from '../Models/JobSeeker';
-import { getRepository } from 'typeorm';
+import { JobRequest } from '../Utils/Types/Job';
+import { SkillsRequest } from '../Utils/Types/SkillsRequest';
+import { UserRequest } from '../Utils/Types/User';
+import { User } from '../Models/User';
 
 const storage = multer.memoryStorage(); // Store file directly in memory (no disk)
-export const upload = multer({ storage });
 
 
-export const createJob = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const {
+export const createJob = asyncHandler(async (req: JobRequest, res: Response, next: NextFunction) => {
+    if (!req.user) {
+        res.status(401).json({ message: "Not Authorized" });
+        return
+    } const {
         company_id,
         recruiter_id,
         title,
@@ -34,6 +39,13 @@ export const createJob = asyncHandler(async (req: Request, res: Response, next: 
         min_salary = null, // Default to null if not provided
         max_salary = null, // Default to null if not provided
     } = req.body;
+
+    const { user_id, user_type } = req.user;
+
+    if (user_type !== 'recruiter' && user_type !== 'admin') {
+        res.status(403).json({ message: "Access denied: Only Recruiters or Admins can create Jobs" });
+        return
+    }
 
     const company = await AppDataSource.getRepository(Company).findOneBy({ company_id });
     if (!company) {
@@ -57,66 +69,51 @@ export const createJob = asyncHandler(async (req: Request, res: Response, next: 
         console.error("Error saving job:", err);
         res.status(500).json({ message: "Error saving job" });
     }
+    return
 });
 
+export const applyToJobController = asyncHandler(async (req: JobRequest, res: Response, next: NextFunction) => {
+    try {
+        const { coverLetter, jobId } = req.body;
 
-export const applyToJobController = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const jobId = Number(req.body.job_id);
-  const jobSeekerId = Number(req.body.job_seeker_id); // Or use req.user if using JWT
-  const file = req.file; // Access file uploaded via multer
+        const userType = req.user?.user_type
+        const userID = req.user?.user_id
 
-  if (isNaN(jobId) || isNaN(jobSeekerId)) {
-    return res.status(400).json({
-      message: 'Invalid jobId or jobSeekerId provided',
-    });
-  }
+        if (userType === 'recruiter' || userType === 'admin') {
+            res.status(403).json({ message: "Access denied: Only Job Seekers can apply to Jobs" });
+            return
+        }
 
-  try {
-    // ✅ Check if job exists
-    const job = await AppDataSource.getRepository(Job).findOneBy({ job_id: jobId });
-    if (!job) throw new Error("Job not found");
+        const jobRepo = AppDataSource.getRepository(Job);
+        const seekerRepo = AppDataSource.getRepository(JobSeeker);
+        const userRepo = AppDataSource.getRepository(User);
 
-    // ✅ Check if job seeker exists
-    const jobSeeker = await AppDataSource.getRepository(JobSeeker).findOneBy({ job_seeker_id: jobSeekerId });
-    if (!jobSeeker) throw new Error("Job seeker not found");
+        const user = userRepo.findOne({ where: { user_id: userID } })
+        const job = await jobRepo.findOne({ where: { job_id: jobId } });
+        const jobSeeker = await seekerRepo.findOne({ where: { user: { user_id: userID } } });
 
-    // 🛑 Prevent duplicate applications
-    const existing = await AppDataSource.getRepository(Application).findOne({
-      where: {
-        job: { job_id: jobId },
-        jobSeeker: { job_seeker_id: jobSeekerId },
-      },
-    });
+        if (!job || !jobSeeker) {
+            res.status(404).json({ message: 'Job or Job Seeker not found' });
+            return
+        }
 
-    if (existing) {
-      throw new Error("You have already applied to this job");
+        const applicationRepo = AppDataSource.getRepository(Application);
+
+        // Create a new application instance
+        const application = new Application();
+        application.cover_letter = coverLetter;
+        application.job = job;
+        application.jobSeeker = jobSeeker;
+        application.application_date = new Date();
+
+        // Insert the application into the database
+        await applicationRepo.save(application);
+
+        return res.status(201).json({ message: 'Application submitted successfully', application });
+    } catch (error) {
+        console.error('Error while submitting application:', error);
+        return res.status(500).json({ message: 'An error occurred while submitting the application' });
     }
-
-    // 📝 Create new application
-    const newApplication = AppDataSource.getRepository(Application).create({
-      job,
-      jobSeeker,
-      status: ApplicationStatus.APPLIED,
-      cover_letter: req.body.coverLetter, // Assuming cover letter is in body
-      match_score: req.body.matchScore, // Assuming match score is in body
-    });
-
-    // Handle file upload (resume) if provided
-    if (file) {
-      newApplication.cover_letter = file.buffer.toString("base64"); // You can save it in base64 or as a binary blob
-    }
-
-    // 💾 Save application
-    await AppDataSource.getRepository(Application).save(newApplication);
-
-    // Respond with success
-    res.status(201).json({
-      message: "Application submitted successfully",
-      application: newApplication,
-    });
-  } catch (err: any) {
-    next(err); // Forward the error to the global error handler
-  }
 });
 
 export const getAllJobs = async (req: Request, res: Response, next: NextFunction) => {
@@ -125,7 +122,9 @@ export const getAllJobs = async (req: Request, res: Response, next: NextFunction
         const jobRepository = AppDataSource.getRepository(Job);
 
         // Fetch all jobs using TypeORM's find method
-        const jobs = await jobRepository.find();
+        const jobs = await jobRepository.find({
+            relations: ['applications']
+        });
 
         // Return the jobs in the response
         res.status(200).json({ jobs });
@@ -136,19 +135,16 @@ export const getAllJobs = async (req: Request, res: Response, next: NextFunction
 
 export const getJobById = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    try {
         const result = await pool.query('SELECT * FROM jobs WHERE id = $1', [id]);
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Job not found' });
         }
         res.status(200).json(result.rows[0]);
-    } catch (err) {
-        res.status(500).json({ error: error });
-    }
+        return
 });
 
-export const updateJob = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const id  = parseInt(req.params.id);
+export const updateJob = asyncHandler(async (req: JobRequest, res: Response, next: NextFunction) => {
+    const id = parseInt(req.params.id);
     const {
         title,
         company_id,
@@ -161,7 +157,6 @@ export const updateJob = asyncHandler(async (req: Request, res: Response, next: 
         requiredSkills
     } = req.body;
 
-    try {
         // Get the job repository
         const jobRepository = AppDataSource.getRepository(Job);
 
@@ -190,18 +185,14 @@ export const updateJob = asyncHandler(async (req: Request, res: Response, next: 
         const updatedJob = await jobRepository.save(job);
 
         // Send the updated job as the response
-        res.status(200).json({message:"Updated Job",updatedJob});
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+        res.status(200).json({ message: "Updated Job", updatedJob });
+        return
 });
 
 export const deleteJob = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     // Convert the `id` to a number
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(req.params['id'], 10);
 
-    try {
         // Get the job repository
         const jobRepository = AppDataSource.getRepository(Job);
 
@@ -219,13 +210,54 @@ export const deleteJob = asyncHandler(async (req: Request, res: Response, next: 
 
         // Send success response
         res.status(200).json({ message: 'Job deleted successfully' });
-    } catch (err) {
-        console.error("Error deleting job:", err);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
+        return
 });
 
-export const scheduleInterview = asyncHandler(async(req: Request, res: Response, next: NextFunction)=>{
-    const { name, date , interview_time } = req.body
-    
-})
+export const scheduleInterview = asyncHandler(async (req: SkillsRequest, res: Response) => {
+    try {
+        const { job_id, interviewType, scheduledAt, candidate } = req.body;
+
+        if (!job_id || !interviewType || !scheduledAt) {
+            return res.status(400).json({ message: 'job_id, interviewType, and scheduledAt are required.' });
+        }
+
+        // Get jobSeeker using authenticated user ID
+        const jobSeekerRepo = AppDataSource.getRepository(JobSeeker);
+        const jobSeeker = await jobSeekerRepo.findOne({
+            where: { first_name: candidate.name.split(' ')[0]},
+        });
+
+        if (!jobSeeker) {
+            return res.status(404).json({ message: 'Job seeker not found.' });
+        }
+
+        //Application
+        const appRepo = AppDataSource.getRepository(Application);
+        const application = await appRepo.findOne({
+            where: {
+                job: { job_id: job_id },
+                jobSeeker: { first_name: candidate.name.split(' ')[0]},
+            },
+            relations: ['job', 'jobSeeker', 'jobSeeker.user']
+        });
+
+        if (!application) {
+            return res.status(404).json({ message: 'Job application not found for this user and job.' });
+        }
+
+        const interViewRepo = AppDataSource.getRepository(Interview);
+        const interview = interViewRepo.create({
+            application: application,
+            interview_type: interviewType,
+            date_time: new Date(scheduledAt),
+            jobSeeker: jobSeeker
+        });
+
+        const savedInterview = await interViewRepo.save(interview);
+
+        return res.status(201).json(savedInterview);
+    } catch (error) {
+        console.error('Error scheduling interview:', error);
+        return res.status(500).json({ message: 'Internal server error.' });
+    }
+});

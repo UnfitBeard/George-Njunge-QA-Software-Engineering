@@ -16,9 +16,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
   --success-green: #4CAF50;
   --warning-orange: #FF9800;
   --border-radius: 15px;
-  --shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-:root {
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   --primary-color: #4361ee;
   --secondary-color: #3f37c9;
   --accent-color: #4cc9f0;
@@ -28,5 +26,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
   --text-color: #333;
   --text-light-dash: #6c757d;
 }
+
 
 

@@ -2,7 +2,7 @@
   <div class="stats-top">
     <div id="posted-jobs" class="stats-div">
       <div class="number">
-        <p>{{postedJobs.length}}</p>
+        <p>{{jobs.length}}</p>
       </div>
       <div class="title">
         <p>Posted Jobs</p>
@@ -35,60 +35,71 @@
   </div>
 </div>
  <!-- Add to existing HTML -->
-<h2>AI-Powered Insights</h2>
-<div class="ai-analytics">
-  <!-- Predictive Analytics Card -->
-  <div class="ai-card">
-    <h3>Predictive Hiring Trends</h3>
-    <canvas baseChart width="400" height="300"
-            [type]="'line'"
-            [data]="predictiveHiringChartData"
-            [options]="predictiveChartOptions"
-            [legend]="true">
-    </canvas>
-    <div class="ai-summary">
-      <p>📈 Next month's projection: {{ predictedHiring | number }} applications</p>
-      <p>🔍 Top growing skill: {{ topGrowingSkill }}</p>
-    </div>
-  </div>
+ <h2>AI-Powered Insights</h2>
+ <div class="ai-analytics">
 
-  <!-- Anomaly Detection Card -->
-  <div class="ai-card">
-    <h3>Application Anomaly Detection</h3>
-    <canvas baseChart width="400" height="300"
-            [type]="'bar'"
-            [data]="anomalyDetectionChartData"
-            [options]="anomalyChartOptions"
-            [legend]="true">
-    </canvas>
-    <div class="ai-alerts">
-      <div *ngIf="anomalies.length > 0" class="alert">
-        ⚠️ Detected {{ anomalies.length }} anomalies in past 30 days
-      </div>
-    </div>
-  </div>
+   <!-- Charts grid -->
+   <div class="charts-grid">
+     <!-- 1) Application Trends -->
+     <section class="chart-card">
+       <h3>Application Trends</h3>
+       <canvas baseChart
+         [data]="predictiveHiringChartData"
+         [options]="predictiveChartOptions"
+         [type]="'line'">
+       </canvas>
+     </section>
 
-  <!-- Skill Gap Analysis -->
-  <div class="ai-card">
-    <h3>AI Skill Gap Analysis</h3>
-    <div class="skill-gap-chart">
-      <canvas baseChart width="400" height="300"
-              [type]="'radar'"
-              [data]="skillGapChartData"
-              [options]="radarChartOptions"
-              [legend]="true">
-      </canvas>
-    </div>
-    <div class="recommendations">
-      <h4>AI Recommendations</h4>
-      <ul>
-        <li *ngFor="let recommendation of aiRecommendations">
-          {{ recommendation }}
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
+     <!-- 2) Top Skill Demand -->
+     <section class="chart-card">
+       <h3>Top Skill Demand</h3>
+       <canvas baseChart
+         [data]="skillGapChartData"
+         [options]="radarChartOptions"
+         [type]="'radar'">
+       </canvas>
+     </section>
+
+     <!-- 3) Salary Distribution -->
+     <section class="chart-card">
+       <h3>Salary Distribution</h3>
+       <canvas baseChart
+         [data]="salaryDistributionChartData"
+         [options]="barChartOptions"
+         [type]="'bar'">
+       </canvas>
+     </section>
+   </div>
+
+   <!-- Anomalies table -->
+   <section class="card anomalies-card">
+     <h3>Anomalies Detected</h3>
+     <table class="data-table">
+       <thead>
+         <tr>
+           <th>Job ID</th>
+           <th>Title</th>
+           <th>Type</th>
+           <th>Expected</th>
+           <th>Actual</th>
+           <th>Deviation%</th>
+         </tr>
+       </thead>
+       <tbody>
+         <tr *ngFor="let an of anomalies">
+           <td>{{ an.job_id }}</td>
+           <td>{{ an.title }}</td>
+           <td>{{ an.type }}</td>
+           <td>{{ an.expected }}</td>
+           <td>{{ an.actual }}</td>
+           <td>{{ an.deviation }}%</td>
+         </tr>
+       </tbody>
+     </table>
+   </section>
+
+ </div>
+
 
 <!-- user-search -->
  <!-- Add Search Bars -->
@@ -117,19 +128,30 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngFor="let user of filteredUsers">
+    <ng-container *ngFor="let user of users">
       <tr>
         <td>
           <button class="expand-btn" (click)="toggleUserExpand(user)">
             {{ user.isExpanded ? '−' : '+' }}
           </button>
         </td>
-        <td>{{ user.username }}</td>
-        <td>{{ user.role }}</td>
-        <td><span class="status-badge" [class.active]="user.status === 'Active'">{{ user.status }}</span></td>
-        <td>{{ user.lastLogin | date }}</td>
+        <!-- [
+    {
+        "user_id": 1,
+        "email": "g4@gmail.com",
+        "password_hash": "$2a$10$E/IjO0Rmw99065PC5RFrJOsbt0mXZQDcwHHEedX4R0p7hoeDXMPZa",
+        "user_type": "recruiter",
+        "created_at": "2025-04-17T07:26:52.562Z",
+        "last_login": null,
+        "is_verified": false,
+        "profile_picture_url": null
+    }, -->
+
+        <td>{{ user.email }}</td>
+        <td>{{ user.user_type }}</td>
+        <td><span class="status-badge" [class.active]="user.status === 'Active'">inactive</span></td>
+        <td>{{ user.last_login | date }}</td>
         <td>
-          <button class="action-btn" (click)="onEdit(user)">Edit</button>
           <button class="action-btn danger" (click)="onDelete(user)">Delete</button>
         </td>
       </tr>
@@ -138,8 +160,8 @@
           <div class="expanded-content">
             <h4>User Details</h4>
             <p>Email: {{ user.email }}</p>
-            <p>Registered: {{ user.registered | date }}</p>
-            <p>Last Activity: {{ user.lastActivity }}</p>
+            <p>Registered: {{ user.created_at | date }}</p>
+            <p>Last Activity: {{ user.last_login }}</p>
           </div>
         </td>
       </tr>
@@ -167,26 +189,53 @@
     <ng-container *ngFor="let job of jobs">
       <tr>
         <td>
-          <button class = "expand-btn" (click)="toggleJobExpand(job)">
+          <button class="expand-btn" (click)="toggleJobExpand(job)">
             {{ job.isExpanded ? '−' : '+' }}
           </button>
         </td>
         <td>{{ job.title }}</td>
         <td>{{ job.company }}</td>
         <td>{{ job.status }}</td>
-        <td>{{ job.applications }}</td>
-        <td>{{ job.postedDate | date }}</td>
-        <td>{{ job.deadline | date }}</td>
+        <td>{{ job.applications?.length }}</td>
+        <td>{{ job.posted_date | date: 'mediumDate' }}</td>
+        <td>{{ job.expiration_date | date: 'mediumDate' }}</td>
         <td>
-          <button class="action-btn">Edit</button>
           <button class="action-btn danger" (click)="onDelete(job)">Delete</button>
         </td>
       </tr>
+
+      <!-- Expanded row with job description and applications -->
       <tr *ngIf="job.isExpanded" class="expanded-row">
         <td colspan="8">
           <div class="expanded-content">
             <strong>Description:</strong>
             <p>{{ job.description }}</p>
+
+            <div *ngIf="job.applications?.length > 0">
+              <strong>Applications:</strong>
+              <table class="nested-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Cover Letter</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let app of job.applications">
+                    <td>{{ app.application_id }}</td>
+                    <td>{{ app.application_date }}</td>
+                    <td>{{ app.status }}</td>
+                    <td>{{ app.cover_letter }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div *ngIf="job.applications?.length === 0">
+              <p>No applications yet.</p>
+            </div>
           </div>
         </td>
       </tr>

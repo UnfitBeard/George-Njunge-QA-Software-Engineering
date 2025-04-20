@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { JobsService, MatchResponse } from '../jobs.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-jobs-search',
@@ -10,98 +13,30 @@ import { Route, Router } from '@angular/router';
   templateUrl: './jobs-search.component.html',
   styleUrls: ['./jobs-search.component.css']
 })
-export class JobsSearchComponent {
+export class JobsSearchComponent implements OnInit {
+askAI() {
+throw new Error('Method not implemented.');
+}
   isLoggedIn: boolean = false;
   jobSearchForm: FormGroup;
   aiQuery = '';
   showModal = false;
   selectedJob: any = null;
 
-
-//Job details Modal Functionalities
-  openJobDetailsModal(job: any): void {
-    this.selectedJob = job;
-    this.showModal = true;
-    document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
-  }
-
-  closeModal(): void {
-    this.showModal = false;
-    document.body.style.overflow = ''; // Re-enable scrolling
-    this.selectedJob = null;
-  }
-
-  onApply(job: any): void {
-    this.router.navigate(['job-application'])
-    console.log('Applying to:', job.title);
-    this.closeModal();
-  }
-
-  onSave(job: any): void {
-    console.log('Saving job:', job.title);
-  }
-
-
   experienceLevels = ['Entry Level', 'Mid Level', 'Senior Level', 'Manager', 'Executive'];
   jobTypes = ['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote'];
 
-  recommendedJobs = [
-    {
-      id: 1,
-      title: 'Senior Angular Developer',
-      company: 'Tech Innovators Inc.',
-      salary: 120000,
-      location: 'Remote',
-      type: 'Full-time',
-      matchScore: 92,
-      skills: ['Angular', 'TypeScript', 'RxJS']
-    },
-    {
-      id: 2,
-      title: 'Frontend Engineer (React)',
-      company: 'Digital Creations',
-      salary: 110000,
-      location: 'New York, NY',
-      type: 'Full-time',
-      matchScore: 85,
-      skills: ['React', 'JavaScript', 'CSS']
-    }
-  ];
+  allJobs: any[] = [];
+  filteredJobs: any[] = [];
+  recommendedJobs: any[] = [];
 
-  filteredJobs = [
-    {
-      id: 1,
-      title: 'Full Stack Developer',
-      company: 'Web Solutions LLC',
-      salary: 95000,
-      location: 'Boston, MA',
-      type: 'Full-time',
-      matchScore: 88,
-      skills: ['JavaScript', 'Node.js', 'React']
-    },
-    {
-      id: 2,
-      title: 'Backend Engineer',
-      company: 'Data Systems Co.',
-      salary: 105000,
-      location: 'Remote',
-      type: 'Contract',
-      matchScore: 76,
-      skills: ['Python', 'Django', 'AWS']
-    },
-    {
-      id: 3,
-      title: 'UX/UI Designer',
-      company: 'Creative Minds',
-      salary: 85000,
-      location: 'San Francisco, CA',
-      type: 'Full-time',
-      matchScore: 65,
-      skills: ['Figma', 'Sketch', 'User Research']
-    }
-  ];
-
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private http: HttpClient,
+    private jobsService: JobsService,
+    private userService: UserService
+  ) {
     this.jobSearchForm = this.fb.group({
       searchTerm: ['', Validators.required],
       salaryRange: [80000, Validators.required],
@@ -111,31 +46,82 @@ export class JobsSearchComponent {
     });
   }
 
-  onSearch() {
-    if (this.jobSearchForm) {
-      console.log('Search filters:', this.jobSearchForm.value);
-      // Implement actual search logic here
-      this.filterJobs();
-    }
+  ngOnInit(): void {
+    this.fetchJobs();
+    this.loadRecommendedJobs(); // 👈 this is the key part
   }
 
-  askAI() {
-    if (this.aiQuery.trim()) {
-      console.log('AI query:', this.aiQuery);
-      // Implement AI search logic here
-    }
-  }
-
-  filterJobs() {
-    // Implement filtering based on form values
-    const filters = this.jobSearchForm.value;
-    this.filteredJobs = this.filteredJobs.filter(job => {
-      return (
-        (!filters.searchTerm || job.title.toLowerCase().includes(filters.searchTerm.toLowerCase())) &&
-        job.salary >= filters.salaryRange &&
-        (!filters.location || job.location.toLowerCase().includes(filters.location.toLowerCase())) &&
-        (!filters.jobType || job.type === filters.jobType)
-      );
+  fetchJobs(): void {
+    this.http.get<any>('http://localhost:3000/api/v1/jobs/getAllJobs').subscribe({
+      next: (res) => {
+        this.allJobs = res.jobs;
+        this.filteredJobs = [...this.allJobs];
+      },
+      error: (err) => {
+        console.error('Error fetching jobs:', err);
+      }
     });
+  }
+
+  loadRecommendedJobs(): void {
+    this.userService.getCurrentUserProfile().subscribe(
+      userResp => {
+        const userProfile = userResp.user || userResp;
+
+        this.jobsService.getAllJobs().subscribe(
+          jobsArray => {
+            this.jobsService.matchJobs(userProfile, jobsArray).subscribe(
+              (resp: MatchResponse) => {
+                this.recommendedJobs = resp.recommendedJobs.map((job: any) => ({
+                  job_id: job.job_id,
+                  name: job.title,
+                  company: job.location,
+                  skillsMatch: job.matchPercentage,
+                  keySkills: job.skills,
+                  deadline: job.expiration_date
+                }));
+              },
+              err => console.error('AI match error', err)
+            );
+          },
+          err => console.error('Jobs fetch error', err)
+        );
+      },
+      err => console.error('User profile fetch error:', err)
+    );
+  }
+
+  onSearch(): void {
+    if (this.jobSearchForm.valid) {
+      const filters = this.jobSearchForm.value;
+      this.filteredJobs = this.allJobs.filter(job =>
+        (!filters.searchTerm || job.title.toLowerCase().includes(filters.searchTerm.toLowerCase())) &&
+        job.min_salary >= filters.salaryRange &&
+        (!filters.location || job.location.toLowerCase().includes(filters.location.toLowerCase())) &&
+        (!filters.jobType || job.job_type === filters.jobType)
+      );
+    }
+  }
+
+  openJobDetailsModal(job: any): void {
+    this.selectedJob = job;
+    this.showModal = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    document.body.style.overflow = '';
+    this.selectedJob = null;
+  }
+
+  onApply(job: any): void {
+    this.router.navigate(['job-application'], {state:job});
+    console.log('Applying to:', job.title);
+    this.closeModal();
+  }
+
+  onSave(job: any): void {
+    console.log('Saving job:', job.title);
   }
 }

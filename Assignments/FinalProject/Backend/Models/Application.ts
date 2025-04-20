@@ -19,11 +19,11 @@ export class Application {
   @JoinColumn({ name: 'job_seeker_id' })
   jobSeeker!: JobSeeker;
 
-  @ManyToOne(() => Job, (job) => job.applications)
+  @ManyToOne(() => Job, (job) => job.applications,)
   @JoinColumn({ name: 'job_id' })
   job!: Job;
 
-  @Column({ type: 'date', default: () => 'CURRENT_DATE' })
+  @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' })
   application_date!: Date;
 
   @Column({
