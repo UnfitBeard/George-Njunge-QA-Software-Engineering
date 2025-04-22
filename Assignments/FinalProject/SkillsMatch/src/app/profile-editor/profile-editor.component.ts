@@ -20,11 +20,6 @@ export class ProfileEditorComponent {
 
   constructor(private fb: FormBuilder, private router: Router, private profileService: UserService) {}
 
-  ngOnInit(): void {
-    this.initializeForm();
-    this.calculateProfileCompletion();
-  }
-
   initializeForm(): void {
     this.personalDetailsForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
@@ -189,4 +184,76 @@ export class ProfileEditorComponent {
       }
     });
   }
+
+  loadProfileIfExists(): void {
+    this.profileService.viewProfileDetails().subscribe({
+      next: (profileData) => {
+        this.personalDetailsForm.patchValue({
+          firstName: profileData.firstName,
+          lastName: profileData.lastName,
+          description: profileData.description,
+          address: {
+            location: profileData.location,
+            postalAddress: profileData.postalAddress
+          },
+          telephone: profileData.telephone ?? '',
+          linkedin: profileData.linkedin ?? ''
+        });
+
+        // Patch skills
+        if (profileData.skills?.length) {
+          const skillFormGroups = profileData.skills.map((skill: any) =>
+            this.fb.group({
+              skill: [skill.skill, Validators.required],
+              experience: [skill.experience, Validators.required]
+            })
+          );
+          const skillsArray = this.fb.array(skillFormGroups);
+          this.personalDetailsForm.setControl('skills', skillsArray);
+        }
+
+        // Patch projects
+        if (profileData.projects?.length) {
+          const projectFormGroups = profileData.projects.map((project: any) =>
+            this.fb.group({
+              projectName: [project.projectName, Validators.required],
+              projectDescription: [project.projectDescription, Validators.required],
+              projectLink: [project.projectLink],
+              projectDate: [project.projectDate]
+            })
+          );
+          this.personalDetailsForm.setControl('projects', this.fb.array(projectFormGroups));
+        }
+
+        // Optional: courses
+        if (profileData.courses?.length) {
+          const courseFormGroups = profileData.courses.map((course: any) =>
+            this.fb.group({
+              courseName: [course.courseName, Validators.required],
+              courseDescription: [course.courseDescription, Validators.required],
+              courseDate: [course.courseDate, Validators.required]
+            })
+          );
+          this.personalDetailsForm.setControl('courses', this.fb.array(courseFormGroups));
+        }
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          // No profile exists, user just signed up — let them create it
+          console.log('No existing profile found. Creating a new one.');
+        } else {
+          console.error('Error loading profile data:', err);
+          alert('There was an error loading your profile.');
+        }
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this.initializeForm();
+    this.loadProfileIfExists(); // 🔥 add this
+    this.calculateProfileCompletion();
+  }
+
+
 }

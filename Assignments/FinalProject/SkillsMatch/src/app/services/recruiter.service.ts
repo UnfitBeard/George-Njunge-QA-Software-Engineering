@@ -74,7 +74,7 @@ export interface JobApplication {
   providedIn: 'root'
 })
 export class RecruiterService {
-  private apiUrl = 'http://localhost:3000/api/v1';
+  private apiUrl = 'http://54.87.50.126:3000/api/v1';
 
   constructor(private http: HttpClient) { }
 

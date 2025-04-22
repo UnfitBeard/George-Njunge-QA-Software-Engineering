@@ -13,8 +13,17 @@ import { JobsSearchComponent } from './jobs-search/jobs-search.component';
 import { CreateJobsComponent } from './create-jobs/create-jobs.component';
 import { JobApplicationComponent } from './job-application/job-application.component';
 import { ProfileEditorComponent } from './profile-editor/profile-editor.component';
+import { RecruitersProfileEditorComponent } from './recruiters-profile-editor/recruiters-profile-editor.component';
+import { ChatComponent } from './chat/chat.component';
 
 export const routes: Routes = [
+  // Default route
+  {
+    path: '',
+    redirectTo: '/landing-page',
+    pathMatch: 'full'
+  },
+  
   // Public Routes
   {
     path: 'login',
@@ -28,7 +37,6 @@ export const routes: Routes = [
     path: 'landing-page',
     component: LandingPageComponent,
   },
-
   {
     path: 'job-search',
     component: JobsSearchComponent
@@ -38,55 +46,64 @@ export const routes: Routes = [
   {
     path: 'admin-dashboard',
     component: AdminDashboardComponent,
-    canActivate: [authGuard, roleGuard], // Only authenticated users with 'admin' role
+    canActivate: [authGuard, roleGuard],
     data: { role: 'admin' },
   },
   {
     path: 'recruiters-dashboard',
     component: RecruitersDashboardComponent,
-    canActivate: [authGuard, roleGuard], // Only authenticated users with 'recruiter' role
+    canActivate: [authGuard, roleGuard],
     data: { role: 'recruiter' },
   },
   {
     path: 'create-jobs',
     component: CreateJobsComponent,
-    canActivate: [authGuard, roleGuard], // Only authenticated users with 'recruiter' role
+    canActivate: [authGuard, roleGuard],
     data: { role: 'recruiter' },
   },
   {
     path: 'jobseeker-dashboard',
     component: JobseekerDashboardComponent,
-    canActivate: [authGuard], // Only authenticated users can access
+    canActivate: [authGuard],
   },
   {
     path: 'job-application',
     component: JobApplicationComponent,
-    canActivate: [authGuard], // Only authenticated users can access
+    canActivate: [authGuard],
   },
   {
     path: 'edit-profile',
     component: ProfileEditorComponent,
-    canActivate: [authGuard], // Only authenticated users can access
+    canActivate: [authGuard],
   },
-
+  {
+    path: 'edit-recruiter-profile',
+    component: RecruitersProfileEditorComponent,
+    canActivate: [authGuard],
+  },
   {
     path: 'profile-viewer',
     component: ProfileViewerComponent,
-    canActivate: [authGuard], // Only authenticated users can access
+    canActivate: [authGuard],
   },
   {
     path: 'notifications',
     component: NotificationsComponent,
-    canActivate: [authGuard], // Only authenticated users can access
+    canActivate: [authGuard],
+  },
+  {
+    path: 'chat',
+    component: ChatComponent,
+    canActivate: [authGuard],
   },
 
-  // Unauthorized Route (for users who don’t have access)
+  // Unauthorized Route
   {
     path: 'unauthorized',
     component: LandingPageComponent,
   },
 
-  // Redirect for undefined routes (can be customized as needed)
+  // Catch-all route
   {
     path: '**',
     redirectTo: '/landing-page',

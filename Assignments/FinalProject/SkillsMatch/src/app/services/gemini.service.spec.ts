@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RecruiterService } from './recruiter.service';
+import { GeminiService } from './gemini.service';
 
-describe('RecruiterService', () => {
-  let service: RecruiterService;
+describe('GeminiService', () => {
+  let service: GeminiService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(RecruiterService);
+    service = TestBed.inject(GeminiService);
   });
 
   it('should be created', () => {

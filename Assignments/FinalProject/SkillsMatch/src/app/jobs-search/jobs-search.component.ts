@@ -52,7 +52,7 @@ throw new Error('Method not implemented.');
   }
 
   fetchJobs(): void {
-    this.http.get<any>('http://localhost:3000/api/v1/jobs/getAllJobs').subscribe({
+    this.http.get<any>('http://54.87.50.126:3000/api/v1/jobs/getAllJobs').subscribe({
       next: (res) => {
         this.allJobs = res.jobs;
         this.filteredJobs = [...this.allJobs];

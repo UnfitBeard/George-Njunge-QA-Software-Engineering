@@ -24,18 +24,26 @@ export class RecruitersProfileEditorComponent {
   hiringVolumeOptions = ['1-5 hires/month', '6-10 hires/month', '11-20 hires/month',
                         '20+ hires/month'];
   timeToHireOptions = ['1-2 weeks', '3-4 weeks', '1-2 months', '2+ months'];
+  isFormReady:boolean = false
 
   constructor(private fb: FormBuilder, private router: Router) {}
 
   ngOnInit(): void {
+    if (!this.recruiterData) {
+      console.warn('No recruiter data found in navigation state. Using defaults.');
+      this.recruiterData = {};
+    }
+
     this.initializeForm();
     this.calculateProfileCompletion();
 
-    // Update completion on form changes
     this.recruiterForm.valueChanges.subscribe(() => {
       this.calculateProfileCompletion();
     });
+
+    this.isFormReady = true;
   }
+
 
   initializeForm(): void {
     this.recruiterForm = this.fb.group({

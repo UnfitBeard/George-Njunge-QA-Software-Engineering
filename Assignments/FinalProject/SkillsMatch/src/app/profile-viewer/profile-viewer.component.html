@@ -68,44 +68,5 @@
     [legend]="lineChartLegend">
   </canvas>
 </div>
-
-<!-- Button to open Interview Scheduling Modal -->
-<button class="schedule-button" (click)="openModal()">Schedule Interview</button>
-
-<!-- Interview Scheduling Modal -->
-<div class="modal-overlay" *ngIf="isModalVisible">
-  <div class="modal-content">
-    <span class="close" (click)="closeModal()">&times;</span>
-    <h2>Schedule Interview</h2>
-
-    <!-- Interview Schedule Form -->
-    <form (ngSubmit)="scheduleInterview()">
-      <div class="form-group">
-        <label for="candidateName">Candidate Name:</label>
-        <input type="text" id="candidateName" [(ngModel)]="interviewDetails.candidateName" name="candidateName" required />
-      </div>
-
-      <div class="form-group">
-        <label for="interviewDate">Interview Date:</label>
-        <input type="date" id="interviewDate" [(ngModel)]="interviewDetails.interviewDate" name="interviewDate" required />
-      </div>
-
-      <div class="form-group">
-        <label for="interviewTime">Interview Time:</label>
-        <input type="time" id="interviewTime" [(ngModel)]="interviewDetails.interviewTime" name="interviewTime" required />
-      </div>
-
-      <div class="form-group">
-        <label for="interviewType">Interview Type:</label>
-        <select id="interviewType" [(ngModel)]="interviewDetails.interviewType" name="interviewType" required>
-          <option value="In-person">In-person</option>
-          <option value="Online">Online</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <button type="submit">Schedule Interview</button>
-      </div>
-    </form>
   </div>
 </div>

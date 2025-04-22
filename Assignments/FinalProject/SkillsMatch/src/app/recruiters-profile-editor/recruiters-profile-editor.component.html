@@ -1,5 +1,8 @@
 
-<div class="recruiter-profile-container">
+<div *ngIf="!isFormReady">
+  <p>Loading form...</p>
+</div>
+<div *ngIf="isFormReady" class="recruiter-profile-container">
   <div class="header-section">
     <h1>Recruiter Profile</h1>
     <p>Complete your profile to attract better candidates and improve your hiring success</p>
