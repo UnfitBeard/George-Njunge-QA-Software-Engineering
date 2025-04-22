@@ -8,9 +8,9 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthServicesService implements OnDestroy {
-  loginUrl = "http://54.87.50.126:3000/api/v1/auth/login";
-  registerUrl = "http://54.87.50.126:3000/api/v1/auth/register";
-  logoutUrl = 'http://54.87.50.126:3000/api/v1/auth/logout';
+  loginUrl = "http://54.87.50.126/api/v1/auth/login";
+  registerUrl = "http://54.87.50.126/api/v1/auth/register";
+  logoutUrl = 'http://54.87.50.126/api/v1/auth/logout';
   private refreshSubscription?: Subscription;
   private readonly REFRESH_INTERVAL = 14 * 60 * 1000; // 14 minutes
 
@@ -25,7 +25,7 @@ export class AuthServicesService implements OnDestroy {
     }
   }
 
-  private readonly apiUrl = 'http://54.87.50.126:3000/api/v1/auth';
+  private readonly apiUrl = 'http://54.87.50.126/api/v1/auth';
   private currentUserSubject: BehaviorSubject<any>;
 
   // Observable to subscribe to user changes

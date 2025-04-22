@@ -27,8 +27,8 @@ export interface AnalyticsPayload {
 
 @Injectable({ providedIn: 'root' })
 export class JobsService {
-  private baseURL = 'http://54.87.50.126:3000/api/v1/jobs';
-  private aiURL   = 'http://54.87.50.126:3000/api/v1/gemini';
+  private baseURL = 'http://54.87.50.126/api/v1/jobs';
+  private aiURL   = 'http://54.87.50.126/api/v1/gemini';
 
   constructor(private http: HttpClient) { }
 
@@ -37,7 +37,7 @@ export class JobsService {
   }
 
   submitApplication(applicationData: any): Observable<any> {
-    return this.http.post('http://54.87.50.126:3000/api/v1/jobs/apply', applicationData, {
+    return this.http.post('http://54.87.50.126/api/v1/jobs/apply', applicationData, {
       withCredentials: true,  // Ensures that cookies are sent with the request
     });
   }
