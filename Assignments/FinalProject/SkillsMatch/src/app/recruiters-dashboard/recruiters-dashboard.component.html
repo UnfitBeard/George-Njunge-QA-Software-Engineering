@@ -3,8 +3,8 @@
   <section class="card recruiter-card">
     <img [src]="recruiter.avatar" alt="Avatar" class="avatar"/>
     <div class="recruiter-details">
-      <h2>{{ recruiter.name }}</h2>
-      <p class="company">{{ recruiter.company }}</p>
+      <h2>{{ recruiter.firstname }} {{ recruiter.lastname }}</h2>
+      <p class="company">{{ recruiter.company?.name }}</p>
       <p *ngIf="recruiter.verified" class="verified">✔ Verified</p>
       <p>Rating: {{ recruiter.rating }} ★</p>
       <p>Hires: {{ recruiter.hires }}</p>

@@ -49,6 +49,10 @@ export interface RecruiterProfile {
   hiring_volume: number;
   average_time_to_hire: number;
   specialization: string;
+  company?: {
+    name: string;
+    description: string;
+  };
 }
 
 export interface DashboardData {
