@@ -83,7 +83,19 @@ export class JobsService {
   }
 
   updateJob(job: any): Observable<any> {
-    return this.http.put(`/api/jobs/${job.job_id}`, job, { 
+    const updatedJob = {
+      title: job.title,
+      company_id: job.company_id,
+      description: job.description,
+      salaryFrom: job.min_salary,
+      salaryTo: job.max_salary,
+      jobType: job.job_type,
+      deadline: job.expiration_date,
+      location: job.location,
+      requiredSkills: job.skills.join(',')
+    };
+
+    return this.http.put(`${this.baseURL}/updateJob/${job.job_id}`, updatedJob, { 
       withCredentials: true,
       headers: this.getHeaders()
     });
@@ -98,6 +110,13 @@ export class JobsService {
 
   getAnalytics(): Observable<AnalyticsPayload> {
     return this.http.post<AnalyticsPayload>(`${this.aiURL}/adminGraphs`, { 
+      withCredentials: true,
+      headers: this.getHeaders()
+    });
+  }
+
+  createJob(jobData: any): Observable<any> {
+    return this.http.post(`${this.baseURL}/addJobs`, jobData, {
       withCredentials: true,
       headers: this.getHeaders()
     });

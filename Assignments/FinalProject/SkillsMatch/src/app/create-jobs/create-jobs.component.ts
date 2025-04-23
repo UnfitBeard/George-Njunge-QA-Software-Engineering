@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { JobsService } from '../jobs.service';
+import { AuthServicesService } from '../auth-services.service';
 
 @Component({
   selector: 'app-create-jobs',
@@ -10,11 +12,15 @@ import { Router } from '@angular/router';
   styleUrls: ['./create-jobs.component.css']
 })
 export class CreateJobsComponent {
-  jobForm: FormGroup = new FormGroup({})
+  jobForm: FormGroup = new FormGroup({});
+  errorMessage: string = '';
+  isSubmitting: boolean = false;
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private jobsService: JobsService,
+    private authService: AuthServicesService
   ) {}
 
   ngOnInit(): void {
@@ -28,8 +34,8 @@ export class CreateJobsComponent {
       description: ['', Validators.required],
       jobType: ['Full-time', Validators.required],
       location: ['', Validators.required],
-      minSalary: [null, Validators.required],
-      maxSalary: [null, Validators.required],
+      minSalary: [null, [Validators.required, Validators.min(0)]],
+      maxSalary: [null, [Validators.required, Validators.min(0)]],
       deadline: ['', Validators.required],
       skills: ['', Validators.required],
       experienceLevel: ['Mid Level', Validators.required],
@@ -39,24 +45,57 @@ export class CreateJobsComponent {
 
   onSubmit(): void {
     if (this.jobForm.valid) {
-      const newJob = {
-        ...this.jobForm.value,
-        id: this.generateId(),
-        applicants: [],
-        skills: this.jobForm.value.skills.split(',').map((skill: string) => skill.trim()),
-        salaryRange: {
-          min: this.jobForm.value.minSalary,
-          max: this.jobForm.value.maxSalary
-        },
-        postedDate: new Date().toISOString(),
-        status: 'Active'
-      };
+      this.isSubmitting = true;
+      this.errorMessage = '';
 
-      // In a real app, you would call a service to save the job
-      console.log('New job created:', newJob);
+      const formData = this.jobForm.value;
+      const storedUser = localStorage.getItem('currentUser');
+      
+      if (!storedUser) {
+        this.errorMessage = 'User not authenticated';
+        this.isSubmitting = false;
+        return;
+      }
 
-      // Navigate back to dashboard or jobs list
-      this.router.navigate(['recruiters-dashboard']);
+      try {
+        const currentUser = JSON.parse(storedUser);
+        const newJob = {
+          company_id: currentUser.company_id || 1, // Fallback to 1 if not available
+          recruiter_id: currentUser.user_id,
+          title: formData.title,
+          description: formData.description,
+          location: formData.location,
+          salary_range: `[${formData.minSalary}, ${formData.maxSalary})`,
+          job_type: formData.jobType,
+          posted_date: new Date().toISOString().split('T')[0],
+          expiration_date: formData.deadline,
+          status: 'open',
+          experience_required: formData.experienceLevel,
+          application_count: 0,
+          skills: formData.skills.split(',').map((skill: string) => skill.trim()),
+          experience_level: formData.experienceLevel,
+          education: formData.education,
+          min_salary: formData.minSalary,
+          max_salary: formData.maxSalary
+        };
+
+        // Call the service to save the job
+        this.jobsService.createJob(newJob).subscribe({
+          next: (response) => {
+            console.log('Job created successfully:', response);
+            this.router.navigate(['recruiters-dashboard']);
+          },
+          error: (error) => {
+            console.error('Error creating job:', error);
+            this.errorMessage = error.error?.message || 'Failed to create job. Please try again.';
+            this.isSubmitting = false;
+          }
+        });
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        this.errorMessage = 'Error processing user data';
+        this.isSubmitting = false;
+      }
     }
   }
 

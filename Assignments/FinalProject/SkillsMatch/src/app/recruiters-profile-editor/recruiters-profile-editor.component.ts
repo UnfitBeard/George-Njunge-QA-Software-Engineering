@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { RecruiterService } from '../services/recruiter.service';
+import { AuthServicesService } from '../auth-services.service';
 
 @Component({
   selector: 'app-recruiters-profile-editor',
@@ -13,7 +15,8 @@ export class RecruitersProfileEditorComponent {
   recruiterForm!: FormGroup;
   isSubmitting = false;
   profileCompletion = 0;
-  recruiterData = history.state.recruiterData
+  recruiterData = history.state.recruiterData;
+  errorMessage: string = '';
 
   // Dropdown options
   experienceOptions = ['0-2 years', '3-5 years', '6-10 years', '10+ years'];
@@ -24,9 +27,14 @@ export class RecruitersProfileEditorComponent {
   hiringVolumeOptions = ['1-5 hires/month', '6-10 hires/month', '11-20 hires/month',
                         '20+ hires/month'];
   timeToHireOptions = ['1-2 weeks', '3-4 weeks', '1-2 months', '2+ months'];
-  isFormReady:boolean = false
+  isFormReady: boolean = false;
 
-  constructor(private fb: FormBuilder, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private recruiterService: RecruiterService,
+    private authService: AuthServicesService
+  ) {}
 
   ngOnInit(): void {
     if (!this.recruiterData) {
@@ -44,92 +52,69 @@ export class RecruitersProfileEditorComponent {
     this.isFormReady = true;
   }
 
-
   initializeForm(): void {
     this.recruiterForm = this.fb.group({
-      // Basic Information
       firstName: [this.recruiterData.firstname || '', [Validators.required, Validators.minLength(2)]],
       lastName: [this.recruiterData.lastname || '', [Validators.required, Validators.minLength(2)]],
       jobTitle: ['', Validators.required],
       yearsExperience: ['', Validators.required],
-
-      // Company Information
       companyName: [this.recruiterData.company || '', Validators.required],
       companySize: ['', Validators.required],
       industry: ['', Validators.required],
       companyDescription: ['', [Validators.required, Validators.minLength(50), Validators.maxLength(500)]],
-
-      // Hiring Preferences
       hiringVolume: ['', Validators.required],
       averageTimeToHire: ['', Validators.required],
       roles: this.fb.array([], Validators.required),
-
-      // Contact Information
       email: ['', [Validators.required, Validators.email]],
       phone: [''],
       linkedin: [''],
       website: ['', [Validators.required, Validators.pattern('https?://.+')]]
     });
 
-    // Add initial role if empty
     if (this.rolesArray.length === 0) {
       this.addRole('Recruiter');
     }
   }
 
-  // Roles Form Array Methods
   get rolesArray(): FormArray {
     return this.recruiterForm.get('roles') as FormArray;
   }
 
   addRole(role: string): void {
-    if (role && role.trim()) {
-      this.rolesArray.push(this.fb.control(role.trim()));
-      this.rolesArray.markAsTouched();
-    }
+    this.rolesArray.push(this.fb.control(role));
   }
 
   removeRole(index: number): void {
     this.rolesArray.removeAt(index);
   }
 
-  // Field validation helper
   isFieldInvalid(field: string): boolean {
     const formField = this.recruiterForm.get(field);
     return formField!.invalid && (formField!.dirty || formField!.touched);
   }
 
-  // Profile Completion Calculation
   calculateProfileCompletion(): void {
-    const totalFields = 12; // Total required fields
+    const totalFields = 12;
     let completedFields = 0;
     const formValues = this.recruiterForm.value;
 
-    // Check basic info
     if (formValues.firstName) completedFields++;
     if (formValues.lastName) completedFields++;
     if (formValues.jobTitle) completedFields++;
     if (formValues.yearsExperience) completedFields++;
-
-    // Check company info
     if (formValues.companyName) completedFields++;
     if (formValues.companySize) completedFields++;
     if (formValues.industry) completedFields++;
     if (formValues.companyDescription && formValues.companyDescription.length >= 50) completedFields++;
-
-    // Check hiring preferences
     if (formValues.hiringVolume) completedFields++;
     if (formValues.averageTimeToHire) completedFields++;
     if (this.rolesArray.length > 0) completedFields++;
-
-    // Check contact info
     if (formValues.email) completedFields++;
     if (formValues.website) completedFields++;
 
     this.profileCompletion = Math.round((completedFields / totalFields) * 100);
   }
 
-  // Form Submission
   onSubmit(): void {
     if (this.recruiterForm.invalid) {
       this.markAllAsTouched();
@@ -137,16 +122,70 @@ export class RecruitersProfileEditorComponent {
     }
 
     this.isSubmitting = true;
+    this.errorMessage = '';
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Form submitted:', this.recruiterForm.value);
+    const formData = this.recruiterForm.value;
+    console.log('Form data:', formData); // Debug log
+
+    const storedUser = localStorage.getItem('currentUser');
+    console.log('Stored user:', storedUser); // Debug log
+
+    if (!storedUser) {
+      this.errorMessage = 'User not authenticated';
       this.isSubmitting = false;
+      return;
+    }
 
-      // Show success message
-      alert('Profile updated successfully!');
-      // this.router.navigate(['/recruiter/dashboard']);
-    }, 1500);
+    try {
+      const currentUser = JSON.parse(storedUser);
+      console.log('Current user:', currentUser); // Debug log
+
+      const recruiterProfile = {
+        user_id: currentUser.user_id,
+        company_id: currentUser.company_id || 1,
+        firstname: formData.firstName,
+        lastname: formData.lastName,
+        position: formData.jobTitle,
+        phone: formData.phone,
+        avatar: 'path/to/avatar.png',
+        verified: false,
+        rating: 0,
+        hires: 0,
+        hiring_volume: parseInt(formData.hiringVolume.split('-')[0]),
+        average_time_to_hire: this.convertTimeToHireToDays(formData.averageTimeToHire),
+        specialization: formData.roles[0]
+      };
+
+      console.log('Sending recruiter profile:', recruiterProfile); // Debug log
+
+      this.recruiterService.updateProfile(recruiterProfile).subscribe({
+        next: (response) => {
+          console.log('Profile updated successfully:', response);
+          this.router.navigate(['/recruiter/dashboard']);
+        },
+        error: (error) => {
+          console.error('Error updating profile:', error);
+          this.errorMessage = error.error?.message || 'Failed to update profile. Please try again.';
+          this.isSubmitting = false;
+        }
+      });
+    } catch (error) {
+      console.error('Error processing user data:', error);
+      this.errorMessage = 'Error processing user data';
+      this.isSubmitting = false;
+    }
+  }
+
+  private convertTimeToHireToDays(timeToHire: string): number {
+    // Convert time to hire string to number of days
+    if (timeToHire.includes('weeks')) {
+      const weeks = parseInt(timeToHire.split('-')[0]);
+      return weeks * 7;
+    } else if (timeToHire.includes('months')) {
+      const months = parseInt(timeToHire.split('-')[0]);
+      return months * 30;
+    }
+    return 0;
   }
 
   onCancel(): void {
@@ -155,21 +194,10 @@ export class RecruitersProfileEditorComponent {
     }
   }
 
-  // Helper to mark all fields as touched
   private markAllAsTouched(): void {
-    Object.values(this.recruiterForm.controls).forEach(control => {
-      if (control instanceof FormGroup) {
-        Object.values(control.controls).forEach(subControl => {
-          subControl.markAsTouched();
-        });
-      } else if (control instanceof FormArray) {
-        control.controls.forEach(arrayControl => {
-          arrayControl.markAsTouched();
-        });
-      } else {
-        control.markAsTouched();
-      }
+    Object.keys(this.recruiterForm.controls).forEach(key => {
+      const control = this.recruiterForm.get(key);
+      control?.markAsTouched();
     });
   }
-
 }

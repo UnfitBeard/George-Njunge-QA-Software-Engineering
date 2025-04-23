@@ -46,7 +46,7 @@ import { AuthServicesService } from '../auth-services.service';
             <button 
               type="button" 
               [class.active]="selectedRole === 'jobseeker'"
-              (click)="onRoleSelected('jobseeker')"
+              (click)="onRoleSelected('job_seeker')"
             >
               Job Seeker
             </button>

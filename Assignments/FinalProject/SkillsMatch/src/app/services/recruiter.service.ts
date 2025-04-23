@@ -36,14 +36,19 @@ export interface JobApplication {
 }
 
 export interface RecruiterProfile {
-  name: string;
+  user_id: number;
+  company_id: number;
   firstname: string;
   lastname: string;
-  company: string;
+  position: string;
+  phone: string;
   avatar: string;
   verified: boolean;
   rating: number;
   hires: number;
+  hiring_volume: number;
+  average_time_to_hire: number;
+  specialization: string;
 }
 
 export interface DashboardData {
@@ -86,7 +91,7 @@ export class RecruiterService {
     if (storedUser) {
       try {
         const user = JSON.parse(storedUser);
-        token = user?.token || '';
+        token = user?.token?.accessToken || user?.token || '';
       } catch (error) {
         console.error('Error parsing user from localStorage:', error);
       }
@@ -121,5 +126,13 @@ export class RecruiterService {
         headers: this.getHeaders()
       }
     );
+  }
+
+  updateProfile(profile: RecruiterProfile): Observable<any> {
+    console.log('Sending profile data:', profile); // Debug log
+    return this.http.patch(`${this.apiUrl}/users/Recruiter`, profile, {
+      withCredentials: true,
+      headers: this.getHeaders()
+    });
   }
 }
