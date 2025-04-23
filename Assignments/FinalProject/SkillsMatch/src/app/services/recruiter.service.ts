@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -78,19 +78,48 @@ export class RecruiterService {
 
   constructor(private http: HttpClient) { }
 
+  // Helper method to get headers with token
+  private getHeaders(): HttpHeaders {
+    const storedUser = localStorage.getItem('currentUser');
+    let token = '';
+    
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        token = user?.token || '';
+      } catch (error) {
+        console.error('Error parsing user from localStorage:', error);
+      }
+    }
+    
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+    });
+  }
+
   scheduleInterview(payload: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/jobs/applications/schedule`, payload, { withCredentials: true });
+    return this.http.post(`${this.apiUrl}/jobs/applications/schedule`, payload, { 
+      withCredentials: true,
+      headers: this.getHeaders()
+    });
   }
 
   updateJob(job: any): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/jobs/updateJob/${job.job_id}`, job, { withCredentials: true });
+    return this.http.patch(`${this.apiUrl}/jobs/updateJob/${job.job_id}`, job, { 
+      withCredentials: true,
+      headers: this.getHeaders()
+    });
   }
 
   getDashboardInsights(): Observable<DashboardData> {
     return this.http.post<DashboardData>(
       `${this.apiUrl}/gemini/recruiterDashBoard`,
       {},
-      { withCredentials: true }
+      { 
+        withCredentials: true,
+        headers: this.getHeaders()
+      }
     );
   }
 }

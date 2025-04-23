@@ -15,6 +15,7 @@ import { JobApplicationComponent } from './job-application/job-application.compo
 import { ProfileEditorComponent } from './profile-editor/profile-editor.component';
 import { RecruitersProfileEditorComponent } from './recruiters-profile-editor/recruiters-profile-editor.component';
 import { ChatComponent } from './chat/chat.component';
+import { LearningPathComponent } from './learning-path/learning-path.component';
 
 export const routes: Routes = [
   // Default route
@@ -95,6 +96,11 @@ export const routes: Routes = [
     path: 'chat',
     component: ChatComponent,
     canActivate: [authGuard],
+  },
+  {
+    path: 'learning-path',
+    component: LearningPathComponent,
+    canActivate: [authGuard]
   },
 
   // Unauthorized Route

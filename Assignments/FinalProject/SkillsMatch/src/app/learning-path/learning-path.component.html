@@ -1,0 +1,47 @@
+<div class="learning-path-container">
+  <h2>Learning Paths</h2>
+  
+  <div class="role-selector">
+    <form (ngSubmit)="onSubmit()">
+      <label for="roleSelect">Select Role:</label>
+      <select id="roleSelect" [(ngModel)]="selectedRole" name="role" (change)="onRoleChange()">
+        <option value="software_engineer">Software Engineer</option>
+        <option value="data_scientist">Data Scientist</option>
+        <option value="product_manager">Product Manager</option>
+      </select>
+      <button type="submit" class="submit-button" [disabled]="loading">
+        {{ loading ? 'Loading...' : 'View Learning Path' }}
+      </button>
+    </form>
+  </div>
+
+  <div class="error-message" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="learning-path-content" *ngIf="showPath && currentPath && !loading">
+    <h3>{{ currentPath.title }}</h3>
+    <p class="description">{{ currentPath.description }}</p>
+
+    <div class="steps-container">
+      <div class="step" *ngFor="let step of currentPath.steps; let i = index">
+        <div class="step-header">
+          <span class="step-number">{{ i + 1 }}</span>
+          <h4>{{ step.title }}</h4>
+        </div>
+        <p class="step-description">{{ step.description }}</p>
+        <p class="step-duration">Duration: {{ step.duration }}</p>
+        <div class="resources">
+          <h5>Resources:</h5>
+          <ul>
+            <li *ngFor="let resource of step.resources">{{ resource }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

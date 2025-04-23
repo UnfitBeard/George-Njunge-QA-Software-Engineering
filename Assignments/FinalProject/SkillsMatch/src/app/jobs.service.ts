@@ -32,13 +32,42 @@ export class JobsService {
 
   constructor(private http: HttpClient) { }
 
+  // Helper method to get headers with token
+  private getHeaders(): HttpHeaders {
+    const storedUser = localStorage.getItem('currentUser');
+    let token = '';
+    
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        token = user?.token?.accessToken || user?.token || '';
+        console.log('Token being used:', token); // Debug log
+      } catch (error) {
+        console.error('Error parsing user from localStorage:', error);
+      }
+    }
+    
+    // Ensure the token is properly formatted
+    const authHeader = token ? `Bearer ${token}` : '';
+    console.log('Auth header:', authHeader); // Debug log
+    
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': authHeader
+    });
+  }
+
   getAllJobs(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseURL}/getAllJobs`, { withCredentials: true });
+    return this.http.get<any[]>(`${this.baseURL}/getAllJobs`, { 
+      withCredentials: true,
+      headers: this.getHeaders()
+    });
   }
 
   submitApplication(applicationData: any): Observable<any> {
     return this.http.post('http://54.87.50.126/api/v1/jobs/apply', applicationData, {
-      withCredentials: true,  // Ensures that cookies are sent with the request
+      withCredentials: true,
+      headers: this.getHeaders()
     });
   }
 
@@ -46,20 +75,31 @@ export class JobsService {
     return this.http.post<MatchResponse>(
       `${this.aiURL}/getSkillsAndMatch`,
       { user, jobs },
-      { withCredentials: true }
+      { 
+        withCredentials: true,
+        headers: this.getHeaders()
+      }
     );
   }
 
   updateJob(job: any): Observable<any> {
-    return this.http.put(`/api/jobs/${job.job_id}`, job, { withCredentials: true });
+    return this.http.put(`/api/jobs/${job.job_id}`, job, { 
+      withCredentials: true,
+      headers: this.getHeaders()
+    });
   }
 
   deleteJob(id: number) {
-    return this.http.delete(`${this.baseURL}/deleteJob/${id}`, {withCredentials: true});
+    return this.http.delete(`${this.baseURL}/deleteJob/${id}`, {
+      withCredentials: true,
+      headers: this.getHeaders()
+    });
   }
 
   getAnalytics(): Observable<AnalyticsPayload> {
-    return this.http.post<AnalyticsPayload>(`${this.aiURL}/adminGraphs`, { withCredentials: true });
+    return this.http.post<AnalyticsPayload>(`${this.aiURL}/adminGraphs`, { 
+      withCredentials: true,
+      headers: this.getHeaders()
+    });
   }
-
 }

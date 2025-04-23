@@ -227,40 +227,50 @@ export class AdminDashboardComponent {
 
   ngOnInit() {
     // ——— fetch and map AI analytics ———
-    this.jobService.getAnalytics().subscribe((a: AnalyticsPayload) => {
-      // 1) Trends line chart: pad actual[] to match labels
-      const labels = a.trends.labels;
-      const actual = [...a.trends.actual];
-      while (actual.length < labels.length) actual.push(0);
+    this.jobService.getAnalytics().subscribe({
+      next: (a: AnalyticsPayload) => {
+        if (!a || !a.trends) {
+          console.error('Invalid analytics data received:', a);
+          return;
+        }
 
-      this.predictiveHiringChartData = {
-        labels,
-        datasets: [
-          { data: actual, label: 'Actual Applications', fill: false },
-          { data: a.trends.predicted, label: 'AI Prediction', borderDash: [5,5], fill: false }
-        ]
-      };
+        // 1) Trends line chart: pad actual[] to match labels
+        const labels = a.trends.labels || [];
+        const actual = [...(a.trends.actual || [])];
+        while (actual.length < labels.length) actual.push(0);
 
-      // 2) Skills radar chart
-      this.skillGapChartData = {
-        labels: a.skills.map(s => s.name),
-        datasets: [
-          { data: a.skills.map(s => s.demand), label: 'Demand %', fill: true }
-        ]
-      };
+        this.predictiveHiringChartData = {
+          labels,
+          datasets: [
+            { data: actual, label: 'Actual Applications', fill: false },
+            { data: a.trends.predicted || [], label: 'AI Prediction', borderDash: [5,5], fill: false }
+          ]
+        };
 
-      // 3) Salary distribution bar chart
-      this.salaryDistributionChartData = {
-        labels: Object.keys(a.salaries),
-        datasets: [
-          { data: Object.values(a.salaries), label: 'Jobs per bracket' }
-        ]
-      };
+        // 2) Skills radar chart
+        this.skillGapChartData = {
+          labels: (a.skills || []).map(s => s.name),
+          datasets: [
+            { data: (a.skills || []).map(s => s.demand), label: 'Demand %', fill: true }
+          ]
+        };
 
-      // 4) Anomalies table
-      this.anomalies = a.anomalies;
+        // 3) Salary distribution bar chart
+        this.salaryDistributionChartData = {
+          labels: Object.keys(a.salaries || {}),
+          datasets: [
+            { data: Object.values(a.salaries || {}), label: 'Jobs per bracket' }
+          ]
+        };
 
-      this.cdr.detectChanges();
+        // 4) Anomalies table
+        this.anomalies = a.anomalies || [];
+
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error fetching analytics:', error);
+      }
     });
 
     this.getJobs()
@@ -269,6 +279,5 @@ export class AdminDashboardComponent {
       this.getJobs();
       this.getUsers();
     }, 30000); // every 30 seconds
-
   }
 }

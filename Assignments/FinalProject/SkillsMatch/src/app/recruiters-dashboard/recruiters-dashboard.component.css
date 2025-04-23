@@ -151,7 +151,7 @@
 
 /* Applications */
 .apps-card {
-  background-color: var(--accent-color);
+  background-color: aliceblue;
   color: var(--text-light);
 }
 /* Make each application card a column flex container */

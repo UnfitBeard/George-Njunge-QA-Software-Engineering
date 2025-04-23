@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { AuthResponse } from './auth-response';
-import { BehaviorSubject, Observable, Subscription, interval, tap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, Subscription, interval, tap, map } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -38,23 +38,68 @@ export class AuthServicesService implements OnDestroy {
     return this.currentUserSubject.value !== null;
   }
 
+  // Get the current token
+  getToken(): string | null {
+    const user = this.getUserInfo();
+    return user?.token || null;
+  }
+
+  // Create headers with token
+  private getHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+    });
+  }
+
   login(email: string, password: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/login`, { email, password }, { withCredentials: true }).pipe(
+    return this.http.post<any>(`${this.apiUrl}/login`, { email, password }, { 
+      withCredentials: true,
+      observe: 'response'
+    }).pipe(
       tap(response => {
-        if (response.user) {
-          this.setUserInfo(response.user);
+        const user = response.body?.user;
+        const token = response.body?.token;
+        console.log('Login response:', response.body);
+  
+        if (user) {
+          // Store the user with the token structure
+          this.setUserInfo({
+            ...user,
+            token: token // Store the entire token object
+          });
           this.startTokenRefresh();
         }
+      }),
+      map(response => response.body)
+    );
+  }
+  
+
+  register(email: string, password: string, user_type: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(this.registerUrl, { email, password, user_type }, { 
+      withCredentials: true,
+      observe: 'response'
+    }).pipe(
+      tap(response => {
+        if (response.body?.user) {
+          this.setUserInfo(response.body.user);
+        }
+      }),
+      map(response => {
+        if (!response.body) {
+          throw new Error('No response body received from registration');
+        }
+        return response.body;
       })
     );
   }
 
-  register(email: string, password: string, user_type: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(this.registerUrl, { email, password, user_type }, { withCredentials: true });
-  }
-
   getCurrentUser(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/me`, { withCredentials: true }).pipe(
+    return this.http.get<any>(`${this.apiUrl}/me`, { 
+      withCredentials: true 
+    }).pipe(
       tap(user => {
         this.setUserInfo(user);
       })
@@ -62,7 +107,9 @@ export class AuthServicesService implements OnDestroy {
   }
 
   logout(): Observable<any> {
-    return this.http.post<any>(`${this.logoutUrl}`, {}, { withCredentials: true }).pipe(
+    return this.http.post<any>(`${this.logoutUrl}`, {}, { 
+      withCredentials: true 
+    }).pipe(
       tap(() => {
         this.clearUserInfo();
         this.stopTokenRefresh();
@@ -71,10 +118,17 @@ export class AuthServicesService implements OnDestroy {
   }
 
   refreshToken(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/refresh-token`, { withCredentials: true }).pipe(
+    return this.http.post<any>(`${this.apiUrl}/refreshToken`, {}, { 
+      withCredentials: true 
+    }).pipe(
       tap(response => {
         if (response.user) {
-          this.setUserInfo(response.user);
+          // Preserve the token structure
+          const currentUser = this.getUserInfo();
+          this.setUserInfo({
+            ...response.user,
+            token: currentUser?.token // Keep the existing token structure
+          });
         }
       })
     );
@@ -110,11 +164,18 @@ export class AuthServicesService implements OnDestroy {
 
   getCurrentUserRole(): string {
     const user = this.getUserInfo();
-    return user?.user_type || '';
+    if (!user) {
+      return '';
+    }
+    return user.user_type || '';
   }
 
   // Helper method to store user in local storage and update subject
   setUserInfo(user: any): void {
+    if (!user || !user.user_type) {
+      console.error('Invalid user data:', user);
+      return;
+    }
     localStorage.setItem('currentUser', JSON.stringify(user));
     this.currentUserSubject.next(user);
   }

@@ -31,23 +31,24 @@ export class LoginPageComponent {
 
   onSubmit() {
     if (this.loginData.email && this.loginData.password) {
-      this.authService.login(this.loginData.email, this.loginData.password).subscribe(
-        response => {
-          console.log("Login sucessful", response)
-          if (response.user.user_type === 'admin') {
-            this.router.navigate(['admin-dashboard'])
-          } else if (response.user.user_type === 'recruiter') {
+      this.authService.login(this.loginData.email, this.loginData.password).subscribe({
+        next: (response) => {
+          localStorage.setItem('access_token', response.token);
+          console.log("Login successful", response);
+          if (response.user?.user_type === 'admin') {
+            this.router.navigate(['admin-dashboard']);
+          } else if (response.user?.user_type === 'recruiter') {
             this.router.navigate(['recruiters-dashboard']);
-          } else if (response.user.user_type=== 'job_seeker') {
+          } else if (response.user?.user_type === 'job_seeker') {
             this.router.navigate(['jobseeker-dashboard']);
           } else {
-            this.router.navigate([''])
+            this.router.navigate(['']);
           }
         },
-        error => {
-          console.log("Login failed: ", error)
+        error: (error) => {
+          console.error("Login failed: ", error);
         }
-      )
+      });
     } else {
       console.log('Form is invalid');
     }
